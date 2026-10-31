@@ -77,7 +77,10 @@ export default function HomePage() {
 
       {/* 5. سیکشن ۲: لائبریری کی تصویریں (Library Carousel Slider) */}
       {sections?.library?.enabled !== false && (
-        <LibraryGallerySection header={sections?.library} />
+        <LibraryGallerySection
+          header={sections?.library}
+          items={homeData?.libraryMedia}
+        />
       )}
 
       {/* 6. منتخب کتب و مطبوعات (Selected Books Showcase) */}
@@ -87,17 +90,26 @@ export default function HomePage() {
 
       {/* 7. سیکشن ۳: بچوں کے کھیل کود کی تصاویر و ویڈیوز (Sports Masonry Grid) */}
       {sections?.activities?.enabled !== false && (
-        <StudentActivitiesSection header={sections?.activities} />
+        <StudentActivitiesSection
+          header={sections?.activities}
+          items={homeData?.activitiesMedia}
+        />
       )}
 
       {/* 8. سیکشن ۴: بچوں کی پکنک کی تصاویر و ویڈیوز (Picnic Polaroid Grid) */}
       {sections?.picnic?.enabled !== false && (
-        <StudentPicnicSection header={sections?.picnic} />
+        <StudentPicnicSection
+          header={sections?.picnic}
+          items={homeData?.picnicMedia}
+        />
       )}
 
       {/* 9. سیکشن ۵: بچوں کے جشنوں کی تصاویر و ویڈیوز (Celebrations Spotlight Slider) */}
       {sections?.celebrations?.enabled !== false && (
-        <CelebrationsGallerySection header={sections?.celebrations} />
+        <CelebrationsGallerySection
+          header={sections?.celebrations}
+          items={homeData?.celebrationsMedia}
+        />
       )}
 
       {/* 10. عطیات و صدقات (Donations & Bank Accounts with 1-Click Copy) */}

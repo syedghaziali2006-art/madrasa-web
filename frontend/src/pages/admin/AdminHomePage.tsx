@@ -25,7 +25,11 @@ import {
   Quote,
   User,
   SlidersHorizontal,
-  Building2
+  Building2,
+  BookOpen,
+  Trophy,
+  Compass,
+  Award
 } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { api } from "@/services/api";
@@ -199,8 +203,220 @@ export default function AdminHomePage() {
     }
   ];
 
+  const defaultLibraryMedia = [
+    {
+      id: "lib-1",
+      title: "مرکزی مطالعہ ہال و کتب الماری",
+      category: "مطالعہ و کتب",
+      type: "image",
+      imageUrl: "/images/gallery/library-interior.jpg",
+      date: "کتب خانہ صاحب الزمان",
+      location: "ہال نمبر ۱ - حوزوی کتب",
+      description: "شاہکار لکڑی کی الماریوں میں سجی ہزاروں کتب، پرسکون ماحول اور طلبہ کے لیے وسیع اسٹڈی ٹیبلز۔"
+    },
+    {
+      id: "lib-2",
+      title: "قدیم نایاب خطی نسخے و قلمی نوادرات",
+      category: "مخطوطات و نوادرات",
+      type: "image",
+      imageUrl: "/images/library.jpg",
+      date: "نایاب کتب",
+      location: "خصوصی ریسرچ سیکشن",
+      description: "صدیوں پرانے قلمی نسخے، تفاسیر اور علمائے سلف کے نایاب ہاتھ کے لکھے ہوئے کتب کے اوراق۔"
+    },
+    {
+      id: "lib-3",
+      title: "کتبِ تفاسیر، احادیث و فقہی انسائیکلوپیڈیا",
+      category: "علومِ آلِ محمدؑ",
+      type: "image",
+      imageUrl: "/images/books/book-3.jpg",
+      date: "بنیادی مآخذ",
+      location: "شعبہ تحقیق و فقہ",
+      description: "کتبِ اربعہ، بحار الانوار، وسائل الشیعہ اور تفاسیر قرآن کا عظیم الشان اور مستند مجموعہ۔"
+    },
+    {
+      id: "lib-4",
+      title: "ڈیجیٹل لائبریری و آن لائن ریسرچ سسٹم",
+      category: "ڈیجیٹل کیٹلاگ",
+      type: "image",
+      imageUrl: "/images/books/book-2.jpg",
+      date: "جدید تحقیق",
+      location: "کمپیوٹر کیٹلاگ کارنر",
+      description: "آن لائن پورٹل جہاں سے طلبہ دنیا بھر کے اسلامی مقالات اور پی ڈی ایف کتب تک رسائی حاصل کرتے ہیں۔"
+    },
+    {
+      id: "lib-5",
+      title: "محققین و اساتذہ کا فکری کارنر",
+      category: "ریسرچ کارنر",
+      type: "image",
+      imageUrl: "/images/books/book-5.jpg",
+      date: "علمی نشستیں",
+      location: "سیمینار روم",
+      description: "اساتذہ اور محقق طلبہ کے سنجیدہ فکری مباحث اور علمی مقالہ نگاری کے لیے مختص جگہ۔"
+    }
+  ];
+
+  const defaultActivitiesMedia = [
+    {
+      id: "sports-cricket",
+      title: "سالانہ کرکٹ ٹورنامنٹ ۲۰۲۶ - فائنل میچ اور بچوں کی خوشی",
+      category: "کھیل کود و اسپورٹس",
+      type: "video",
+      videoDuration: "۰۳:۲۰",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/gallery/sports-day.jpg",
+      date: "ہفتہ وار اسپورٹس ڈے",
+      location: "مدرسہ صاحب الزمان پلے گراؤنڈ",
+      description: "طلبہ کے درمیان تفریحی کرکٹ میچ کی پُرجوش جھلکیاں، چھکے چوکے اور فاتح ٹیم کی فتح کا جشن۔"
+    },
+    {
+      id: "indoor-games",
+      title: "ان ڈور گیمز - کیرم اور شطرنج کے مقابلے",
+      category: "ذہنی تفریح",
+      type: "image",
+      imageUrl: "/images/gallery/indoor-games.jpg",
+      date: "شام کا تفریحی وقت",
+      location: "اسٹوڈنٹس ایکٹیویٹی روم",
+      description: "کیرم بورڈ، شطرنج اور فکری کھیلوں میں طلبہ کی بھرپور دلچسپی، مسکراہٹیں اور باہمی رفاقت۔"
+    },
+    {
+      id: "morning-exercise",
+      title: "صبح کی باقاعدہ پی ٹی اور جسمانی ورزش",
+      category: "صحت و تندرستی",
+      type: "video",
+      videoDuration: "۰۱:۴۵",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/gallery/exercise.jpg",
+      date: "روزانہ فجر کے بعد",
+      location: "مرکزی کورٹ یارڈ و گراؤنڈ",
+      description: "صحت مند دماغ کے لیے تندرست جسم — روزانہ صبح باقاعدہ اسٹریچنگ، جاگنگ اور نظم و ضبط۔"
+    },
+    {
+      id: "tug-of-war",
+      title: "رسی کشی کا سنسنی خیز اور دوستانہ مقابلہ",
+      category: "اسپورٹس فیسٹیول",
+      type: "image",
+      imageUrl: "/images/gallery/tug-of-war.jpg",
+      date: "سالانہ فیسٹیول",
+      location: "اوپن گراؤنڈ",
+      description: "مختلف کلاسوں کے طلبہ کے درمیان زور آزمائی، اجتماعی ٹیم ورک اور بچوں کی پرلطف ہنسی۔"
+    },
+    {
+      id: "friendly-badminton",
+      title: "بیڈمنٹن چیمپئن شپ اور طلبہ کی مسکراہٹیں",
+      category: "میدانی کھیل",
+      type: "video",
+      videoDuration: "۰۲:۱۰",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/gallery/badminton.jpg",
+      date: "عصر کے بعد",
+      location: "بیڈمنٹن کورٹ",
+      description: "طلبہ کی چستی، مہارت اور کھیل کے دوران باہمی محبت، اخوت اور اسپورٹس مین اسپرٹ کا مظاہرہ۔"
+    }
+  ];
+
+  const defaultPicnicMedia = [
+    {
+      id: "picnic-beach",
+      title: "ساحلِ سمندر (سی ویو) کی تفریحی پکنک ۲۰۲۵",
+      category: "سالانہ پکنک",
+      type: "video",
+      videoDuration: "۰۴:۵۰",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/gallery/picnic-beach.jpg",
+      date: "اکتوبر ۲۰۲۵",
+      location: "کلفٹن و سی ویو ساحل، کراچی",
+      description: "طلبہ اور اساتذہ کا ساحلِ سمندر کا یادگار سفر، باجماعت نماز، لذیذ ظہرانہ اور ساحلی ہوائیں و کھیل۔"
+    },
+    {
+      id: "botanical-garden",
+      title: "باغِ ابنِ قاسم کا تفریحی و علمی وزٹ",
+      category: "تعلیمی دورہ",
+      type: "image",
+      imageUrl: "/images/layout/sunset-mosque.jpg",
+      date: "بہار ۲۰۲۵",
+      location: "باغِ ابن قاسم، کراچی",
+      description: "قدرت کے مناظر، سرسبز باغات اور طلبہ کے لیے معلوماتی تفریحی واک۔"
+    },
+    {
+      id: "amusement-park",
+      title: "تفریحی پارک میں طلبہ کی پرلطف مسکراہٹیں",
+      category: "ایکٹیویٹی ڈے",
+      type: "video",
+      videoDuration: "۰۲:۱۵",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/layout/lattice-prayer.jpg",
+      date: "دسمبر ۲۰۲۵",
+      location: "تھیم پارک، کراچی",
+      description: "جھولوں کی تفریح، دوستانہ محفل اور طلبہ کے چہروں پر مسکراہٹیں اور خوشیاں۔"
+    },
+    {
+      id: "hill-view-lunch",
+      title: "پہاڑی مقام پر ظہرانہ اور روحانی دعا",
+      category: "سیر و سیاحت",
+      type: "image",
+      imageUrl: "/images/layout/congregation.jpg",
+      date: "جنوری ۲۰۲۶",
+      location: "پکنک پوائنٹ",
+      description: "کھلے آسمان تلے باجماعت دعا اور اساتذہ کی رفاقت میں یادگار لمحات۔"
+    }
+  ];
+
+  const defaultCelebrationsMedia = [
+    {
+      id: "event-convocation",
+      title: "سالانہ تقریبِ تقسیمِ اسناد، انعامات اور شیلڈز ۲۰۲۶",
+      category: "تقسیمِ انعامات",
+      type: "video",
+      videoDuration: "۰۶:۳۰",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/gallery/celebration-stage.jpg",
+      date: "شعبان المعظم ۱۴۴۷ھ",
+      location: "مرکزی پنڈال و اسٹیج",
+      description: "ممتاز پوزیشن حاصل کرنے والے ہونہار طلبہ کو علمائے کرام کے دستِ مبارک سے اعزازی شیلڈز، کتب اور سرٹیفکیٹس کی تقسیم۔"
+    },
+    {
+      id: "event-milad",
+      title: "جشنِ ولادتِ باسعادت حضرت محمد مصطفیٰ ﷺ و امام جعفر صادقؑ",
+      category: "جشن و میلاد",
+      type: "image",
+      imageUrl: "/images/layout/mosque-arches.jpg",
+      date: "۱۷ ربیع الاول",
+      location: "مرکزی کانفرنس ہال",
+      description: "عطر بیز محفلِ میلاد، بچوں کی نعت خوانی، قصیدہ گوئی اور شیرینی کی تقسیم کا بابرکت منظر۔"
+    },
+    {
+      id: "event-quran-comp",
+      title: "آل پاکستان مقابلہ حسنِ قرائت و تجویدِ قرآن",
+      category: "قرآنی مقابلہ",
+      type: "video",
+      videoDuration: "۰۳:۴۵",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/layout/quran-study.jpg",
+      date: "رمضان المبارک",
+      location: "مسجد صاحب الزمان",
+      description: "ملک بھر کے نامور قراء کی موجودگی میں طلبہ کے درمیان لحنِ داؤدی اور تجوید کے روح پرور مقابلے۔"
+    },
+    {
+      id: "event-turban",
+      title: "روحانی تقریبِ عمامہ پوشی برائے فارغ التحصیل علماء",
+      category: "عمامہ پوشی",
+      type: "image",
+      imageUrl: "/images/layout/congregation.jpg",
+      date: "عیدِ غدیر",
+      location: "مرکزی حسینیہ",
+      description: "حوزوی نصاب مکمل کرنے والے فاضل طلبہ کو مراجعِ عظام کے نمائندگان کے ہاتھوں تاجِ رسول ﷺ پہنانے کی تقریب۔"
+    }
+  ];
+
   const [campusMediaData, setCampusMediaData] = useState<any[]>(defaultCampusMedia);
+  const [libraryMediaData, setLibraryMediaData] = useState<any[]>(defaultLibraryMedia);
+  const [activitiesMediaData, setActivitiesMediaData] = useState<any[]>(defaultActivitiesMedia);
+  const [picnicMediaData, setPicnicMediaData] = useState<any[]>(defaultPicnicMedia);
+  const [celebrationsMediaData, setCelebrationsMediaData] = useState<any[]>(defaultCelebrationsMedia);
+
   const [uploadingCampusIdx, setUploadingCampusIdx] = useState<number | null>(null);
+  const [uploadingSectionMedia, setUploadingSectionMedia] = useState<{ section: string; idx: number } | null>(null);
 
   // Quick Media State
   const [quickMedia, setQuickMedia] = useState({
@@ -230,6 +446,18 @@ export default function AdminHomePage() {
         if (res.data.campusMedia && Array.isArray(res.data.campusMedia) && res.data.campusMedia.length > 0) {
           setCampusMediaData(res.data.campusMedia);
         }
+        if (res.data.libraryMedia && Array.isArray(res.data.libraryMedia) && res.data.libraryMedia.length > 0) {
+          setLibraryMediaData(res.data.libraryMedia);
+        }
+        if (res.data.activitiesMedia && Array.isArray(res.data.activitiesMedia) && res.data.activitiesMedia.length > 0) {
+          setActivitiesMediaData(res.data.activitiesMedia);
+        }
+        if (res.data.picnicMedia && Array.isArray(res.data.picnicMedia) && res.data.picnicMedia.length > 0) {
+          setPicnicMediaData(res.data.picnicMedia);
+        }
+        if (res.data.celebrationsMedia && Array.isArray(res.data.celebrationsMedia) && res.data.celebrationsMedia.length > 0) {
+          setCelebrationsMediaData(res.data.celebrationsMedia);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -252,7 +480,11 @@ export default function AdminHomePage() {
         sections: sectionsData,
         donationInfo: donationData,
         testimonialsList: testimonialsData,
-        campusMedia: campusMediaData
+        campusMedia: campusMediaData,
+        libraryMedia: libraryMediaData,
+        activitiesMedia: activitiesMediaData,
+        picnicMedia: picnicMediaData,
+        celebrationsMedia: celebrationsMediaData
       };
       const res = await api.homepage.update(payload);
       if (res.success) {
@@ -263,6 +495,127 @@ export default function AdminHomePage() {
       alert("محفوظ کرنے میں خرابی: " + err.message);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const getSectionMediaList = (secKey: string): any[] => {
+    switch (secKey) {
+      case "campus":
+        return campusMediaData;
+      case "library":
+        return libraryMediaData;
+      case "activities":
+        return activitiesMediaData;
+      case "picnic":
+        return picnicMediaData;
+      case "celebrations":
+        return celebrationsMediaData;
+      default:
+        return [];
+    }
+  };
+
+  const updateSectionMediaItem = (secKey: string, index: number, field: string, value: any) => {
+    const updater = (prev: any[]) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    };
+    switch (secKey) {
+      case "campus":
+        setCampusMediaData(updater);
+        break;
+      case "library":
+        setLibraryMediaData(updater);
+        break;
+      case "activities":
+        setActivitiesMediaData(updater);
+        break;
+      case "picnic":
+        setPicnicMediaData(updater);
+        break;
+      case "celebrations":
+        setCelebrationsMediaData(updater);
+        break;
+    }
+  };
+
+  const handleSectionMediaUpload = async (
+    secKey: string,
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploadingSectionMedia({ section: secKey, idx: index });
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        updateSectionMediaItem(secKey, index, "imageUrl", res.fileUrl);
+      }
+    } catch (err: any) {
+      alert("تصویر اپلوڈ کرنے میں خرابی: " + err.message);
+    } finally {
+      setUploadingSectionMedia(null);
+    }
+  };
+
+  const addSectionMediaItem = (secKey: string, type: "image" | "video" = "image") => {
+    const newItem = {
+      id: `${secKey}-${Date.now()}`,
+      title: type === "video" ? "نئی ویڈیو جھلک" : "نئی تصویر",
+      category: "جھلکیاں",
+      type,
+      imageUrl:
+        type === "video"
+          ? "/images/layout/mosque-arches.jpg"
+          : "/images/layout/congregation.jpg",
+      videoUrl: type === "video" ? "https://www.youtube.com/watch?v=dQw4w9WgXcQ" : "",
+      videoDuration: type === "video" ? "۰۲:۳۰" : "",
+      location: "کراچی کیمپس",
+      date: "تعلیمی سال ۲۰۲۶",
+      description: ""
+    };
+    const appender = (prev: any[]) => [...prev, newItem];
+    switch (secKey) {
+      case "campus":
+        setCampusMediaData(appender);
+        break;
+      case "library":
+        setLibraryMediaData(appender);
+        break;
+      case "activities":
+        setActivitiesMediaData(appender);
+        break;
+      case "picnic":
+        setPicnicMediaData(appender);
+        break;
+      case "celebrations":
+        setCelebrationsMediaData(appender);
+        break;
+    }
+  };
+
+  const removeSectionMediaItem = (secKey: string, index: number) => {
+    if (confirm("کیا آپ واقعی اس میڈیا آئٹم کو حذف کرنا چاہتے ہیں؟")) {
+      const remover = (prev: any[]) => prev.filter((_, i) => i !== index);
+      switch (secKey) {
+        case "campus":
+          setCampusMediaData(remover);
+          break;
+        case "library":
+          setLibraryMediaData(remover);
+          break;
+        case "activities":
+          setActivitiesMediaData(remover);
+          break;
+        case "picnic":
+          setPicnicMediaData(remover);
+          break;
+        case "celebrations":
+          setCelebrationsMediaData(remover);
+          break;
+      }
     }
   };
 
@@ -990,7 +1343,9 @@ export default function AdminHomePage() {
                   <div
                     key={secKey}
                     className={`p-5 sm:p-6 rounded-3xl bg-[#1C1009] border transition-all duration-300 ${
-                      secKey === "campus" ? "md:col-span-2 border-[#C9B38D]/50 shadow-2xl" : ""
+                      ["campus", "library", "activities", "picnic", "celebrations"].includes(secKey)
+                        ? "md:col-span-2 border-[#C9B38D]/50 shadow-2xl"
+                        : ""
                     } ${
                       sec.enabled !== false
                         ? "border-[#C9B38D]/40 shadow-lg"
@@ -1281,20 +1636,249 @@ export default function AdminHomePage() {
                       </div>
                     )}
 
-                    {/* Quick Media Link for other sections */}
+                    {/* INLINE MEDIA CONTROLS FOR LIBRARY, ACTIVITIES, PICNIC, CELEBRATIONS */}
                     {["library", "activities", "picnic", "celebrations"].includes(secKey) && (
-                      <div className="mt-4 pt-3 border-t border-stone-800 flex justify-end">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setQuickMedia((prev) => ({ ...prev, section: secKey }));
-                            setActiveTab("media");
-                          }}
-                          className="text-xs text-[#C9B38D] hover:underline flex items-center gap-1 cursor-pointer font-bold"
-                        >
-                          <span>اس سیکشن کے لیے نئی تصویر / ویڈیو اپلوڈ کریں</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </button>
+                      <div className="mt-6 pt-5 border-t-2 border-[#C9B38D]/30 space-y-5">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#2A160D]/50 p-3.5 rounded-2xl border border-[#C9B38D]/30">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#C9B38D] animate-pulse" />
+                            <h5 className="text-xs sm:text-sm font-bold text-[#E5D7BE] flex items-center gap-1.5">
+                              <Film className="w-4 h-4 text-[#C9B38D]" />
+                              <span>اس سیکشن کی ویڈیوز اور تصاویر ({getSectionMediaList(secKey).length} آئٹمز)</span>
+                            </h5>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => addSectionMediaItem(secKey, "image")}
+                              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <Plus className="w-3.5 h-3.5 text-[#C9B38D]" />
+                              <span>+ نئی تصویر شامل کریں</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => addSectionMediaItem(secKey, "video")}
+                              className="px-3 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900/60 text-red-200 text-xs font-bold border border-red-500/40 transition flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <Video className="w-3.5 h-3.5 text-red-400" />
+                              <span>+ نئی ویڈیو شامل کریں</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Media Items Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {getSectionMediaList(secKey).map((item: any, idx: number) => {
+                            const isVid = item.type === "video";
+                            const isUploading =
+                              uploadingSectionMedia?.section === secKey &&
+                              uploadingSectionMedia?.idx === idx;
+
+                            return (
+                              <div
+                                key={item.id || idx}
+                                className={`p-4 rounded-2xl bg-[#120A05] border space-y-3 transition shadow-md ${
+                                  isVid
+                                    ? "border-red-500/35 hover:border-red-400/60"
+                                    : "border-[#C9B38D]/25 hover:border-[#C9B38D]/50"
+                                }`}
+                              >
+                                {/* Item Card Header */}
+                                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[11px] font-bold text-[#C9B38D] px-2 py-0.5 rounded-md bg-[#1C1009] border border-[#C9B38D]/25">
+                                      آئٹم #{idx + 1}
+                                    </span>
+
+                                    <div className="flex items-center rounded-lg bg-[#1C1009] p-0.5 border border-white/10 text-[10px]">
+                                      <button
+                                        type="button"
+                                        onClick={() => updateSectionMediaItem(secKey, idx, "type", "image")}
+                                        className={`px-2 py-0.5 rounded-md transition font-bold flex items-center gap-1 cursor-pointer ${
+                                          !isVid
+                                            ? "bg-[#C9B38D] text-[#120A05]"
+                                            : "text-stone-400 hover:text-white"
+                                        }`}
+                                      >
+                                        <ImageIcon className="w-3 h-3" />
+                                        <span>تصویر</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => updateSectionMediaItem(secKey, idx, "type", "video")}
+                                        className={`px-2 py-0.5 rounded-md transition font-bold flex items-center gap-1 cursor-pointer ${
+                                          isVid
+                                            ? "bg-red-500 text-white"
+                                            : "text-stone-400 hover:text-white"
+                                        }`}
+                                      >
+                                        <Video className="w-3 h-3" />
+                                        <span>ویڈیو</span>
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => removeSectionMediaItem(secKey, idx)}
+                                    className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/40 rounded-lg transition cursor-pointer"
+                                    title="ڈیلیٹ کریں"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+
+                                {/* Thumbnail Preview & Upload / URL */}
+                                <div className="flex gap-3 items-center">
+                                  <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-black/60 border border-white/15 shrink-0 group">
+                                    <img
+                                      src={item.imageUrl || "/images/layout/mosque-arches.jpg"}
+                                      alt={item.title || "Preview"}
+                                      className="w-full h-full object-cover"
+                                    />
+                                    {isVid && (
+                                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                        <Video className="w-5 h-5 text-red-400 drop-shadow" />
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <div className="flex-1 space-y-1.5">
+                                    <label className="block text-[11px] font-bold text-stone-400">
+                                      {isVid ? "ویڈیو تھمب نیل / پوسٹر تصویر:" : "تصویر کا ربط (Image URL):"}
+                                    </label>
+                                    <div className="flex items-center gap-2">
+                                      <input
+                                        type="text"
+                                        dir="ltr"
+                                        value={item.imageUrl || ""}
+                                        onChange={(e) => updateSectionMediaItem(secKey, idx, "imageUrl", e.target.value)}
+                                        className="flex-1 px-2.5 py-1.5 rounded-xl bg-[#1C1009] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                                        placeholder="/images/..."
+                                      />
+                                      <label className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition flex items-center gap-1 cursor-pointer shrink-0">
+                                        <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
+                                        <span>{isUploading ? "..." : "اپلوڈ"}</span>
+                                        <input
+                                          type="file"
+                                          accept="image/*"
+                                          className="hidden"
+                                          onChange={(e) => handleSectionMediaUpload(secKey, idx, e)}
+                                        />
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* If video: Video Link and Duration */}
+                                {isVid && (
+                                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-[#1C1009]/60 p-2.5 rounded-xl border border-red-500/20">
+                                    <div className="sm:col-span-2">
+                                      <label className="block text-[10px] font-bold text-stone-300 mb-1">
+                                        ویڈیو لنک (YouTube یا MP4 URL)
+                                      </label>
+                                      <input
+                                        type="text"
+                                        dir="ltr"
+                                        value={item.videoUrl || ""}
+                                        onChange={(e) => updateSectionMediaItem(secKey, idx, "videoUrl", e.target.value)}
+                                        className="w-full px-2.5 py-1 rounded-lg bg-[#120A05] border border-red-500/30 text-white text-xs focus:border-red-400 focus:outline-none text-left"
+                                        placeholder="https://www.youtube.com/watch?v=..."
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="block text-[10px] font-bold text-stone-300 mb-1">
+                                        دورانیہ (Duration)
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={item.videoDuration || ""}
+                                        onChange={(e) => updateSectionMediaItem(secKey, idx, "videoDuration", e.target.value)}
+                                        className="w-full px-2.5 py-1 rounded-lg bg-[#120A05] border border-red-500/30 text-white text-xs focus:border-red-400 focus:outline-none text-right font-mono"
+                                        placeholder="۰۳:۲۰"
+                                      />
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Title & Category */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-stone-400 mb-0.5">
+                                      عنوان (Title)
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={item.title || ""}
+                                      onChange={(e) => updateSectionMediaItem(secKey, idx, "title", e.target.value)}
+                                      className="w-full px-2.5 py-1.5 rounded-xl bg-[#1C1009] border border-white/10 text-white text-xs font-bold focus:border-[#C9B38D] focus:outline-none"
+                                      placeholder="عنوان درج کریں..."
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-stone-400 mb-0.5">
+                                      زمرہ / بیج (Category)
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={item.category || ""}
+                                      onChange={(e) => updateSectionMediaItem(secKey, idx, "category", e.target.value)}
+                                      className="w-full px-2.5 py-1.5 rounded-xl bg-[#1C1009] border border-white/10 text-stone-300 text-xs focus:border-[#C9B38D] focus:outline-none"
+                                      placeholder="زمرہ..."
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Location & Date */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-stone-400 mb-0.5">
+                                      مقام (Location)
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={item.location || ""}
+                                      onChange={(e) => updateSectionMediaItem(secKey, idx, "location", e.target.value)}
+                                      className="w-full px-2.5 py-1.5 rounded-xl bg-[#1C1009] border border-white/10 text-stone-300 text-xs focus:border-[#C9B38D] focus:outline-none"
+                                      placeholder="مقام..."
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-stone-400 mb-0.5">
+                                      تاریخ / سال (Date)
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={item.date || ""}
+                                      onChange={(e) => updateSectionMediaItem(secKey, idx, "date", e.target.value)}
+                                      className="w-full px-2.5 py-1.5 rounded-xl bg-[#1C1009] border border-white/10 text-stone-300 text-xs focus:border-[#C9B38D] focus:outline-none"
+                                      placeholder="تعلیمی سال ۲۰۲۶..."
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Description */}
+                                <div>
+                                  <label className="block text-[10px] font-bold text-stone-400 mb-0.5">
+                                    مختصر وضاحت (Description)
+                                  </label>
+                                  <textarea
+                                    rows={1}
+                                    value={item.description || ""}
+                                    onChange={(e) => updateSectionMediaItem(secKey, idx, "description", e.target.value)}
+                                    className="w-full px-2.5 py-1 rounded-xl bg-[#1C1009] border border-white/10 text-stone-300 text-xs leading-[2] focus:border-[#C9B38D] focus:outline-none"
+                                    placeholder="مختصر تفصیل..."
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>

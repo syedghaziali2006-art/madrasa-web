@@ -13,9 +13,10 @@ interface StudentPicnicSectionProps {
     title?: string;
     subtitle?: string;
   };
+  items?: MediaItem[];
 }
 
-export default function StudentPicnicSection({ header }: StudentPicnicSectionProps) {
+export default function StudentPicnicSection({ header, items }: StudentPicnicSectionProps) {
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
   const defaultPicnicMoments: MediaItem[] = [
@@ -63,9 +64,15 @@ export default function StudentPicnicSection({ header }: StudentPicnicSectionPro
     },
   ];
 
-  const [picnicMoments, setPicnicMoments] = useState<MediaItem[]>(defaultPicnicMoments);
+  const [picnicMoments, setPicnicMoments] = useState<MediaItem[]>(
+    items && items.length > 0 ? items : defaultPicnicMoments
+  );
 
   React.useEffect(() => {
+    if (items && items.length > 0) {
+      setPicnicMoments(items);
+      return;
+    }
     const fetchPicnic = async () => {
       try {
         const res = await api.gallery.getAll({ section: "picnic" });
@@ -77,7 +84,7 @@ export default function StudentPicnicSection({ header }: StudentPicnicSectionPro
       }
     };
     fetchPicnic();
-  }, []);
+  }, [items]);
 
   // Specific rotation classes for authentic polaroid scrapbook aesthetic
   const rotations = ["-rotate-2", "rotate-2", "-rotate-1", "rotate-3"];

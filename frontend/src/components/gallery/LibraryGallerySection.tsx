@@ -13,9 +13,10 @@ interface LibraryGallerySectionProps {
     title?: string;
     subtitle?: string;
   };
+  items?: MediaItem[];
 }
 
-export default function LibraryGallerySection({ header }: LibraryGallerySectionProps) {
+export default function LibraryGallerySection({ header, items }: LibraryGallerySectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
@@ -72,9 +73,15 @@ export default function LibraryGallerySection({ header }: LibraryGallerySectionP
     },
   ];
 
-  const [libraryItems, setLibraryItems] = useState<MediaItem[]>(defaultLibraryItems);
+  const [libraryItems, setLibraryItems] = useState<MediaItem[]>(
+    items && items.length > 0 ? items : defaultLibraryItems
+  );
 
   React.useEffect(() => {
+    if (items && items.length > 0) {
+      setLibraryItems(items);
+      return;
+    }
     const fetchLibraryMedia = async () => {
       try {
         const res = await api.gallery.getAll({ section: "library" });
@@ -86,7 +93,7 @@ export default function LibraryGallerySection({ header }: LibraryGallerySectionP
       }
     };
     fetchLibraryMedia();
-  }, []);
+  }, [items]);
 
   const handleNext = () => {
     if (libraryItems.length === 0) return;

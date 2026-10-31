@@ -13,9 +13,10 @@ interface StudentActivitiesSectionProps {
     title?: string;
     subtitle?: string;
   };
+  items?: MediaItem[];
 }
 
-export default function StudentActivitiesSection({ header }: StudentActivitiesSectionProps) {
+export default function StudentActivitiesSection({ header, items }: StudentActivitiesSectionProps) {
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
   const defaultActivities: MediaItem[] = [
@@ -74,9 +75,15 @@ export default function StudentActivitiesSection({ header }: StudentActivitiesSe
     },
   ];
 
-  const [activities, setActivities] = useState<MediaItem[]>(defaultActivities);
+  const [activities, setActivities] = useState<MediaItem[]>(
+    items && items.length > 0 ? items : defaultActivities
+  );
 
   React.useEffect(() => {
+    if (items && items.length > 0) {
+      setActivities(items);
+      return;
+    }
     const fetchActivities = async () => {
       try {
         const res = await api.gallery.getAll({ section: "activities" });
@@ -88,7 +95,7 @@ export default function StudentActivitiesSection({ header }: StudentActivitiesSe
       }
     };
     fetchActivities();
-  }, []);
+  }, [items]);
 
   return (
     <section id="student-activities" className="py-20 sm:py-28 bg-[#140B06] islamic-dark-pattern relative overflow-hidden" dir="rtl">

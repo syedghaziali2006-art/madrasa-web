@@ -13,9 +13,10 @@ interface CelebrationsGallerySectionProps {
     title?: string;
     subtitle?: string;
   };
+  items?: MediaItem[];
 }
 
-export default function CelebrationsGallerySection({ header }: CelebrationsGallerySectionProps) {
+export default function CelebrationsGallerySection({ header, items }: CelebrationsGallerySectionProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
@@ -64,9 +65,15 @@ export default function CelebrationsGallerySection({ header }: CelebrationsGalle
     },
   ];
 
-  const [events, setEvents] = useState<MediaItem[]>(defaultEvents);
+  const [events, setEvents] = useState<MediaItem[]>(
+    items && items.length > 0 ? items : defaultEvents
+  );
 
   React.useEffect(() => {
+    if (items && items.length > 0) {
+      setEvents(items);
+      return;
+    }
     const fetchCelebrations = async () => {
       try {
         const res = await api.gallery.getAll({ section: "celebrations" });
@@ -78,7 +85,7 @@ export default function CelebrationsGallerySection({ header }: CelebrationsGalle
       }
     };
     fetchCelebrations();
-  }, []);
+  }, [items]);
 
   const currentEvent = events[activeIdx] || events[0] || defaultEvents[0];
 
