@@ -31,7 +31,7 @@
     "campus": {
       "enabled": true,
       "badge": "سیکشن ۱: تصویری و ویڈیو جھلکیاں",
-      "title": "مدرسہ صاحب الزمان کیمپس اور عمارات",
+      "title": "مدرسہ کی تصویریں اور ویڈیوز",
       "subtitle": "کیمپس کی شاندار تعمیر، پرسکون ماحول، وسیع درسگاہیں اور روحانی فضا کی چند دلکش جھلکیاں"
     },
     "library": {
@@ -84,7 +84,13 @@
     "boxImage": "/images/layout/donation-box.jpg",
     "studentSponsorship": "ماہانہ طالب علم کفالت: 1500 روپے",
     "foodSponsorship": "طعام کفالت: 10,000 روپے",
-    "presetAmounts": ["1500", "2500", "5000", "10000", "25000"]
+    "presetAmounts": [
+      "1500",
+      "2500",
+      "5000",
+      "10000",
+      "25000"
+    ]
   },
   "testimonialsList": [
     {
@@ -222,5 +228,60 @@
       "avatar": "/images/layout/avatar1.jpg",
       "initialLikes": 44
     }
-  ]
+  ],
+  "campusMedia": [
+    {
+      "id": "campus-vid-1",
+      "title": "مدرسہ کا مرکزی بیرونی منظر و گنبد",
+      "category": "مرکزی کیمپس",
+      "type": "video",
+      "videoDuration": "۰۴:۱۵",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "imageUrl": "/images/layout/mosque-arches.jpg",
+      "date": "تعلیمی سال ۲۰۲۶",
+      "location": "احسن آباد کیمپس، کراچی",
+      "description": "مدرسہ صاحب الزمان کی پرشکوہ اسلامی طرزِ تعمیر کی حامل عمارت، محرابیں اور وسیع دالان کا مکمل ویڈیو ٹور۔"
+    },
+    {
+      "id": "campus-img-1",
+      "title": "دار الحدیث و مرکزی تدریسی ہال",
+      "category": "تدریسی ہال",
+      "type": "image",
+      "imageUrl": "/images/layout/congregation.jpg",
+      "date": "رجب المرجب",
+      "location": "دوسری منزل، مرکزی ہال",
+      "description": "طلبہ کے روزمرہ دروس، کتبِ اربعہ اور منطق و بلاغت کی محفلِ درس کا خوبصورت منظر۔"
+    },
+    {
+      "id": "campus-img-2",
+      "title": "حوزوی کلاس رومز و کتب خوانی",
+      "category": "تعلیمی بلاک",
+      "type": "image",
+      "imageUrl": "/images/layout/quran-study.jpg",
+      "date": "روزانہ تدریس",
+      "location": "پہلی منزل، کمرہ نمبر ۱۰",
+      "description": "طلبہ کے لیے پرسکون، کشادہ اور جدید سہولیات سے آراستہ درس گاہیں جہاں اساتذہ انفرادی توجہ دیتے ہیں۔"
+    },
+    {
+      "id": "campus-img-3",
+      "title": "مرکزی کتب خانہ و ریڈنگ ہال",
+      "category": "کتب خانہ",
+      "type": "image",
+      "imageUrl": "/images/gallery/library-interior.jpg",
+      "date": "جدید سہولیات",
+      "location": "لائبریری بلاک",
+      "description": "۲۵ ہزار سے زائد مستند دینی و تحقیقی کتب اور مطالعہ کے لیے پرسکون ماحول۔"
+    },
+    {
+      "id": "campus-img-4",
+      "title": "وسیع صحن و بیرونی راہداری",
+      "category": "کیمپس ایریا",
+      "type": "image",
+      "imageUrl": "/images/layout/sunset-mosque.jpg",
+      "date": "تفریحی ماحول",
+      "location": "مرکزی کورٹ یارڈ",
+      "description": "طلبہ کے لیے سرسبز و شاداب قدرتی ماحول، چہل قدمی اور فکری مباحثوں کی کشادہ جگہ۔"
+    }
+  ],
+  "updatedAt": "2026-10-31T06:15:00.000Z"
 }

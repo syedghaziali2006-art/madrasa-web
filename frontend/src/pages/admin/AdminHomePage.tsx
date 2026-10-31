@@ -24,7 +24,8 @@ import {
   Edit3,
   Quote,
   User,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Building2
 } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { api } from "@/services/api";
@@ -35,7 +36,7 @@ interface BadgeItem {
 }
 
 export default function AdminHomePage() {
-  const [activeTab, setActiveTab] = useState<"hero" | "sections" | "donations" | "testimonials" | "media">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "sections" | "campusMedia" | "donations" | "testimonials" | "media">("hero");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -142,6 +143,65 @@ export default function AdminHomePage() {
   const [editingTestimonial, setEditingTestimonial] = useState<any | null>(null);
   const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
 
+  // Campus Media State (1 Video + 4 Images)
+  const defaultCampusMedia = [
+    {
+      id: "campus-vid-1",
+      title: "مدرسہ کا مرکزی بیرونی منظر و گنبد",
+      category: "مرکزی کیمپس",
+      type: "video",
+      videoDuration: "۰۴:۱۵",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/layout/mosque-arches.jpg",
+      date: "تعلیمی سال ۲۰۲۶",
+      location: "احسن آباد کیمپس، کراچی",
+      description: "مدرسہ صاحب الزمان کی پرشکوہ اسلامی طرزِ تعمیر کی حامل عمارت، محرابیں اور وسیع دالان کا مکمل ویڈیو ٹور۔"
+    },
+    {
+      id: "campus-img-1",
+      title: "دار الحدیث و مرکزی تدریسی ہال",
+      category: "تدریسی ہال",
+      type: "image",
+      imageUrl: "/images/layout/congregation.jpg",
+      date: "رجب المرجب",
+      location: "دوسری منزل، مرکزی ہال",
+      description: "طلبہ کے روزمرہ دروس، کتبِ اربعہ اور منطق و بلاغت کی محفلِ درس کا خوبصورت منظر۔"
+    },
+    {
+      id: "campus-img-2",
+      title: "حوزوی کلاس رومز و کتب خوانی",
+      category: "تعلیمی بلاک",
+      type: "image",
+      imageUrl: "/images/layout/quran-study.jpg",
+      date: "روزانہ تدریس",
+      location: "پہلی منزل، کمرہ نمبر ۱۰",
+      description: "طلبہ کے لیے پرسکون، کشادہ اور جدید سہولیات سے آراستہ درس گاہیں جہاں اساتذہ انفرادی توجہ دیتے ہیں۔"
+    },
+    {
+      id: "campus-img-3",
+      title: "مرکزی کتب خانہ و ریڈنگ ہال",
+      category: "کتب خانہ",
+      type: "image",
+      imageUrl: "/images/gallery/library-interior.jpg",
+      date: "جدید سہولیات",
+      location: "لائبریری بلاک",
+      description: "۲۵ ہزار سے زائد مستند دینی و تحقیقی کتب اور مطالعہ کے لیے پرسکون ماحول۔"
+    },
+    {
+      id: "campus-img-4",
+      title: "وسیع صحن و بیرونی راہداری",
+      category: "کیمپس ایریا",
+      type: "image",
+      imageUrl: "/images/layout/sunset-mosque.jpg",
+      date: "تفریحی ماحول",
+      location: "مرکزی کورٹ یارڈ",
+      description: "طلبہ کے لیے سرسبز و شاداب قدرتی ماحول، چہل قدمی اور فکری مباحثوں کی کشادہ جگہ۔"
+    }
+  ];
+
+  const [campusMediaData, setCampusMediaData] = useState<any[]>(defaultCampusMedia);
+  const [uploadingCampusIdx, setUploadingCampusIdx] = useState<number | null>(null);
+
   // Quick Media State
   const [quickMedia, setQuickMedia] = useState({
     title: "",
@@ -167,6 +227,9 @@ export default function AdminHomePage() {
         if (res.data.sections) setSectionsData(res.data.sections);
         if (res.data.donationInfo) setDonationData(res.data.donationInfo);
         if (res.data.testimonialsList) setTestimonialsData(res.data.testimonialsList);
+        if (res.data.campusMedia && Array.isArray(res.data.campusMedia) && res.data.campusMedia.length > 0) {
+          setCampusMediaData(res.data.campusMedia);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -188,7 +251,8 @@ export default function AdminHomePage() {
         hero: heroData,
         sections: sectionsData,
         donationInfo: donationData,
-        testimonialsList: testimonialsData
+        testimonialsList: testimonialsData,
+        campusMedia: campusMediaData
       };
       const res = await api.homepage.update(payload);
       if (res.success) {
@@ -200,6 +264,34 @@ export default function AdminHomePage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleCampusMediaUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploadingCampusIdx(index);
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        setCampusMediaData((prev) => {
+          const next = [...prev];
+          next[index] = { ...next[index], imageUrl: res.fileUrl };
+          return next;
+        });
+      }
+    } catch (err: any) {
+      alert("تصویر اپلوڈ کرنے میں خرابی: " + err.message);
+    } finally {
+      setUploadingCampusIdx(null);
+    }
+  };
+
+  const updateCampusMediaItem = (index: number, field: string, value: any) => {
+    setCampusMediaData((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
   };
 
   // Upload handler for Hero Background
@@ -502,6 +594,18 @@ export default function AdminHomePage() {
           >
             <Layers className="w-4 h-4" />
             <span>سیکشنز کے عنوانات و کنٹرول (Sections CMS)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("campusMedia")}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer ${
+              activeTab === "campusMedia"
+                ? "bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] text-[#120A05] shadow-lg"
+                : "text-stone-300 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            <span>کیمپس میڈیا: ۱ ویڈیو + ۴ تصاویر</span>
           </button>
 
           <button
@@ -1009,6 +1113,338 @@ export default function AdminHomePage() {
               >
                 <Save className="w-4 h-4" />
                 <span>{saving ? "محفوظ ہو رہا ہے..." : "تبدیلیاں محفوظ کریں"}</span>
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* TAB: CAMPUS MEDIA SECTION (1 VIDEO + 4 IMAGES) */}
+        {activeTab === "campusMedia" && (
+          <form onSubmit={handleSaveAll} className="space-y-6">
+            {/* Top Info Banner */}
+            <div className="p-6 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/30 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2A160D] border border-[#C9B38D]/40 text-[#C9B38D] text-xs font-bold mb-2">
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>سیکشن ۱: کیمپس و عمارات میڈیا (Bento Grid)</span>
+                </div>
+                <h3 className="text-xl font-bold text-white">
+                  کیمپس میڈیا: ۱ مرکزی ویڈیو ٹور اور ۴ اطراف کی تصاویر
+                </h3>
+                <p className="text-xs text-stone-300 mt-1 leading-[2.1]">
+                  اس سیکشن میں کل ۵ آئٹمز ہوتے ہیں: ایک بڑی ویڈیو (کارڈ نمبر ۱) اور چار اطراف کی تصاویر (کارڈ ۲ تا ۵)۔ آپ کسی بھی وقت ان کے لنکس، عنوان اور تصاویر تبدیل کر سکتے ہیں۔
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={saving}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-xs font-bold hover:brightness-105 shadow transition cursor-pointer shrink-0"
+              >
+                <Save className="w-4 h-4" />
+                <span>{saving ? "محفوظ ہو رہا ہے..." : "تبدیلیاں محفوظ کریں"}</span>
+              </button>
+            </div>
+
+            {/* PART 1: THE 1 FEATURED VIDEO (CARD 0) */}
+            <div className="p-6 sm:p-7 rounded-3xl bg-[#1C1009] border-2 border-[#C9B38D]/45 shadow-xl space-y-5">
+              <div className="flex items-center justify-between border-b border-[#C9B38D]/25 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-8 h-8 rounded-full bg-red-950/80 border border-red-500/50 flex items-center justify-center text-red-400">
+                    <Video className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h4 className="text-base font-bold text-white">
+                      مرکزی ویڈیو کارڈ (Featured Video - 1 Video)
+                    </h4>
+                    <span className="text-[11px] text-[#C9B38D]">
+                      یہ کارڈ ہوم پیج پر ۲ کالمز اور ۲ قطاروں میں نمایاں ویڈیو پلیئر کے ساتھ نظر آتا ہے
+                    </span>
+                  </div>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-red-950/60 border border-red-500/40 text-red-300 text-xs font-bold">
+                  ویڈیو ٹور
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    ویڈیو کا عنوان (Title) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={campusMediaData[0]?.title || ""}
+                    onChange={(e) => updateCampusMediaItem(0, "title", e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    placeholder="مثال: مدرسہ کا مرکزی بیرونی منظر و گنبد"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    ویڈیو کا دورانیہ (Duration)
+                  </label>
+                  <input
+                    type="text"
+                    value={campusMediaData[0]?.videoDuration || ""}
+                    onChange={(e) => updateCampusMediaItem(0, "videoDuration", e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none text-right"
+                    placeholder="مثال: ۰۴:۱۵"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    ویڈیو کا ربط (YouTube URL یا MP4 Link) *
+                  </label>
+                  <input
+                    type="text"
+                    dir="ltr"
+                    value={campusMediaData[0]?.videoUrl || ""}
+                    onChange={(e) => updateCampusMediaItem(0, "videoUrl", e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none text-left"
+                    placeholder="https://www.youtube.com/watch?v=... یا /videos/campus.mp4"
+                  />
+                  <span className="text-[10px] text-stone-400 mt-1 block">
+                    یوٹیوب کا کوئی بھی ویڈیو لنک ڈالیں، یہ ماڈل میں خود بخود پلیئر بن جائے گا
+                  </span>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    کیٹیگری بیج (Badge Label)
+                  </label>
+                  <input
+                    type="text"
+                    value={campusMediaData[0]?.category || ""}
+                    onChange={(e) => updateCampusMediaItem(0, "category", e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    placeholder="مثال: مرکزی کیمپس"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    مقام (Location)
+                  </label>
+                  <input
+                    type="text"
+                    value={campusMediaData[0]?.location || ""}
+                    onChange={(e) => updateCampusMediaItem(0, "location", e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    placeholder="احسن آباد کیمپس، کراچی"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    مختصر تفصیل (Description)
+                  </label>
+                  <input
+                    type="text"
+                    value={campusMediaData[0]?.description || ""}
+                    onChange={(e) => updateCampusMediaItem(0, "description", e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    placeholder="مدرسہ کی خوبصورت عمارت کا مکمل ورچوئل ٹور"
+                  />
+                </div>
+              </div>
+
+              {/* Poster / Thumbnail Image with Upload and Live Preview */}
+              <div>
+                <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                  ویڈیو کی پوسٹر / تھمب نیل تصویر (Poster Image):
+                </label>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-3.5 rounded-2xl bg-[#120A05] border border-[#C9B38D]/25">
+                  <div className="relative w-36 h-22 rounded-xl overflow-hidden bg-black/60 border border-[#C9B38D]/40 shrink-0">
+                    <img
+                      src={campusMediaData[0]?.imageUrl || "/images/layout/mosque-arches.jpg"}
+                      alt="Video Poster Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1 w-full space-y-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        dir="ltr"
+                        value={campusMediaData[0]?.imageUrl || ""}
+                        onChange={(e) => updateCampusMediaItem(0, "imageUrl", e.target.value)}
+                        className="flex-1 px-3 py-1.5 rounded-xl bg-[#1C1009] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                        placeholder="/images/layout/mosque-arches.jpg"
+                      />
+                      <label className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition flex items-center gap-1.5 cursor-pointer shrink-0">
+                        <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
+                        <span>{uploadingCampusIdx === 0 ? "اپلوڈ..." : "تصویر چنیں"}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => handleCampusMediaUpload(0, e)}
+                        />
+                      </label>
+                    </div>
+                    <span className="text-[10px] text-stone-400 block">
+                      ویڈیو پلے ہونے سے پہلے یہ تصویر نظر آئے گی۔ آپ اپنے کمپیوٹر سے کوئی بھی نئی تصویر اپلوڈ کر سکتے ہیں۔
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* PART 2: THE 4 IMAGES (CARDS 1, 2, 3, 4) */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-base font-bold text-white flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4 text-[#C9B38D]" />
+                    <span>چار اطراف کے تصویری کارڈز (4 Images)</span>
+                  </h4>
+                  <p className="text-xs text-stone-400 mt-0.5">
+                    یہ چاروں تصاویر ویڈیو کے دائیں بائیں اور نیچے ۲x۲ بینٹو گرڈ میں نظر آتی ہیں
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {[1, 2, 3, 4].map((idx) => {
+                  const item = campusMediaData[idx] || {
+                    id: `campus-img-${idx}`,
+                    title: `تصویر #${idx}`,
+                    category: "کیمپس",
+                    type: "image",
+                    imageUrl: "/images/layout/congregation.jpg",
+                    location: "احسن آباد کیمپس",
+                    description: ""
+                  };
+
+                  return (
+                    <div
+                      key={idx}
+                      className="p-5 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/25 space-y-4 shadow-lg hover:border-[#C9B38D]/60 transition"
+                    >
+                      <div className="flex items-center justify-between border-b border-[#C9B38D]/15 pb-2.5">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#2A160D] border border-[#C9B38D]/30 text-[11px] font-bold text-[#C9B38D]">
+                          تصویر کارڈ #{idx}
+                        </span>
+                        <span className="text-[11px] text-stone-400">
+                          {item.category || "تصویر"}
+                        </span>
+                      </div>
+
+                      <div className="flex gap-3 items-center">
+                        <div className="relative w-28 h-20 rounded-xl overflow-hidden bg-black/60 border border-[#C9B38D]/30 shrink-0">
+                          <img
+                            src={item.imageUrl || "/images/layout/congregation.jpg"}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              dir="ltr"
+                              value={item.imageUrl || ""}
+                              onChange={(e) => updateCampusMediaItem(idx, "imageUrl", e.target.value)}
+                              className="flex-1 px-2.5 py-1.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                              placeholder="/images/layout/..."
+                            />
+                            <label className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition flex items-center gap-1 cursor-pointer shrink-0">
+                              <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
+                              <span>{uploadingCampusIdx === idx ? "..." : "اپلوڈ"}</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => handleCampusMediaUpload(idx, e)}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-stone-300 mb-1">
+                            عنوان (Title)
+                          </label>
+                          <input
+                            type="text"
+                            value={item.title || ""}
+                            onChange={(e) => updateCampusMediaItem(idx, "title", e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                            placeholder="مثال: دار الحدیث و تدریسی ہال"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-stone-300 mb-1">
+                            زمرہ / کیٹیگری (Category)
+                          </label>
+                          <input
+                            type="text"
+                            value={item.category || ""}
+                            onChange={(e) => updateCampusMediaItem(idx, "category", e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                            placeholder="مثال: تدریسی ہال"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-stone-300 mb-1">
+                            مقام (Location)
+                          </label>
+                          <input
+                            type="text"
+                            value={item.location || ""}
+                            onChange={(e) => updateCampusMediaItem(idx, "location", e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                            placeholder="دوسری منزل، مرکزی ہال"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-bold text-stone-300 mb-1">
+                            مختصر تفصیل (Description)
+                          </label>
+                          <input
+                            type="text"
+                            value={item.description || ""}
+                            onChange={(e) => updateCampusMediaItem(idx, "description", e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                            placeholder="طلبہ کے دروس کا منظر"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bottom Save Bar */}
+            <div className="p-4 rounded-2xl bg-[#1C1009] border border-[#C9B38D]/30 flex items-center justify-between">
+              <span className="text-xs text-stone-300">
+                کیمپس میڈیا (1 ویڈیو اور 4 تصاویر) کو ہوم پیج پر لائیو کرنے کے لیے بٹن دبائیں۔
+              </span>
+              <button
+                type="submit"
+                disabled={saving}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-sm font-bold hover:brightness-105 shadow transition cursor-pointer"
+              >
+                <Save className="w-4 h-4" />
+                <span>{saving ? "محفوظ ہو رہا ہے..." : "کیمپس میڈیا کی تبدیلیاں محفوظ کریں"}</span>
               </button>
             </div>
           </form>

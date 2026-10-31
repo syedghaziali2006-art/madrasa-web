@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { Sparkles, Play, ZoomIn, Building2, Eye, Video } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
-
 import { api } from "@/services/api";
 
 interface CampusMediaSectionProps {
@@ -13,69 +12,76 @@ interface CampusMediaSectionProps {
     title?: string;
     subtitle?: string;
   };
+  items?: MediaItem[];
 }
 
-export default function CampusMediaSection({ header }: CampusMediaSectionProps) {
+export default function CampusMediaSection({ header, items }: CampusMediaSectionProps) {
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
   const defaultMediaList: MediaItem[] = [
     {
-      id: "campus-tour",
-      title: "مدرسہ صاحب الزمان کی مرکزی عمارت و بیرونی منظر (مکمل ویڈیو ٹور)",
-      category: "کیمپس و عمارت",
+      id: "campus-vid-1",
+      title: "مدرسہ کا مرکزی بیرونی منظر و گنبد",
+      category: "مرکزی کیمپس",
       type: "video",
       videoDuration: "۰۴:۱۵",
-      imageUrl: "/images/hero-banner.png",
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      imageUrl: "/images/layout/mosque-arches.jpg",
       date: "تعلیمی سال ۲۰۲۶",
-      location: "مرکزی کیمپس، احسن آباد کراچی",
-      description: "مدرسہ صاحب الزمان (عج) کے وسیع و عریض کیمپس، بیرونی محرابوں، لان اور عمارت کا مکمل ورچوئل ویڈیو ٹور۔",
+      location: "احسن آباد کیمپس، کراچی",
+      description: "مدرسہ صاحب الزمان کی پرشکوہ اسلامی طرزِ تعمیر کی حامل عمارت، محرابیں اور وسیع دالان کا مکمل ویڈیو ٹور۔",
     },
     {
-      id: "classrooms",
-      title: "حوزوی و دینی تدریسی ہالز",
-      category: "تدریسی شعبہ",
+      id: "campus-img-1",
+      title: "دار الحدیث و مرکزی تدریسی ہال",
+      category: "تدریسی ہال",
+      type: "image",
+      imageUrl: "/images/layout/congregation.jpg",
+      date: "رجب المرجب",
+      location: "دوسری منزل، مرکزی ہال",
+      description: "طلبہ کے روزمرہ دروس، کتبِ اربعہ اور منطق و بلاغت کی محفلِ درس کا خوبصورت منظر۔",
+    },
+    {
+      id: "campus-img-2",
+      title: "حوزوی کلاس رومز و کتب خوانی",
+      category: "تعلیمی بلاک",
       type: "image",
       imageUrl: "/images/layout/quran-study.jpg",
       date: "روزانہ تدریس",
-      location: "تعلیمی بلاک - منزل اول",
+      location: "پہلی منزل، کمرہ نمبر ۱۰",
       description: "طلبہ کے لیے پرسکون، کشادہ اور جدید سہولیات سے آراستہ درس گاہیں جہاں اساتذہ انفرادی توجہ دیتے ہیں۔",
     },
     {
-      id: "computer-lab",
-      title: "جدید کمپیوٹر و ریسرچ لیب",
-      category: "عصری علوم",
+      id: "campus-img-3",
+      title: "مرکزی کتب خانہ و ریڈنگ ہال",
+      category: "کتب خانہ",
       type: "image",
-      imageUrl: "/images/layout/mosque-arches.jpg",
+      imageUrl: "/images/gallery/library-interior.jpg",
       date: "جدید سہولیات",
-      location: "سائنس و انفارمیشن بلاک",
-      description: "عصری علوم کی تدریس کے لیے انٹرنیٹ سے لیس کمپیوٹر لیب جہاں طلبہ کو آئی ٹی اور سافٹ ویئر سکھائے جاتے ہیں۔",
+      location: "لائبریری بلاک",
+      description: "۲۵ ہزار سے زائد مستند دینی و تحقیقی کتب اور مطالعہ کے لیے پرسکون ماحول۔",
     },
     {
-      id: "prayer-hall",
-      title: "مسجد و مرکزی نماز ہال",
-      category: "عبادت و روحانیت",
-      type: "video",
-      videoDuration: "۰۲:۳۰",
-      imageUrl: "/images/layout/congregation.jpg",
-      date: "باجماعت نماز",
-      location: "مرکزی ہال",
-      description: "باجماعت پنجگانہ نماز، دعاؤں کی محافل اور زیارات کے انعقاد کے لیے وسیع و روح پرور مسجد۔",
-    },
-    {
-      id: "campus-courtyard",
+      id: "campus-img-4",
       title: "وسیع صحن و بیرونی راہداری",
       category: "کیمپس ایریا",
       type: "image",
       imageUrl: "/images/layout/sunset-mosque.jpg",
       date: "تفریحی ماحول",
-      location: "اوپن گراؤنڈ و کورٹ یارڈ",
-      description: "طلبہ کے چہل قدمی، فکری مباحثوں اور پرسکون تفریح کے لیے سرسبز و شاداب قدرتی ماحول۔",
+      location: "مرکزی کورٹ یارڈ",
+      description: "طلبہ کے لیے سرسبز و شاداب قدرتی ماحول، چہل قدمی اور فکری مباحثوں کی کشادہ جگہ۔",
     },
   ];
 
-  const [mediaList, setMediaList] = useState<MediaItem[]>(defaultMediaList);
+  const [mediaList, setMediaList] = useState<MediaItem[]>(
+    items && items.length > 0 ? items : defaultMediaList
+  );
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (items && items.length > 0) {
+      setMediaList(items);
+      return;
+    }
     const fetchCampusMedia = async () => {
       try {
         const res = await api.gallery.getAll({ section: "campus" });
@@ -87,18 +93,38 @@ export default function CampusMediaSection({ header }: CampusMediaSectionProps) 
       }
     };
     fetchCampusMedia();
-  }, []);
+  }, [items]);
+
+  // Ensure exactly 1 Video (Featured) and 4 Images
+  const videoItem: MediaItem = useMemo(() => {
+    return mediaList.find((m) => m.type === "video") || defaultMediaList[0];
+  }, [mediaList]);
+
+  const imageItems: MediaItem[] = useMemo(() => {
+    const rawImages = mediaList.filter((m) => m.id !== videoItem.id && m.type !== "video");
+    const defaultImages = defaultMediaList.slice(1);
+    const combined = [...rawImages];
+    for (const defImg of defaultImages) {
+      if (combined.length >= 4) break;
+      if (!combined.some((x) => x.id === defImg.id)) {
+        combined.push(defImg);
+      }
+    }
+    return combined.slice(0, 4);
+  }, [mediaList, videoItem]);
 
   return (
-    <section id="campus-media" className="py-20 sm:py-28 bg-[#120A05] islamic-dark-pattern relative overflow-hidden" dir="rtl">
-      {/* Ambient Glow */}
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#C9B38D]/5 rounded-full blur-[130px] pointer-events-none" />
+    <section id="campus-media" className="py-20 sm:py-28 bg-[#120A05] islamic-dark-pattern relative overflow-hidden w-full" dir="rtl">
+      {/* Ambient Glow Orbs for Glassmorphic Refraction */}
+      <div className="absolute top-1/4 -right-16 w-[650px] h-[400px] bg-[#C9B38D]/15 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[380px] bg-amber-600/10 rounded-full blur-[170px] pointer-events-none" />
+      <div className="absolute bottom-5 -left-16 w-[600px] h-[400px] bg-emerald-700/10 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
+      <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-        {/* Section Header */}
+        {/* Section Header with Glass Elements */}
         <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.06] border border-white/20 text-[#E5D7BE] text-xs sm:text-sm font-semibold backdrop-blur-xl mb-4 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.25)]">
             <Building2 className="w-4 h-4 text-[#C9B38D]" />
             <span className="font-urdu">{header?.badge || "بصری و ویڈیو مشاہدہ"}</span>
           </div>
@@ -114,58 +140,71 @@ export default function CampusMediaSection({ header }: CampusMediaSectionProps) 
           </p>
         </div>
 
-        {/* Asymmetric Bento Grid (Section 1) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {/* Asymmetric Bento Grid: 1 Video (Large Featured Card) + 4 Surrounding Image Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-stretch">
           
-          {/* Card 1: Large Featured Card Spanning 2 Columns and 2 Rows on Desktop */}
+          {/* ========================================================= */}
+          {/* CARD 1: THE 1 FEATURED VIDEO (Spans 2 cols & 2 rows on lg)*/}
+          {/* ========================================================= */}
           <div
-            onClick={() => setSelectedMedia(mediaList[0])}
-            className="md:col-span-2 lg:col-span-2 lg:row-span-2 group relative rounded-3xl overflow-hidden bg-[#1A0E08] border-2 border-[#C9B38D]/35 hover:border-[#C9B38D] shadow-[0_15px_40px_rgba(0,0,0,0.85)] hover:shadow-[0_20px_50px_rgba(201,179,141,0.3)] transition-all duration-500 cursor-pointer min-h-[340px] sm:min-h-[420px] flex flex-col justify-end"
+            onClick={() => setSelectedMedia(videoItem)}
+            className="md:col-span-2 lg:col-span-2 lg:row-span-2 group relative rounded-[28px] overflow-hidden bg-gradient-to-b from-white/[0.08] via-white/[0.02] to-[#120A05]/85 backdrop-blur-2xl backdrop-saturate-150 border-2 border-white/20 hover:border-[#C9B38D] shadow-[0_20px_50px_rgba(0,0,0,0.85),inset_0_1px_1px_0_rgba(255,255,255,0.22)] hover:shadow-[0_25px_60px_rgba(201,179,141,0.35),inset_0_1px_1px_0_rgba(255,255,255,0.35)] transition-all duration-500 cursor-pointer min-h-[360px] sm:min-h-[460px] flex flex-col justify-end"
           >
+            {/* Poster / Thumbnail Image */}
             <Image
-              src={mediaList[0].imageUrl}
-              alt={mediaList[0].title}
+              src={videoItem.imageUrl || "/images/layout/mosque-arches.jpg"}
+              alt={videoItem.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-[0.88]"
             />
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#120A05] via-[#120A05]/40 to-transparent" />
+            
+            {/* Frosted Glass Gradient Overlays */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#120A05] via-[#120A05]/45 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.12] via-transparent to-transparent pointer-events-none" />
 
-            {/* Top Badges */}
+            {/* Top Badges with Glassmorphism */}
             <div className="absolute top-4 right-4 left-4 flex justify-between items-center z-10">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#120A05]/85 border border-[#C9B38D]/60 text-xs font-urdu font-bold text-[#C9B38D] backdrop-blur-md">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.08] border border-white/20 text-xs font-urdu font-bold text-[#E5D7BE] backdrop-blur-xl shadow-lg">
                 <Video className="w-3.5 h-3.5 text-red-400 animate-pulse" />
-                <span>ویڈیو ٹور ({mediaList[0].videoDuration})</span>
+                <span>ویڈیو ٹور {videoItem.videoDuration ? `(${videoItem.videoDuration})` : ""}</span>
               </span>
-              <span className="px-3 py-1 rounded-full bg-black/60 text-[11px] font-urdu text-stone-300 backdrop-blur-sm border border-white/10">
-                مرکزی کیمپس
+              <span className="px-3.5 py-1 rounded-full bg-black/60 text-[11px] font-urdu text-stone-200 backdrop-blur-md border border-white/10 shadow-sm">
+                {videoItem.category || "مرکزی کیمپس"}
               </span>
             </div>
 
-            {/* Center Play Button Pulse */}
+            {/* Center Play Button Pulse with Glowing Ring */}
             <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/95 text-[#120A05] border-2 border-[#C9B38D] flex items-center justify-center shadow-[0_0_30px_rgba(201,179,141,0.9)] group-hover:scale-110 transition-transform duration-300">
-                <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-[#120A05] text-[#120A05] mr-1" />
+              <div className="relative">
+                <div className="absolute -inset-2 rounded-full bg-[#C9B38D]/30 blur-md group-hover:bg-[#C9B38D]/60 transition-all duration-300 animate-pulse" />
+                <div className="relative w-18 h-18 sm:w-22 sm:h-22 rounded-full bg-white/95 text-[#120A05] border-2 border-[#C9B38D] flex items-center justify-center shadow-[0_0_35px_rgba(201,179,141,0.95)] group-hover:scale-110 transition-transform duration-300">
+                  <Play className="w-8 h-8 sm:w-9 sm:h-9 fill-[#120A05] text-[#120A05] mr-1" />
+                </div>
               </div>
             </div>
 
             {/* Bottom Caption */}
-            <div className="relative z-10 p-5 sm:p-7 text-right">
-              <h3 className="font-urdu font-bold text-white text-lg sm:text-2xl leading-[2.1] group-hover:text-[#D9C7A7] transition-colors">
-                {mediaList[0].title}
+            <div className="relative z-10 p-6 sm:p-8 text-right bg-gradient-to-t from-[#120A05]/95 via-[#120A05]/75 to-transparent">
+              <div className="inline-flex items-center gap-1.5 text-xs text-[#C9B38D] font-urdu mb-1">
+                <span>{videoItem.location || "مرکزی کیمپس، احسن آباد کراچی"}</span>
+              </div>
+              <h3 className="font-urdu font-bold text-white text-lg sm:text-2xl leading-[2.1] group-hover:text-[#E8D7B8] transition-colors">
+                {videoItem.title}
               </h3>
-              <p className="font-urdu text-xs sm:text-sm text-stone-200 mt-2.5 leading-[2.3] line-clamp-2">
-                {mediaList[0].description}
+              <p className="font-urdu text-xs sm:text-sm text-stone-200 mt-2 leading-[2.3] line-clamp-2">
+                {videoItem.description}
               </p>
             </div>
           </div>
 
-          {/* Cards 2 to 5: Bento Surrounding Cards */}
-          {mediaList.slice(1).map((item) => (
+          {/* ========================================================= */}
+          {/* CARDS 2 TO 5: THE 4 IMAGES (2x2 grid on desktop)         */}
+          {/* ========================================================= */}
+          {imageItems.map((item, idx) => (
             <div
-              key={item.id}
+              key={item.id || idx}
               onClick={() => setSelectedMedia(item)}
-              className="group relative rounded-2xl overflow-hidden bg-[#1A0E08] border border-[#C9B38D]/25 hover:border-[#C9B38D] shadow-lg hover:shadow-[0_10px_30px_rgba(201,179,141,0.25)] transition-all duration-300 cursor-pointer min-h-[220px] sm:min-h-[240px] flex flex-col justify-end"
+              className="group relative rounded-[24px] overflow-hidden bg-gradient-to-b from-white/[0.08] via-white/[0.02] to-[#120A05]/80 backdrop-blur-2xl backdrop-saturate-150 border border-white/15 hover:border-[#C9B38D] shadow-[0_15px_40px_rgba(0,0,0,0.7),inset_0_1px_1px_0_rgba(255,255,255,0.18)] hover:shadow-[0_20px_50px_rgba(201,179,141,0.25),inset_0_1px_1px_0_rgba(255,255,255,0.3)] transition-all duration-300 cursor-pointer min-h-[220px] sm:min-h-[235px] flex flex-col justify-end"
             >
               <Image
                 src={item.imageUrl}
@@ -173,32 +212,32 @@ export default function CampusMediaSection({ header }: CampusMediaSectionProps) 
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-[0.85]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#120A05] via-[#120A05]/45 to-transparent" />
+              {/* Overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#120A05] via-[#120A05]/45 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.1] via-transparent to-transparent pointer-events-none" />
 
-              {/* Top Tag */}
-              <div className="absolute top-3 right-3 z-10">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#120A05]/85 border border-[#C9B38D]/40 text-[10px] sm:text-xs font-urdu text-[#C9B38D] backdrop-blur-sm">
-                  {item.type === "video" ? (
-                    <>
-                      <Play className="w-3 h-3 fill-[#C9B38D]" />
-                      <span>{item.videoDuration}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Eye className="w-3 h-3 text-[#C9B38D]" />
-                      <span>تصویر</span>
-                    </>
-                  )}
+              {/* Top Tag & Zoom icon */}
+              <div className="absolute top-3.5 right-3.5 left-3.5 flex items-center justify-between z-10">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.08] border border-white/20 text-[11px] font-urdu font-medium text-[#E5D7BE] backdrop-blur-md shadow-sm">
+                  <Eye className="w-3.5 h-3.5 text-[#C9B38D]" />
+                  <span>{item.category || "تصویر"}</span>
                 </span>
+                
+                <div className="w-7 h-7 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-stone-300 group-hover:text-white group-hover:bg-[#C9B38D] group-hover:text-[#120A05] transition-colors">
+                  <ZoomIn className="w-3.5 h-3.5" />
+                </div>
               </div>
 
               {/* Bottom Info */}
-              <div className="relative z-10 p-4 text-right">
-                <h4 className="font-urdu font-bold text-white text-sm sm:text-base leading-[2.05] group-hover:text-[#D9C7A7] transition-colors">
+              <div className="relative z-10 p-4 sm:p-5 text-right bg-gradient-to-t from-[#120A05]/95 via-[#120A05]/70 to-transparent">
+                <span className="text-[10px] text-[#C9B38D] font-urdu block mb-0.5">
+                  {item.location}
+                </span>
+                <h4 className="font-urdu font-bold text-white text-sm sm:text-base leading-[2.1] group-hover:text-[#E8D7B8] transition-colors line-clamp-1">
                   {item.title}
                 </h4>
-                <p className="font-urdu text-[11px] sm:text-xs text-stone-300 mt-1.5 leading-[2.1] line-clamp-1">
-                  {item.location}
+                <p className="font-urdu text-[11px] text-stone-300 mt-1 leading-[2.1] line-clamp-1">
+                  {item.description}
                 </p>
               </div>
             </div>

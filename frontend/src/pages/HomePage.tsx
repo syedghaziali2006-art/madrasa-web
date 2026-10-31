@@ -69,7 +69,10 @@ export default function HomePage() {
 
       {/* 3. سیکشن ۱: مدرسے کی تصویریں اور ویڈیوز (Campus Bento Grid) */}
       {sections?.campus?.enabled !== false && (
-        <CampusMediaSection header={sections?.campus} />
+        <CampusMediaSection
+          header={sections?.campus}
+          items={homeData?.campusMedia}
+        />
       )}
 
       {/* 5. سیکشن ۲: لائبریری کی تصویریں (Library Carousel Slider) */}

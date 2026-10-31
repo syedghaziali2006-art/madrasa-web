@@ -221,7 +221,7 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
   const testimonialsList: TestimonialItem[] =
     items && Array.isArray(items) && items.length > 0 ? items : defaultTestimonialsList;
 
-  // Responsive visible count: 1 on mobile, 2 on tablet, 3 on desktop
+  // Responsive visible count: 1 on mobile, 2 on tablet, 3 on desktop, 4 on ultra-wide
   useEffect(() => {
     const updateVisibleCount = () => {
       if (typeof window === "undefined") return;
@@ -229,8 +229,10 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
         setVisibleCount(1);
       } else if (window.innerWidth < 1024) {
         setVisibleCount(2);
-      } else {
+      } else if (window.innerWidth < 1536) {
         setVisibleCount(3);
+      } else {
+        setVisibleCount(4);
       }
     };
     updateVisibleCount();
@@ -316,18 +318,21 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
   };
 
   return (
-    <section id="testimonials" className="py-20 sm:py-28 bg-[#120A05] islamic-navy-pattern relative overflow-hidden" dir="rtl">
-      {/* Background Radial Glow Accents */}
-      <div className="absolute top-1/4 right-1/4 w-[650px] h-[350px] bg-[#C9B38D]/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-10 left-10 w-[450px] h-[450px] bg-[#C9B38D]/5 rounded-full blur-[130px] pointer-events-none" />
+    <section id="testimonials" className="py-20 sm:py-28 bg-[#120A05] islamic-navy-pattern relative overflow-hidden w-full" dir="rtl">
+      {/* Background Radial Glow Accents for rich Glassmorphism refraction */}
+      <div className="absolute top-1/4 -right-20 w-[700px] h-[450px] bg-[#C9B38D]/15 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[400px] bg-amber-600/10 rounded-full blur-[170px] pointer-events-none" />
+      <div className="absolute bottom-5 -left-20 w-[600px] h-[450px] bg-emerald-700/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[350px] bg-[#C9B38D]/10 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
+      {/* Header and Controls Area */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* ======================================================== */}
         {/* 1. SECTION HEADER: Center Majestic Urdu Typography       */}
         {/* ======================================================== */}
         <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.06] border border-white/20 text-[#E5D7BE] text-xs sm:text-sm font-semibold backdrop-blur-xl mb-4 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.25)]">
             <Sparkles className="w-4 h-4 text-[#C9B38D]" />
             <span className="font-urdu">{header?.badge || "اکابرین و سرپرستوں کے تاثرات"}</span>
           </div>
@@ -342,11 +347,11 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
             {header?.subtitle || "علمائے کرام، معزز سرپرستوں اور فارغ التحصیل طلبہ کے مدرسہ صاحب الزمان کی علمی، اخلاقی و فلاحی خدمات سے متعلق دلی خیالات"}
           </p>
 
-          {/* Rating Pill */}
-          <div className="mt-5 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#1C1009] border border-[#C9B38D]/30 text-xs font-urdu text-[#C9B38D] shadow-md">
+          {/* Rating Pill with Frosted Glass Effect */}
+          <div className="mt-5 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.05] border border-white/15 backdrop-blur-xl text-xs font-urdu text-[#E5D7BE] shadow-[0_8px_20px_rgba(0,0,0,0.35),inset_0_1px_1px_0_rgba(255,255,255,0.2)]">
             <div className="flex text-amber-400">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.6)]" />
               ))}
             </div>
             <span className="text-white font-bold font-sans">5.0 / 5.0</span>
@@ -358,9 +363,9 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
         {/* ======================================================== */}
         {/* 2. CATEGORY TABS & SLIDER CONTROLS ROW                   */}
         {/* ======================================================== */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 pb-4 border-b border-[#C9B38D]/15 font-urdu">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 pb-4 border-b border-white/10 font-urdu">
           
-          {/* Category Filter Buttons */}
+          {/* Category Filter Buttons with Glass Effect */}
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
             {categories.map((cat) => {
               const count =
@@ -374,16 +379,16 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+                  className={`px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2 cursor-pointer ${
                     isActive
-                      ? "bg-[#C9B38D] text-[#120A05] shadow-[0_0_15px_rgba(201,179,141,0.4)] scale-105"
-                      : "bg-[#1A0E08] text-stone-300 border border-[#C9B38D]/25 hover:border-[#C9B38D] hover:text-white"
+                      ? "bg-gradient-to-r from-[#C9B38D] via-[#DFCBB0] to-[#C9B38D] text-[#120A05] shadow-[0_0_20px_rgba(201,179,141,0.5)] scale-105 border border-white/30"
+                      : "bg-white/[0.05] backdrop-blur-xl text-stone-300 border border-white/10 hover:border-[#C9B38D]/60 hover:bg-white/[0.09] hover:text-white shadow-sm"
                   }`}
                 >
                   <span>{cat.label}</span>
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-sans font-bold ${
-                      isActive ? "bg-[#120A05] text-[#C9B38D]" : "bg-white/10 text-stone-400"
+                      isActive ? "bg-[#120A05] text-[#C9B38D]" : "bg-white/10 text-stone-300"
                     }`}
                   >
                     {count}
@@ -393,29 +398,29 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
             })}
           </div>
 
-          {/* Action & Slider Navigation Controls */}
+          {/* Action & Slider Navigation Controls with Glass Effect */}
           <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
             {/* Modal Trigger Button */}
             <button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-[#C9B38D]/35 transition shadow-sm cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.07] hover:bg-white/[0.13] backdrop-blur-xl text-stone-100 text-xs font-bold border border-white/20 hover:border-[#C9B38D] transition shadow-[0_4px_16px_rgba(0,0,0,0.3)] cursor-pointer"
             >
-              <MessageSquarePlus className="w-3.5 h-3.5 text-[#C9B38D]" />
+              <MessageSquarePlus className="w-4 h-4 text-[#C9B38D]" />
               <span>اپنی رائے درج کریں</span>
             </button>
 
             {/* Slider Navigation Arrows (< & >) */}
-            <div className="flex items-center gap-2 bg-[#1A0E08] p-1 rounded-full border border-[#C9B38D]/30 shadow-inner">
+            <div className="flex items-center gap-2 bg-white/[0.05] backdrop-blur-xl p-1.5 rounded-full border border-white/15 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.15)]">
               <button
                 onClick={handlePrev}
                 aria-label="پچھلا تاثر"
                 title="پچھلا تاثر"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-stone-300 hover:text-white bg-[#120A05] hover:bg-[#C9B38D] hover:text-[#120A05] border border-[#C9B38D]/20 transition active:scale-95 cursor-pointer"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-stone-300 hover:text-[#120A05] bg-white/[0.06] hover:bg-[#C9B38D] border border-white/10 hover:border-[#C9B38D] transition active:scale-95 cursor-pointer shadow-sm"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
 
-              <span className="text-xs font-mono font-bold text-[#C9B38D] px-2" dir="ltr">
+              <span className="text-xs font-mono font-bold text-[#C9B38D] px-2.5" dir="ltr">
                 {currentIndex + 1} / {Math.max(1, filteredTestimonials.length)}
               </span>
 
@@ -423,7 +428,7 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
                 onClick={handleNext}
                 aria-label="اگلا تاثر"
                 title="اگلا تاثر"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-stone-300 hover:text-white bg-[#120A05] hover:bg-[#C9B38D] hover:text-[#120A05] border border-[#C9B38D]/20 transition active:scale-95 cursor-pointer"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-stone-300 hover:text-[#120A05] bg-white/[0.06] hover:bg-[#C9B38D] border border-white/10 hover:border-[#C9B38D] transition active:scale-95 cursor-pointer shadow-sm"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -431,12 +436,14 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
           </div>
 
         </div>
+      </div>
 
-        {/* ======================================================== */}
-        {/* 3. SINGLE ROW TESTIMONIALS SLIDER CAROUSEL               */}
-        {/* ======================================================== */}
+      {/* ======================================================== */}
+      {/* 3. FULL-WIDTH SINGLE ROW TESTIMONIALS SLIDER CAROUSEL     */}
+      {/* ======================================================== */}
+      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 relative z-10">
         <div
-          className="relative overflow-hidden w-full py-4"
+          className="relative overflow-hidden w-full py-6"
           dir="ltr"
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
@@ -462,46 +469,51 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
                 return (
                   <div
                     key={item.id || idx}
-                    className="shrink-0 px-2.5 sm:px-3 flex flex-col"
+                    className="shrink-0 px-2 sm:px-3 lg:px-3.5 flex flex-col"
                     style={{ width: `${100 / visibleCount}%` }}
                     dir="rtl"
                   >
-                    <div className="h-full p-6 sm:p-7 rounded-[28px] bg-gradient-to-b from-[#1C1009] via-[#160B06] to-[#120A05] border border-[#C9B38D]/25 hover:border-[#C9B38D] shadow-[0_15px_35px_rgba(0,0,0,0.7)] hover:shadow-[0_20px_45px_rgba(201,179,141,0.22)] transition-all duration-300 flex flex-col justify-between text-right relative group hover:-translate-y-1">
+                    {/* Glassmorphic Card Container */}
+                    <div className="h-full p-6 sm:p-7 rounded-[28px] bg-gradient-to-b from-white/[0.09] via-white/[0.03] to-[#120A05]/70 backdrop-blur-2xl backdrop-saturate-150 border border-white/15 hover:border-[#C9B38D]/70 shadow-[0_20px_50px_rgba(0,0,0,0.65),inset_0_1px_1px_0_rgba(255,255,255,0.22),inset_0_0_20px_rgba(201,179,141,0.04)] hover:shadow-[0_25px_60px_rgba(201,179,141,0.25),inset_0_1px_1px_0_rgba(255,255,255,0.35)] transition-all duration-300 flex flex-col justify-between text-right relative group hover:-translate-y-1.5 overflow-hidden">
+                      
+                      {/* Top Corner Specular Sheen & Ambient Refraction Glow */}
+                      <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-white/[0.12] via-transparent to-transparent pointer-events-none" />
+                      <div className="absolute -top-20 -right-20 w-44 h-44 bg-[#C9B38D]/15 rounded-full blur-2xl pointer-events-none group-hover:bg-[#C9B38D]/25 transition-all duration-500" />
                       
                       {/* Subtle Ambient Quote Watermark */}
-                      <Quote className="absolute top-4 left-4 w-14 h-14 text-[#C9B38D]/5 pointer-events-none" />
+                      <Quote className="absolute top-4 left-4 w-14 h-14 text-[#C9B38D]/10 pointer-events-none group-hover:text-[#C9B38D]/20 transition-colors" />
 
                       {/* Top Row: Category Tag, Stars & Date */}
-                      <div>
+                      <div className="relative z-10">
                         <div className="flex items-center justify-between gap-2 mb-4">
-                          <span className="px-3 py-1 rounded-full bg-[#24130A] text-[11px] font-urdu font-bold text-[#C9B38D] border border-[#C9B38D]/30 shadow-sm">
+                          <span className="px-3 py-1 rounded-full bg-white/[0.07] backdrop-blur-md text-[11px] font-urdu font-bold text-[#EAD8B8] border border-white/20 shadow-inner">
                             {item.badge || item.categoryLabel}
                           </span>
 
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/10 shadow-sm">
                             <div className="flex text-amber-400">
                               {[...Array(item.rating || 5)].map((_, i) => (
-                                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]" />
                               ))}
                             </div>
-                            <span className="text-[10px] font-urdu text-stone-400">
+                            <span className="text-[10px] font-urdu text-stone-300">
                               {item.date}
                             </span>
                           </div>
                         </div>
 
                         {/* Quote Text in clear Urdu typography */}
-                        <p className="text-xs sm:text-sm text-stone-200 font-urdu leading-[2.35] mb-6 line-clamp-5">
+                        <p className="text-xs sm:text-sm text-stone-100 font-urdu leading-[2.4] mb-6 line-clamp-5 font-normal">
                           &ldquo;{item.quote}&rdquo;
                         </p>
                       </div>
 
                       {/* Reviewer Details Bottom Row */}
-                      <div className="pt-4 border-t border-[#C9B38D]/20">
+                      <div className="pt-4 border-t border-white/10 relative z-10">
                         <div className="flex items-center justify-between gap-3">
                           
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#C9B38D]/60 shrink-0 shadow-md bg-[#120A05]">
+                            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#C9B38D]/80 shrink-0 shadow-lg bg-[#120A05]/80 ring-2 ring-white/15">
                               <Image
                                 src={item.avatar || "/images/layout/avatar1.jpg"}
                                 alt={item.name}
@@ -511,32 +523,32 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
                             </div>
 
                             <div className="min-w-0">
-                              <h4 className="text-sm sm:text-base font-urdu font-bold text-white group-hover:text-[#D9C7A7] transition-colors truncate">
+                              <h4 className="text-sm sm:text-base font-urdu font-bold text-white group-hover:text-[#E8D7B8] transition-colors truncate">
                                 {item.name}
                               </h4>
                               <p className="text-xs text-[#C9B38D] font-urdu font-medium truncate mt-0.5">
                                 {item.role}
                               </p>
-                              <p className="text-[10px] text-stone-400 font-urdu truncate">
+                              <p className="text-[10px] text-stone-300 font-urdu truncate">
                                 {item.location} • {item.association}
                               </p>
                             </div>
                           </div>
 
-                          {/* Reaction Heart Button */}
+                          {/* Reaction Heart Button with Glass Styling */}
                           <button
                             onClick={() => handleLike(item.id)}
                             aria-label="مفید تاثر"
                             title="مفید تاثر"
-                            className={`w-9 h-9 rounded-full flex items-center justify-center transition shrink-0 border cursor-pointer ${
+                            className={`w-9 h-9 rounded-full flex items-center justify-center transition shrink-0 backdrop-blur-md border cursor-pointer ${
                               isLiked
-                                ? "bg-rose-950/70 border-rose-500 text-rose-300"
-                                : "bg-[#1A0E08] border-[#C9B38D]/20 text-stone-400 hover:text-white hover:border-[#C9B38D]"
+                                ? "bg-rose-500/20 border-rose-400/80 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.4)]"
+                                : "bg-white/[0.06] border-white/15 text-stone-300 hover:text-white hover:border-[#C9B38D] hover:bg-white/[0.12]"
                             }`}
                           >
                             <Heart
-                              className={`w-4 h-4 ${
-                                isLiked ? "fill-rose-500 text-rose-500" : ""
+                              className={`w-4 h-4 transition-transform duration-200 ${
+                                isLiked ? "fill-rose-400 text-rose-400 scale-110" : ""
                               }`}
                             />
                           </button>
@@ -553,33 +565,34 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
         </div>
 
         {/* ======================================================== */}
-        {/* 4. DOT INDICATORS FOR SLIDER                             */}
+        {/* 4. DOT INDICATORS FOR SLIDER (Frosted Glass Pill)        */}
         {/* ======================================================== */}
         {filteredTestimonials.length > visibleCount && (
-          <div className="flex items-center justify-center gap-2 mt-4">
-            {Array.from({ length: maxIndex + 1 }).map((_, dIdx) => (
-              <button
-                key={dIdx}
-                onClick={() => setCurrentIndex(dIdx)}
-                aria-label={`سلائیڈ ${dIdx + 1}`}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  currentIndex === dIdx
-                    ? "w-8 h-2.5 bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] shadow-[0_0_10px_rgba(201,179,141,0.6)]"
-                    : "w-2.5 h-2.5 bg-stone-700 hover:bg-stone-500"
-                }`}
-              />
-            ))}
+          <div className="flex items-center justify-center mt-4">
+            <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] backdrop-blur-xl border border-white/15 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.15)]">
+              {Array.from({ length: maxIndex + 1 }).map((_, dIdx) => (
+                <button
+                  key={dIdx}
+                  onClick={() => setCurrentIndex(dIdx)}
+                  aria-label={`سلائیڈ ${dIdx + 1}`}
+                  className={`transition-all duration-300 rounded-full cursor-pointer ${
+                    currentIndex === dIdx
+                      ? "w-8 h-2 bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] shadow-[0_0_12px_rgba(201,179,141,0.8)]"
+                      : "w-2 h-2 bg-white/20 hover:bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         )}
-
       </div>
 
       {/* ======================================================== */}
       {/* 5. MODAL: SUBMIT REVIEW / FEEDBACK FORM                  */}
       {/* ======================================================== */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn" dir="rtl">
-          <div className="relative w-full max-w-lg bg-gradient-to-b from-[#1E110A] to-[#120A05] border-2 border-[#C9B38D]/50 rounded-3xl p-6 sm:p-8 shadow-2xl text-right max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fadeIn" dir="rtl">
+          <div className="relative w-full max-w-lg bg-gradient-to-b from-[#1C1009]/95 to-[#120A05]/95 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.85),inset_0_1px_1px_0_rgba(255,255,255,0.2)] text-right max-h-[90vh] overflow-y-auto">
             
             <button
               onClick={() => setIsModalOpen(false)}
