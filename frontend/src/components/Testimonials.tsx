@@ -22,8 +22,8 @@ import {
   ThumbsUp
 } from "lucide-react";
 
-interface TestimonialItem {
-  id: number;
+export interface TestimonialItem {
+  id: number | string;
   category: "scholars" | "parents" | "alumni";
   categoryLabel: string;
   badge: string;
@@ -35,7 +35,7 @@ interface TestimonialItem {
   quote: string;
   rating: number;
   avatar: string;
-  initialLikes: number;
+  initialLikes?: number;
 }
 
 interface TestimonialsProps {
@@ -44,42 +44,10 @@ interface TestimonialsProps {
     title?: string;
     subtitle?: string;
   };
+  items?: TestimonialItem[];
 }
 
-export default function Testimonials({ header }: TestimonialsProps = {}) {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [spotlightIndex, setSpotlightIndex] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-  const [likedReviews, setLikedReviews] = useState<{ [key: number]: boolean }>({});
-  const [likeCounts, setLikeCounts] = useState<{ [key: number]: number }>({
-    1: 42,
-    2: 38,
-    3: 56,
-    4: 31,
-    5: 47,
-    6: 29,
-    7: 35,
-    8: 51,
-    9: 44
-  });
-
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    category: "والدین / سرپرست",
-    rating: 5,
-    message: ""
-  });
-
-  const categories = [
-    { id: "all", label: "تمام تاثرات" },
-    { id: "scholars", label: "علمائے کرام" },
-    { id: "parents", label: "محترم سرپرست و والدین" },
-    { id: "alumni", label: "فارغ التحصیل طلبہ" }
-  ];
-
-  const testimonialsList: TestimonialItem[] = [
+const defaultTestimonialsList: TestimonialItem[] = [
     {
       id: 1,
       category: "scholars",
@@ -226,12 +194,44 @@ export default function Testimonials({ header }: TestimonialsProps = {}) {
     }
   ];
 
-  // Spotlight list (top 3 reviews from each branch)
+export default function Testimonials({ header, items }: TestimonialsProps = {}) {
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [spotlightIndex, setSpotlightIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [likedReviews, setLikedReviews] = useState<{ [key: string]: boolean }>({});
+  const [likeCounts, setLikeCounts] = useState<{ [key: string]: number }>({});
+
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    category: "والدین / سرپرست",
+    rating: 5,
+    message: ""
+  });
+
+  const categories = [
+    { id: "all", label: "تمام تاثرات" },
+    { id: "scholars", label: "علمائے کرام" },
+    { id: "parents", label: "محترم سرپرست و والدین" },
+    { id: "alumni", label: "فارغ التحصیل طلبہ" }
+  ];
+
+  const testimonialsList: TestimonialItem[] =
+    items && Array.isArray(items) && items.length > 0 ? items : defaultTestimonialsList;
+
+  // Spotlight list (top 3 reviews, picking across categories if possible)
   const spotlightReviews = useMemo(() => {
-    return [testimonialsList[0], testimonialsList[3], testimonialsList[6]];
+    if (!testimonialsList || testimonialsList.length === 0) return [];
+    const scholar = testimonialsList.find((t) => t.category === "scholars");
+    const parent = testimonialsList.find((t) => t.category === "parents");
+    const alumni = testimonialsList.find((t) => t.category === "alumni");
+    const picked = [scholar, parent, alumni].filter(Boolean) as TestimonialItem[];
+    return picked.length > 0 ? picked : testimonialsList.slice(0, 3);
   }, [testimonialsList]);
 
-  const currentSpotlight = spotlightReviews[spotlightIndex];
+  const currentSpotlight =
+    spotlightReviews[spotlightIndex] || spotlightReviews[0] || testimonialsList[0] || null;
 
   const handleNextSpotlight = () => {
     setSpotlightIndex((prev) => (prev + 1) % spotlightReviews.length);
@@ -241,15 +241,16 @@ export default function Testimonials({ header }: TestimonialsProps = {}) {
     setSpotlightIndex((prev) => (prev - 1 + spotlightReviews.length) % spotlightReviews.length);
   };
 
-  const handleLike = (id: number) => {
+  const handleLike = (id: number | string) => {
+    const key = String(id);
     setLikedReviews((prev) => {
-      const isCurrentlyLiked = !!prev[id];
+      const isCurrentlyLiked = !!prev[key];
       const newStatus = !isCurrentlyLiked;
       setLikeCounts((counts) => ({
         ...counts,
-        [id]: (counts[id] || 0) + (newStatus ? 1 : -1)
+        [key]: (counts[key] || 0) + (newStatus ? 1 : -1)
       }));
-      return { ...prev, [id]: newStatus };
+      return { ...prev, [key]: newStatus };
     });
   };
 

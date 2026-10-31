@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
+  Sparkles,
   LayoutDashboard,
   GraduationCap,
   BookOpen,
@@ -31,6 +32,11 @@ export default function AdminSidebar() {
       href: "/admin",
       icon: LayoutDashboard,
       exact: true,
+    },
+    {
+      title: "صفحہ اول (ہوم پیج) مواد",
+      href: "/admin/homepage",
+      icon: Sparkles,
     },
     {
       title: "داخلہ درخواستیں",

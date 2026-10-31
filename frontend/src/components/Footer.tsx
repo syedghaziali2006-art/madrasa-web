@@ -1,13 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Mail, Send, Check, Facebook, Twitter, Instagram, Youtube, Phone, MapPin, ExternalLink, Sparkles } from "lucide-react";
-import { madarsaInfo } from "@/data/madarsaData";
+import { madarsaInfo as fallbackInfo } from "@/data/madarsaData";
+import { api } from "@/services/api";
 
-export default function Footer() {
+interface FooterProps {
+  settings?: any;
+}
+
+export default function Footer({ settings: propSettings }: FooterProps) {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [settings, setSettings] = useState<any>(propSettings || fallbackInfo);
+
+  useEffect(() => {
+    if (propSettings) {
+      setSettings(propSettings);
+      return;
+    }
+
+    let isMounted = true;
+    const fetchSettings = async () => {
+      try {
+        const res = await api.settings.get();
+        if (isMounted && res.success && res.data) {
+          setSettings(res.data);
+        }
+      } catch (err) {
+        console.warn("Using fallback settings in footer:", err);
+      }
+    };
+    fetchSettings();
+    return () => {
+      isMounted = false;
+    };
+  }, [propSettings]);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +49,11 @@ export default function Footer() {
     }
   };
 
-  const googleMapsUrl = "https://maps.google.com/?q=" + encodeURIComponent("Madarsa Sahib uz Zaman Ahsanabad 3 Gulzar-e-Hijri Scheme 33 Karachi");
+  const address = settings?.address || fallbackInfo.address;
+  const shortAddress = settings?.shortAddress || settings?.address || fallbackInfo.address;
+  const phone = settings?.phone || fallbackInfo.phone;
+  const madarsaName = settings?.madarsaName || "مدرسہ صاحب الزمان (عجل اللہ تعالیٰ فرجہ الشریف)";
+  const googleMapsUrl = "https://maps.google.com/?q=" + encodeURIComponent("Madarsa Sahib uz Zaman " + address);
 
   return (
     <footer id="contact" className="bg-[#0D0704] text-white pt-16 pb-8 border-t border-[#C9B38D]/25 relative overflow-hidden">
@@ -45,7 +78,7 @@ export default function Footer() {
                   مدرسہ صاحب الزمان <span className="text-sm font-semibold text-[#C9B38D]">(عج)</span>
                 </h3>
                 <p className="text-xs text-[#C9B38D] font-urdu tracking-wide">
-                  دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ
+                  {settings?.tagline || "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ"}
                 </p>
               </div>
             </div>
@@ -64,7 +97,7 @@ export default function Footer() {
               >
                 <MapPin className="w-5 h-5 text-red-500 shrink-0 fill-red-500 mt-0.5" />
                 <span className="leading-[2.2] font-urdu">
-                  {madarsaInfo.address}
+                  {address}
                 </span>
                 <ExternalLink className="w-4 h-4 text-[#C9B38D] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
@@ -196,11 +229,11 @@ export default function Footer() {
 
         {/* Bottom Copyright Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs font-urdu text-stone-400 gap-4">
-          <p>© ۲۰۲۶ مدرسہ صاحب الزمان (عجل اللہ تعالیٰ فرجہ الشریف) — جملہ حقوق محفوظ ہیں۔</p>
+          <p>© ۲۰۲۶ {madarsaName} — جملہ حقوق محفوظ ہیں۔</p>
           <div className="flex items-center gap-4 text-stone-400">
-            <span>پلاٹ بی 25، احسن آباد 3، گلزار ہجری، کراچی</span>
+            <span>{shortAddress}</span>
             <span>•</span>
-            <span className="text-[#C9B38D] font-mono" dir="ltr">+92 300 1234567</span>
+            <span className="text-[#C9B38D] font-mono" dir="ltr">{phone}</span>
           </div>
         </div>
 

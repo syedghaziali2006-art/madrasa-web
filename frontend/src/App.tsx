@@ -20,6 +20,8 @@ import AdminGalleryPage from './pages/admin/AdminGalleryPage';
 import AdminDonationsPage from './pages/admin/AdminDonationsPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
 
+import AdminHomePage from './pages/admin/AdminHomePage';
+
 export default function App() {
   return (
     <Routes>
@@ -36,6 +38,7 @@ export default function App() {
       <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboardPage />} />
+        <Route path="homepage" element={<AdminHomePage />} />
         <Route path="admissions" element={<AdminAdmissionsPage />} />
         <Route path="books" element={<AdminBooksPage />} />
         <Route path="staff" element={<AdminStaffPage />} />

@@ -12,8 +12,32 @@ import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 import AdmissionModal from "@/components/AdmissionModal";
 
+import { api } from "@/services/api";
+
 export default function HomePage() {
   const [isAdmissionOpen, setIsAdmissionOpen] = useState(false);
+  const [homeData, setHomeData] = useState<any>(null);
+  const [settings, setSettings] = useState<any>(null);
+
+  React.useEffect(() => {
+    const fetchHomeData = async () => {
+      try {
+        const [resHome, resSettings] = await Promise.all([
+          api.homepage.get(),
+          api.settings.get(),
+        ]);
+        if (resHome.success && resHome.data) {
+          setHomeData(resHome.data);
+        }
+        if (resSettings.success && resSettings.data) {
+          setSettings(resSettings.data);
+        }
+      } catch (err) {
+        console.error("Failed to load homepage data:", err);
+      }
+    };
+    fetchHomeData();
+  }, []);
 
   const handleScrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -21,6 +45,8 @@ export default function HomePage() {
       el.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const sections = homeData?.sections;
 
   return (
     <main className="min-h-screen bg-[#120A05] text-[#FAF7F2] selection:bg-[#C9B38D] selection:text-[#120A05]">
@@ -33,6 +59,7 @@ export default function HomePage() {
 
       {/* 2. Hero Section */}
       <Hero
+        data={homeData?.hero}
         onOpenAdmission={() => setIsAdmissionOpen(true)}
         onOpenContact={() => handleScrollToSection("contact")}
         onExploreCourses={() => {
@@ -41,31 +68,53 @@ export default function HomePage() {
       />
 
       {/* 3. سیکشن ۱: مدرسے کی تصویریں اور ویڈیوز (Campus Bento Grid) */}
-      <CampusMediaSection />
+      {sections?.campus?.enabled !== false && (
+        <CampusMediaSection header={sections?.campus} />
+      )}
 
       {/* 5. سیکشن ۲: لائبریری کی تصویریں (Library Carousel Slider) */}
-      <LibraryGallerySection />
+      {sections?.library?.enabled !== false && (
+        <LibraryGallerySection header={sections?.library} />
+      )}
 
       {/* 6. منتخب کتب و مطبوعات (Selected Books Showcase) */}
-      <BooksSection />
+      {sections?.books?.enabled !== false && (
+        <BooksSection header={sections?.books} />
+      )}
 
       {/* 7. سیکشن ۳: بچوں کے کھیل کود کی تصاویر و ویڈیوز (Sports Masonry Grid) */}
-      <StudentActivitiesSection />
+      {sections?.activities?.enabled !== false && (
+        <StudentActivitiesSection header={sections?.activities} />
+      )}
 
       {/* 8. سیکشن ۴: بچوں کی پکنک کی تصاویر و ویڈیوز (Picnic Polaroid Grid) */}
-      <StudentPicnicSection />
+      {sections?.picnic?.enabled !== false && (
+        <StudentPicnicSection header={sections?.picnic} />
+      )}
 
       {/* 9. سیکشن ۵: بچوں کے جشنوں کی تصاویر و ویڈیوز (Celebrations Spotlight Slider) */}
-      <CelebrationsGallerySection />
+      {sections?.celebrations?.enabled !== false && (
+        <CelebrationsGallerySection header={sections?.celebrations} />
+      )}
 
       {/* 10. عطیات و صدقات (Donations & Bank Accounts with 1-Click Copy) */}
-      <DonationSection />
+      {sections?.donations?.enabled !== false && (
+        <DonationSection
+          header={sections?.donations}
+          donationInfo={homeData?.donationInfo}
+        />
+      )}
 
       {/* 11. تاثرات (Scholars & Guardians Testimonials) */}
-      <Testimonials />
+      {sections?.testimonials?.enabled !== false && (
+        <Testimonials
+          header={sections?.testimonials}
+          items={homeData?.testimonialsList}
+        />
+      )}
 
       {/* 6. فوٹر و رابطہ (Footer & Contact Information) */}
-      <Footer />
+      <Footer settings={settings} />
 
       {/* 7. آن لائن داخلہ فارم (Interactive Application Modal) */}
       <AdmissionModal

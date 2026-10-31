@@ -27,12 +27,28 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
 
   const [submitted, setSubmitted] = useState(false);
   const [appId, setAppId] = useState("");
+  const [settings, setSettings] = useState<any>(null);
 
   useEffect(() => {
     if (defaultCourse) {
       setFormData((prev) => ({ ...prev, selectedCourse: defaultCourse }));
     }
   }, [defaultCourse]);
+
+  useEffect(() => {
+    let isMounted = true;
+    api.settings
+      .get()
+      .then((res) => {
+        if (isMounted && res.success && res.data) {
+          setSettings(res.data);
+        }
+      })
+      .catch((err) => console.warn("Failed to load settings in modal:", err));
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   if (!isOpen) return null;
 
@@ -83,14 +99,36 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1A0E08] text-xs font-urdu font-semibold text-[#C9B38D] border border-[#C9B38D]/40 mb-2">
                   <Sparkles className="w-3.5 h-3.5 text-[#C9B38D]" />
-                  <span>تعلیمی سال ۲۰۲۶ - ۲۰۲۷ (داخلے جاری ہیں)</span>
+                  <span>{settings?.marqueeNotice || "تعلیمی سال ۲۰۲۶ - ۲۰۲۷ (داخلے جاری ہیں)"}</span>
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-urdu font-bold text-white">
                   آن لائن درخواستِ داخلہ فارم
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-300 font-urdu mt-1.5 leading-[2.2]">
-                  مدرسہ صاحب الزمان (عجل اللہ تعالیٰ فرجہ الشریف) میں داخلہ کے لیے معلومات درج فرمائیں
+                  {settings?.madarsaName || "مدرسہ صاحب الزمان (عجل اللہ تعالیٰ فرجہ الشریف)"} میں داخلہ کے لیے معلومات درج فرمائیں
                 </p>
+
+                {/* Dynamic Requirements Info Bar */}
+                {settings && (
+                  <div className="mt-4 p-3 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/20 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-urdu text-stone-300">
+                    <div>
+                      <span className="text-[#C9B38D] block font-bold">عمر کی حد:</span>
+                      <span>{settings.ageLimit || "11 تا 16 سال"}</span>
+                    </div>
+                    <div>
+                      <span className="text-[#C9B38D] block font-bold">کم از کم قابلیت:</span>
+                      <span>{settings.minQualification || "چھٹی پاس"}</span>
+                    </div>
+                    <div>
+                      <span className="text-[#C9B38D] block font-bold">ٹیسٹ مضامین:</span>
+                      <span className="truncate block" title={settings.testSubjects}>{settings.testSubjects || "اردو، انگلش، قرآن"}</span>
+                    </div>
+                    <div>
+                      <span className="text-[#C9B38D] block font-bold">ماہانہ فیس:</span>
+                      <span>{settings.monthlyFee || "1500 روپے"}</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">

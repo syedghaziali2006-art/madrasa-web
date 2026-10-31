@@ -1,0 +1,1581 @@
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Sparkles,
+  Save,
+  Upload,
+  Image as ImageIcon,
+  Video,
+  Film,
+  Eye,
+  Plus,
+  Trash2,
+  CheckCircle2,
+  AlertCircle,
+  ExternalLink,
+  Layers,
+  MapPin,
+  RefreshCw,
+  Sliders,
+  Check,
+  HeartHandshake,
+  MessageSquare,
+  Star,
+  X,
+  Edit3,
+  Quote,
+  User,
+  SlidersHorizontal
+} from "lucide-react";
+import AdminHeader from "@/components/admin/AdminHeader";
+import { api } from "@/services/api";
+
+interface BadgeItem {
+  id: string;
+  text: string;
+}
+
+export default function AdminHomePage() {
+  const [activeTab, setActiveTab] = useState<"hero" | "sections" | "donations" | "testimonials" | "media">("hero");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [uploadingBg, setUploadingBg] = useState(false);
+  const [uploadingPoster, setUploadingPoster] = useState(false);
+  const [uploadingQuickMedia, setUploadingQuickMedia] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingDonationBox, setUploadingDonationBox] = useState(false);
+
+  const bgFileInputRef = useRef<HTMLInputElement>(null);
+  const posterFileInputRef = useRef<HTMLInputElement>(null);
+  const quickMediaFileInputRef = useRef<HTMLInputElement>(null);
+  const donationBoxInputRef = useRef<HTMLInputElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  // Form State
+  const [heroData, setHeroData] = useState({
+    bismillah: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+    title: "مدرسہ صاحب الزمان",
+    titleSuffix: "(عج)",
+    tagline:
+      "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی",
+    bgType: "image" as "image" | "video",
+    bgMediaUrl: "/images/hero-banner.png",
+    badges: [
+      { id: "1", text: "۵ سالہ حوزوی نصاب" },
+      { id: "2", text: "مفت ہاسٹل و معیاری طعام" },
+      { id: "3", text: "کمپیوٹر لیب و لائبریری" }
+    ] as BadgeItem[],
+    addressText: "پلاٹ بی 25، احسن آباد، گلزارِ ہجری، اسکیم 33، کراچی، پاکستان",
+    googleMapsUrl:
+      "https://maps.google.com/?q=Madarsa+Sahib+uz+Zaman+Ahsanabad+3+Gulzar-e-Hijri+Scheme+33+Karachi",
+    admissionBtnText: "داخلہ لیں",
+    contactBtnText: "ہم سے رابطہ کریں",
+    posterImage: "/images/admission-poster.jpeg",
+    posterTitle: "داخلہ پراسپیکٹس و شرائط — مدرسہ صاحب الزمان (عج)"
+  });
+
+  const [sectionsData, setSectionsData] = useState<Record<string, any>>({
+    campus: {
+      enabled: true,
+      badge: "سیکشن ۱: تصویری و ویڈیو جھلکیاں",
+      title: "مدرسہ صاحب الزمان کیمپس اور عمارات",
+      subtitle: "کیمپس کی شاندار تعمیر، پرسکون ماحول، وسیع درسگاہیں اور روحانی فضا کی چند دلکش جھلکیاں"
+    },
+    library: {
+      enabled: true,
+      badge: "سیکشن ۲: علمی و تحقیقی خزانہ",
+      title: "مرکزی کتب خانہ و ڈیجیٹل لائبریری",
+      subtitle: "۲۵ ہزار سے زائد مستند تفاسیر، احادیث، فقہی متون اور نایاب مخطوطات پر مشتمل پُرامن کتب خانہ"
+    },
+    books: {
+      enabled: true,
+      badge: "سیکشن ۳: منتخب مطبوعات",
+      title: "مدرسہ کے اساتذہ و اکابرین کی کتب",
+      subtitle: "علومِ آلِ محمدؑ اور عصری اسلامی افکار پر مشتمل مستند کتب و تصانیف کا مطالعہ فرمائیں"
+    },
+    activities: {
+      enabled: true,
+      badge: "سیکشن ۴: جسمانی صحت و تفریح",
+      title: "طلبہ کے کھیل کود اور اسپورٹس سرگرمیاں",
+      subtitle: "صحت مند دماغ کے لیے صحت مند جسم — کرکٹ، فٹ بال، بیڈمنٹن اور روایتی کھیلوں کے مقابلے"
+    },
+    picnic: {
+      enabled: true,
+      badge: "سیکشن ۵: مطالعاتی و تفریحی ٹورز",
+      title: "طلبہ کے سالانہ پکنک اور تفریحی مقامات کے دورے",
+      subtitle: "سمندر کنارے پرلطف لمحات، تاریخی و تفریحی مقامات کے مطالعاتی دورے اور باہمی ہم آہنگی"
+    },
+    celebrations: {
+      enabled: true,
+      badge: "سیکشن ۶: جشن و ولادت کے ایام",
+      title: "میلادِ معصومینؑ اور سالانہ دستار بندی تقاریب",
+      subtitle: "اہلِ بیتؑ کی خوشیوں میں جشن، منقبت خوانی، اعزازات کی تقسیم اور طلبہ کے خطابات"
+    },
+    donations: {
+      enabled: true,
+      badge: "تعاون و نصرتِ دین",
+      title: "دسترخوانِ امام زمانہؑ اور فلاحی معاونت",
+      subtitle: "سہمِ امامؑ، سہمِ سادات، افطار و طعام اور تعمیراتی منصوبوں میں اپنا حصہ ڈالیں"
+    },
+    testimonials: {
+      enabled: true,
+      badge: "اکابرین و سرپرستوں کے تاثرات",
+      title: "علمائے کرام، والدین اور فارغ التحصیل طلبہ کی آراء",
+      subtitle: "مدرسہ کی علمی و اخلاقی خدمات پر جید علماء اور سرپرستوں کے تاثرات"
+    }
+  });
+
+  // Donations Data State
+  const [donationData, setDonationData] = useState({
+    hadithArabic: "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ",
+    hadithUrdu: "صدقہ کبھی مال میں کمی نہیں کرتا، بلکہ برکت، حفاظت اور درجات کی بلندی کا سبب بنتا ہے۔",
+    hadithSource: "فرمانِ معصوم علیہ السلام",
+    boxImage: "/images/layout/donation-box.jpg",
+    studentSponsorship: "ماہانہ طالب علم کفالت: 1500 روپے",
+    foodSponsorship: "طعام کفالت: 10,000 روپے",
+    presetAmounts: ["1500", "2500", "5000", "10000", "25000"]
+  });
+
+  // Testimonials Data State
+  const [testimonialsData, setTestimonialsData] = useState<any[]>([]);
+  const [testimonialsFilter, setTestimonialsFilter] = useState("all");
+  const [editingTestimonial, setEditingTestimonial] = useState<any | null>(null);
+  const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
+
+  // Quick Media State
+  const [quickMedia, setQuickMedia] = useState({
+    title: "",
+    section: "campus",
+    category: "کیمپس و عمارات",
+    type: "image" as "image" | "video",
+    imageUrl: "",
+    videoDuration: "",
+    videoUrl: "",
+    date: "تعلیمی سال ۲۰۲۶",
+    location: "کراچی کیمپس",
+    description: "",
+    featured: true
+  });
+  const [quickMediaSuccess, setQuickMediaSuccess] = useState(false);
+
+  const fetchHomeContent = async () => {
+    try {
+      setLoading(true);
+      const res = await api.homepage.get();
+      if (res.success && res.data) {
+        if (res.data.hero) setHeroData(res.data.hero);
+        if (res.data.sections) setSectionsData(res.data.sections);
+        if (res.data.donationInfo) setDonationData(res.data.donationInfo);
+        if (res.data.testimonialsList) setTestimonialsData(res.data.testimonialsList);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHomeContent();
+  }, []);
+
+  const handleSaveAll = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    try {
+      setSaving(true);
+      setSaveSuccess(false);
+      const payload = {
+        hero: heroData,
+        sections: sectionsData,
+        donationInfo: donationData,
+        testimonialsList: testimonialsData
+      };
+      const res = await api.homepage.update(payload);
+      if (res.success) {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3500);
+      }
+    } catch (err: any) {
+      alert("محفوظ کرنے میں خرابی: " + err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Upload handler for Hero Background
+  const handleBgFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingBg(true);
+      const isVid = file.type.startsWith("video/");
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        setHeroData((prev) => ({
+          ...prev,
+          bgMediaUrl: res.fileUrl,
+          bgType: isVid ? "video" : "image"
+        }));
+      }
+    } catch (err: any) {
+      alert("فائل اپلوڈ کرنے میں خرابی: " + err.message);
+    } finally {
+      setUploadingBg(false);
+    }
+  };
+
+  // Upload handler for Admission Poster
+  const handlePosterFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingPoster(true);
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        setHeroData((prev) => ({
+          ...prev,
+          posterImage: res.fileUrl
+        }));
+      }
+    } catch (err: any) {
+      alert("پوسٹر اپلوڈ کرنے میں خرابی: " + err.message);
+    } finally {
+      setUploadingPoster(false);
+    }
+  };
+
+  // Upload handler for Quick Media Image/Video
+  const handleQuickMediaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingQuickMedia(true);
+      const isVid = file.type.startsWith("video/");
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        if (isVid) {
+          setQuickMedia((prev) => ({
+            ...prev,
+            type: "video",
+            videoUrl: res.fileUrl,
+            imageUrl: prev.imageUrl || "/images/layout/mosque-arches.jpg"
+          }));
+        } else {
+          setQuickMedia((prev) => ({
+            ...prev,
+            imageUrl: res.fileUrl
+          }));
+        }
+      }
+    } catch (err: any) {
+      alert("میڈیا اپلوڈ میں خرابی: " + err.message);
+    } finally {
+      setUploadingQuickMedia(false);
+    }
+  };
+
+  const handleAddQuickMedia = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickMedia.title || !quickMedia.imageUrl) {
+      alert("براہ کرم عنوان اور تصویر فراہم فرمائیں۔");
+      return;
+    }
+
+    try {
+      setUploadingQuickMedia(true);
+      await api.gallery.create(quickMedia);
+      setQuickMediaSuccess(true);
+      setQuickMedia({
+        title: "",
+        section: quickMedia.section,
+        category: "عام",
+        type: "image",
+        imageUrl: "",
+        videoDuration: "",
+        videoUrl: "",
+        date: "تعلیمی سال ۲۰۲۶",
+        location: "کراچی کیمپس",
+        description: "",
+        featured: true
+      });
+      setTimeout(() => setQuickMediaSuccess(false), 3000);
+    } catch (err: any) {
+      alert("میڈیا شامل کرنے میں خرابی: " + err.message);
+    } finally {
+      setUploadingQuickMedia(false);
+    }
+  };
+
+  // Badge Management
+  const handleAddBadge = () => {
+    const newBadge: BadgeItem = {
+      id: Date.now().toString(),
+      text: "نئی خصوصیت یا سہولت"
+    };
+    setHeroData((prev) => ({
+      ...prev,
+      badges: [...(prev.badges || []), newBadge]
+    }));
+  };
+
+  const handleUpdateBadge = (id: string, text: string) => {
+    setHeroData((prev) => ({
+      ...prev,
+      badges: prev.badges.map((b) => (b.id === id ? { ...b, text } : b))
+    }));
+  };
+
+  const handleRemoveBadge = (id: string) => {
+    setHeroData((prev) => ({
+      ...prev,
+      badges: prev.badges.filter((b) => b.id !== id)
+    }));
+  };
+
+  // Upload handler for Donation Box image
+  const handleDonationBoxUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploadingDonationBox(true);
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        setDonationData((prev) => ({ ...prev, boxImage: res.fileUrl }));
+      }
+    } catch (err: any) {
+      alert("تصویر اپلوڈ کرنے میں خرابی: " + err.message);
+    } finally {
+      setUploadingDonationBox(false);
+    }
+  };
+
+  // Upload handler for Testimonial Avatar
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploadingAvatar(true);
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl && editingTestimonial) {
+        setEditingTestimonial((prev: any) => ({ ...prev, avatar: res.fileUrl }));
+      }
+    } catch (err: any) {
+      alert("اواتار اپلوڈ کرنے میں خرابی: " + err.message);
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  // Testimonial Handlers
+  const handleOpenNewTestimonialModal = () => {
+    setEditingTestimonial({
+      id: Date.now(),
+      category: "scholars",
+      categoryLabel: "علمائے کرام",
+      badge: "جید عالمِ دین",
+      name: "",
+      role: "",
+      association: "",
+      location: "کراچی",
+      date: "۱۴۴۶ھ",
+      quote: "",
+      rating: 5,
+      avatar: "/images/faculty/principal-scholar.jpg",
+      initialLikes: 25
+    });
+    setIsTestimonialModalOpen(true);
+  };
+
+  const handleOpenEditTestimonialModal = (t: any) => {
+    setEditingTestimonial({ ...t });
+    setIsTestimonialModalOpen(true);
+  };
+
+  const handleSaveTestimonial = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingTestimonial || !editingTestimonial.name || !editingTestimonial.quote) {
+      alert("برائے مہربانی نام اور تاثر (Quote) درج فرمائیں۔");
+      return;
+    }
+    setTestimonialsData((prev) => {
+      const exists = prev.some((x) => String(x.id) === String(editingTestimonial.id));
+      if (exists) {
+        return prev.map((x) => (String(x.id) === String(editingTestimonial.id) ? editingTestimonial : x));
+      } else {
+        return [editingTestimonial, ...prev];
+      }
+    });
+    setIsTestimonialModalOpen(false);
+    setEditingTestimonial(null);
+  };
+
+  const handleDeleteTestimonial = (id: any) => {
+    if (confirm("کیا آپ واقعی اس تاثر / ریویو کو حذف کرنا چاہتے ہیں؟")) {
+      setTestimonialsData((prev) => prev.filter((x) => String(x.id) !== String(id)));
+    }
+  };
+
+  const sectionMeta: Record<string, { name: string; icon: string }> = {
+    campus: { name: "کیمپس و عمارت کی تصاویر / ویڈیوز", icon: "Building2" },
+    library: { name: "کتب خانہ و لائبریری شوکیس", icon: "BookOpen" },
+    books: { name: "منتخب مطبوعات و کتب سیکشن", icon: "BookmarkCheck" },
+    activities: { name: "طلبہ کھیل کود و اسپورٹس", icon: "Trophy" },
+    picnic: { name: "طلبہ پکنک و ٹورز پولرائڈ", icon: "Compass" },
+    celebrations: { name: "جشن، تقاریب و تقسیمِ اسناد", icon: "Award" },
+    donations: { name: "عطیات و دسترخوانِ امام زمانہؑ", icon: "HeartHandshake" },
+    testimonials: { name: "اکابرین و سرپرستوں کے تاثرات", icon: "MessageSquare" }
+  };
+
+  return (
+    <div className="flex-1 pb-16 font-urdu" dir="rtl">
+      {/* Header with Save and Live Preview buttons */}
+      <AdminHeader
+        title="صفحہ اول (ہوم پیج) کنٹرول"
+        subtitle="ہیرو بینر، ویڈیوز، تصاویر، داخلہ پوسٹر، اور تمام سیکشنز کا مکمل متحرک انتظام"
+      >
+        <div className="flex items-center gap-2">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition"
+          >
+            <Eye className="w-3.5 h-3.5" />
+            <span>ہوم پیج دیکھیں</span>
+          </a>
+
+          <button
+            onClick={() => handleSaveAll()}
+            disabled={saving}
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-xs font-bold hover:brightness-105 shadow transition disabled:opacity-50 cursor-pointer"
+          >
+            {saving ? (
+              <>
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                <span>محفوظ ہو رہا ہے...</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-3.5 h-3.5" />
+                <span>تبدیلیاں محفوظ کریں</span>
+              </>
+            )}
+          </button>
+        </div>
+      </AdminHeader>
+
+      {/* Main Container */}
+      <div className="p-4 sm:p-6 space-y-6 max-w-[1600px] mx-auto">
+        {saveSuccess && (
+          <div className="p-4 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 flex items-center gap-3 animate-fadeIn">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <span className="text-sm font-bold">
+              صفحہ اول کی تمام ترتیبات اور مواد کامیابی سے محفوظ ہو گئے ہیں! ہوم پیج ریفریش کر کے چیک کریں۔
+            </span>
+          </div>
+        )}
+
+        {/* Navigation Tabs */}
+        <div className="flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-[#1C1009] border border-[#C9B38D]/20">
+          <button
+            onClick={() => setActiveTab("hero")}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer ${
+              activeTab === "hero"
+                ? "bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] text-[#120A05] shadow-lg"
+                : "text-stone-300 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>ہیرو سیکشن و بینر (Main Hero)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("sections")}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer ${
+              activeTab === "sections"
+                ? "bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] text-[#120A05] shadow-lg"
+                : "text-stone-300 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>سیکشنز کے عنوانات و کنٹرول (Sections CMS)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("donations")}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer ${
+              activeTab === "donations"
+                ? "bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] text-[#120A05] shadow-lg"
+                : "text-stone-300 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <HeartHandshake className="w-4 h-4" />
+            <span>عطیات و دسترخوان (Donations CMS)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("testimonials")}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer ${
+              activeTab === "testimonials"
+                ? "bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] text-[#120A05] shadow-lg"
+                : "text-stone-300 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>اکابرین و سرپرستوں کے تاثرات (Testimonials CMS)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("media")}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer ${
+              activeTab === "media"
+                ? "bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] text-[#120A05] shadow-lg"
+                : "text-stone-300 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            <Film className="w-4 h-4" />
+            <span>فوری تصاویر و ویڈیوز اپلوڈ (Quick Media Uploader)</span>
+          </button>
+        </div>
+
+        {/* TAB 1: HERO SECTION CONFIGURATION */}
+        {activeTab === "hero" && (
+          <form onSubmit={handleSaveAll} className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              
+              {/* Left Column: Text & Content Inputs (7 cols) */}
+              <div className="lg:col-span-7 space-y-6">
+                <div className="p-6 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/25 space-y-5 shadow-xl">
+                  <h3 className="text-base font-bold text-[#C9B38D] flex items-center gap-2 border-b border-[#C9B38D]/20 pb-3">
+                    <Sparkles className="w-4 h-4" />
+                    <span>عنوان، تعارف اور مشن (Titles & Branding)</span>
+                  </h3>
+
+                  {/* Bismillah */}
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                      بسم اللہ یا قرآنی کلمہ
+                    </label>
+                    <input
+                      type="text"
+                      value={heroData.bismillah}
+                      onChange={(e) => setHeroData({ ...heroData, bismillah: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white font-arabic text-lg focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Main Title & Suffix */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                        مدرسہ کا مرکزی نام (Title)
+                      </label>
+                      <input
+                        type="text"
+                        value={heroData.title}
+                        onChange={(e) => setHeroData({ ...heroData, title: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-base focus:border-[#C9B38D] focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                        لاحقہ / دعائیہ کلمہ
+                      </label>
+                      <input
+                        type="text"
+                        value={heroData.titleSuffix}
+                        onChange={(e) => setHeroData({ ...heroData, titleSuffix: e.target.value })}
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-[#C9B38D] font-bold text-base focus:border-[#C9B38D] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Tagline / Mission */}
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                      تعارفی سلوگن / مشن اسٹیٹمنٹ (Tagline)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={heroData.tagline}
+                      onChange={(e) => setHeroData({ ...heroData, tagline: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-sm leading-[2.2] focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Badges / Highlights */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs font-bold text-stone-300">
+                        نمایاں سہولیات و بیجز (Institutional Badges)
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleAddBadge}
+                        className="text-xs font-bold text-[#C9B38D] hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>نیا بیج شامل کریں</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {heroData.badges?.map((badge, idx) => (
+                        <div key={badge.id} className="flex items-center gap-2">
+                          <span className="text-xs text-[#C9B38D] font-mono w-5 text-center">
+                            {idx + 1}.
+                          </span>
+                          <input
+                            type="text"
+                            value={badge.text}
+                            onChange={(e) => handleUpdateBadge(badge.id, e.target.value)}
+                            className="flex-1 px-3 py-1.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveBadge(badge.id)}
+                            className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/40 rounded-lg transition"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Address and Map */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div>
+                      <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                        پتہ (Location Address)
+                      </label>
+                      <input
+                        type="text"
+                        value={heroData.addressText}
+                        onChange={(e) => setHeroData({ ...heroData, addressText: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                        گوگل میپس لنک (Google Maps URL)
+                      </label>
+                      <input
+                        type="text"
+                        value={heroData.googleMapsUrl}
+                        onChange={(e) => setHeroData({ ...heroData, googleMapsUrl: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                        dir="ltr"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Buttons Labels */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                        پرائمری بٹن (داخلہ لیں)
+                      </label>
+                      <input
+                        type="text"
+                        value={heroData.admissionBtnText}
+                        onChange={(e) =>
+                          setHeroData({ ...heroData, admissionBtnText: e.target.value })
+                        }
+                        className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                        سیکنڈری بٹن (رابطہ کریں)
+                      </label>
+                      <input
+                        type="text"
+                        value={heroData.contactBtnText}
+                        onChange={(e) => setHeroData({ ...heroData, contactBtnText: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Right Column: Background Media & Admission Poster (5 cols) */}
+              <div className="lg:col-span-5 space-y-6">
+
+                {/* Background Media Card */}
+                <div className="p-6 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/25 space-y-4 shadow-xl">
+                  <div className="flex items-center justify-between border-b border-[#C9B38D]/20 pb-3">
+                    <h3 className="text-base font-bold text-[#C9B38D] flex items-center gap-2">
+                      <ImageIcon className="w-4 h-4" />
+                      <span>ہیرو پس منظر میڈیا (Background Video / Image)</span>
+                    </h3>
+
+                    {/* Media Type Selector */}
+                    <div className="flex items-center gap-1 bg-[#120A05] p-1 rounded-xl border border-[#C9B38D]/30 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => setHeroData({ ...heroData, bgType: "image" })}
+                        className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
+                          heroData.bgType === "image"
+                            ? "bg-[#C9B38D] text-[#120A05]"
+                            : "text-stone-300 hover:text-white"
+                        }`}
+                      >
+                        تصویر
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setHeroData({ ...heroData, bgType: "video" })}
+                        className={`px-2.5 py-1 rounded-lg font-bold transition cursor-pointer ${
+                          heroData.bgType === "video"
+                            ? "bg-[#C9B38D] text-[#120A05]"
+                            : "text-stone-300 hover:text-white"
+                        }`}
+                      >
+                        ویڈیو
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Live Media Preview Box */}
+                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-black/60 border border-[#C9B38D]/30">
+                    {heroData.bgType === "video" || heroData.bgMediaUrl?.endsWith(".mp4") ? (
+                      <video
+                        src={heroData.bgMediaUrl}
+                        controls
+                        muted
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={heroData.bgMediaUrl}
+                        alt="Hero Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+
+                  {/* Upload button or URL input */}
+                  <div className="space-y-3 pt-1">
+                    <input
+                      type="file"
+                      ref={bgFileInputRef}
+                      onChange={handleBgFileUpload}
+                      accept="image/*,video/mp4,video/webm"
+                      className="hidden"
+                    />
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => bgFileInputRef.current?.click()}
+                        disabled={uploadingBg}
+                        className="flex-1 h-10 px-4 rounded-xl bg-gradient-to-l from-[#C9B38D]/20 to-[#EFE5D2]/30 hover:from-[#C9B38D]/30 hover:to-[#EFE5D2]/40 text-[#FAF7F2] border border-[#C9B38D]/40 text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
+                        <span>
+                          {uploadingBg
+                            ? "فائل اپلوڈ ہو رہی ہے..."
+                            : "کمپیوٹر سے تصویر یا ویڈیو اپلوڈ کریں"}
+                        </span>
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-stone-400 mb-1">
+                        یا براہِ راست میڈیا URL درج کریں:
+                      </label>
+                      <input
+                        type="text"
+                        value={heroData.bgMediaUrl}
+                        onChange={(e) => setHeroData({ ...heroData, bgMediaUrl: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs font-mono focus:border-[#C9B38D] focus:outline-none"
+                        dir="ltr"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Admission Poster Flyer Card */}
+                <div className="p-6 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/25 space-y-4 shadow-xl">
+                  <h3 className="text-base font-bold text-[#C9B38D] flex items-center gap-2 border-b border-[#C9B38D]/20 pb-3">
+                    <ImageIcon className="w-4 h-4" />
+                    <span>داخلہ پوسٹر و فلائر (Admission Poster Flyer)</span>
+                  </h3>
+
+                  <div className="flex gap-4 items-center">
+                    <div className="relative w-28 aspect-[3/4] rounded-xl overflow-hidden bg-black/60 border border-[#C9B38D]/40 shrink-0">
+                      <img
+                        src={heroData.posterImage}
+                        alt="Poster Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="flex-1 space-y-3">
+                      <input
+                        type="file"
+                        ref={posterFileInputRef}
+                        onChange={handlePosterFileUpload}
+                        accept="image/*"
+                        className="hidden"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => posterFileInputRef.current?.click()}
+                        disabled={uploadingPoster}
+                        className="w-full h-9 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-[#C9B38D]/30 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
+                        <span>
+                          {uploadingPoster ? "پوسٹر اپلوڈ ہو رہا ہے..." : "نیا داخلہ پوسٹر اپلوڈ کریں"}
+                        </span>
+                      </button>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-400 mb-1">
+                          پوسٹر کی تصویر کا URL:
+                        </label>
+                        <input
+                          type="text"
+                          value={heroData.posterImage}
+                          onChange={(e) => setHeroData({ ...heroData, posterImage: e.target.value })}
+                          className="w-full px-3 py-1.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs font-mono focus:border-[#C9B38D] focus:outline-none"
+                          dir="ltr"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Bottom Save Bar */}
+            <div className="p-4 rounded-2xl bg-[#1C1009] border border-[#C9B38D]/30 flex items-center justify-between">
+              <span className="text-xs text-stone-300">
+                تبدیلیوں کو مکمل محفوظ کرنے کے لیے "تبدیلیاں محفوظ کریں" دبائیں۔
+              </span>
+              <button
+                type="submit"
+                disabled={saving}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-sm font-bold hover:brightness-105 shadow transition cursor-pointer"
+              >
+                <Save className="w-4 h-4" />
+                <span>{saving ? "محفوظ ہو رہا ہے..." : "تبدیلیاں محفوظ کریں"}</span>
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* TAB 2: SECTIONS TITLES & ENABLE / DISABLE */}
+        {activeTab === "sections" && (
+          <form onSubmit={handleSaveAll} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Object.keys(sectionsData).map((secKey) => {
+                const sec = sectionsData[secKey] || {};
+                const meta = sectionMeta[secKey] || { name: secKey, icon: "Layers" };
+
+                return (
+                  <div
+                    key={secKey}
+                    className={`p-5 rounded-3xl bg-[#1C1009] border transition-all duration-300 ${
+                      sec.enabled !== false
+                        ? "border-[#C9B38D]/40 shadow-lg"
+                        : "border-stone-800 opacity-60"
+                    }`}
+                  >
+                    {/* Header with Enable Toggle */}
+                    <div className="flex items-center justify-between border-b border-[#C9B38D]/20 pb-3 mb-4">
+                      <div>
+                        <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#C9B38D]" />
+                          <span>{meta.name}</span>
+                        </h4>
+                        <span className="text-[11px] text-stone-400 font-mono">
+                          ID: {secKey}
+                        </span>
+                      </div>
+
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <span className="text-xs font-bold text-stone-300">
+                          {sec.enabled !== false ? "صفحہ پر فعال" : "غیر فعال"}
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={sec.enabled !== false}
+                          onChange={(e) =>
+                            setSectionsData({
+                              ...sectionsData,
+                              [secKey]: { ...sec, enabled: e.target.checked }
+                            })
+                          }
+                          className="w-4 h-4 accent-[#C9B38D] rounded cursor-pointer"
+                        />
+                      </label>
+                    </div>
+
+                    {/* Inputs */}
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-400 mb-1">
+                          اوپری بیج ٹیکسٹ (Badge Label)
+                        </label>
+                        <input
+                          type="text"
+                          value={sec.badge || ""}
+                          onChange={(e) =>
+                            setSectionsData({
+                              ...sectionsData,
+                              [secKey]: { ...sec, badge: e.target.value }
+                            })
+                          }
+                          className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-400 mb-1">
+                          سیکشن کا مرکزی عنوان (Main Title)
+                        </label>
+                        <input
+                          type="text"
+                          value={sec.title || ""}
+                          onChange={(e) =>
+                            setSectionsData({
+                              ...sectionsData,
+                              [secKey]: { ...sec, title: e.target.value }
+                            })
+                          }
+                          className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs font-bold focus:border-[#C9B38D] focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-stone-400 mb-1">
+                          ذیلی تفصیل / تعارف (Subtitle)
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={sec.subtitle || ""}
+                          onChange={(e) =>
+                            setSectionsData({
+                              ...sectionsData,
+                              [secKey]: { ...sec, subtitle: e.target.value }
+                            })
+                          }
+                          className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs leading-[2.1] focus:border-[#C9B38D] focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Quick Media Link */}
+                    {["campus", "library", "activities", "picnic", "celebrations"].includes(
+                      secKey
+                    ) && (
+                      <div className="mt-4 pt-3 border-t border-stone-800 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setQuickMedia((prev) => ({ ...prev, section: secKey }));
+                            setActiveTab("media");
+                          }}
+                          className="text-xs text-[#C9B38D] hover:underline flex items-center gap-1 cursor-pointer font-bold"
+                        >
+                          <span>اس سیکشن کے لیے نئی تصویر / ویڈیو اپلوڈ کریں</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#1C1009] border border-[#C9B38D]/30 flex items-center justify-between">
+              <span className="text-xs text-stone-300">
+                سیکشنز کے عنوانات و فعال/غیر فعال کیفیت محفوظ کرنے کے لیے بٹن دبائیں۔
+              </span>
+              <button
+                type="submit"
+                disabled={saving}
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-sm font-bold hover:brightness-105 shadow transition cursor-pointer"
+              >
+                <Save className="w-4 h-4" />
+                <span>{saving ? "محفوظ ہو رہا ہے..." : "تبدیلیاں محفوظ کریں"}</span>
+              </button>
+            </div>
+          </form>
+        {/* TAB: DONATIONS SECTION CONFIGURATION */}
+        {activeTab === "donations" && (
+          <form onSubmit={handleSaveAll} className="space-y-6 max-w-5xl mx-auto">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/30 shadow-2xl space-y-6">
+              <div className="border-b border-[#C9B38D]/20 pb-4 flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <HeartHandshake className="w-5 h-5 text-[#C9B38D]" />
+                    <span>عطیات، صدقات و دسترخوانِ امام زمانہؑ ترتیبات</span>
+                  </h3>
+                  <p className="text-xs text-stone-300 mt-1 leading-[2.1]">
+                    ہوم پیج پر نظر آنے والی حدیث مبارکہ، کفالت کے پیکجز، صدقہ باکس تصویر اور پیشگی رقم کے بٹن تبدیل کریں۔
+                  </p>
+                </div>
+                <a
+                  href="/admin/donations"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-[#C9B38D]/40 transition"
+                >
+                  <span>بینک اکاؤنٹس مینج کریں</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-[#C9B38D]" />
+                </a>
+              </div>
+
+              {/* Hadith Section */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    فرمان / حدیث معصومؑ کا عنوان (مثال: فرمانِ معصوم علیہ السلام):
+                  </label>
+                  <input
+                    type="text"
+                    value={donationData.hadithSource}
+                    onChange={(e) => setDonationData({ ...donationData, hadithSource: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs font-bold focus:border-[#C9B38D] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    عربی حدیث کا متن (Hadith in Arabic):
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={donationData.hadithArabic}
+                    onChange={(e) => setDonationData({ ...donationData, hadithArabic: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-amber-200 text-sm font-arabic font-bold focus:border-[#C9B38D] focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    اردو مفہوم / ترجمہ (Urdu Explanation):
+                  </label>
+                  <input
+                    type="text"
+                    value={donationData.hadithUrdu}
+                    onChange={(e) => setDonationData({ ...donationData, hadithUrdu: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-stone-200 text-xs leading-[2.1] focus:border-[#C9B38D] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Sponsorship Tiers */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-3 border-t border-[#C9B38D]/20">
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    طالب علم کفالت ٹیکسٹ / رقم:
+                  </label>
+                  <input
+                    type="text"
+                    value={donationData.studentSponsorship}
+                    onChange={(e) => setDonationData({ ...donationData, studentSponsorship: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs font-bold focus:border-[#C9B38D] focus:outline-none"
+                    placeholder="ماہانہ طالب علم کفالت: 1500 روپے"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    طعام و راشن کفالت ٹیکسٹ / رقم:
+                  </label>
+                  <input
+                    type="text"
+                    value={donationData.foodSponsorship}
+                    onChange={(e) => setDonationData({ ...donationData, foodSponsorship: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs font-bold focus:border-[#C9B38D] focus:outline-none"
+                    placeholder="طعام کفالت: 10,000 روپے"
+                  />
+                </div>
+              </div>
+
+              {/* Preset Amounts */}
+              <div className="pt-3 border-t border-[#C9B38D]/20">
+                <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                  فوری منتخب کرنے کی پیشگی رقوم (Preset Amounts - کوما لگا کر لکھیں):
+                </label>
+                <input
+                  type="text"
+                  dir="ltr"
+                  value={Array.isArray(donationData.presetAmounts) ? donationData.presetAmounts.join(", ") : donationData.presetAmounts}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    const arr = raw.split(",").map((s) => s.trim()).filter(Boolean);
+                    setDonationData({ ...donationData, presetAmounts: arr });
+                  }}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs font-mono font-bold focus:border-[#C9B38D] focus:outline-none"
+                  placeholder="1500, 2500, 5000, 10000, 25000"
+                />
+                <span className="text-[11px] text-stone-400 mt-1 block">
+                  مثال: 1500, 2500, 5000, 10000, 25000
+                </span>
+              </div>
+
+              {/* Donation Box Image */}
+              <div className="pt-3 border-t border-[#C9B38D]/20">
+                <label className="block text-xs font-bold text-stone-300 mb-2">
+                  عطیات باکس کی تصویر (Donation Box Photo):
+                </label>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <div className="relative w-36 h-36 rounded-2xl overflow-hidden border-2 border-[#C9B38D]/40 bg-[#120A05] shrink-0 shadow">
+                    {donationData.boxImage ? (
+                      <img
+                        src={donationData.boxImage}
+                        alt="Donation Box"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-stone-500">
+                        تصویر نہیں ہے
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <input
+                      type="text"
+                      dir="ltr"
+                      value={donationData.boxImage}
+                      onChange={(e) => setDonationData({ ...donationData, boxImage: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                      placeholder="/images/layout/donation-box.jpg"
+                    />
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="file"
+                        ref={donationBoxInputRef}
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleDonationBoxUpload}
+                      />
+                      <button
+                        type="button"
+                        disabled={uploadingDonationBox}
+                        onClick={() => donationBoxInputRef.current?.click()}
+                        className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
+                        <span>{uploadingDonationBox ? "اپلوڈ ہو رہی ہے..." : "کمپیوٹر سے نئی تصویر اپلوڈ کریں"}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[#C9B38D]/20 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-sm font-bold hover:brightness-105 shadow transition cursor-pointer"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{saving ? "محفوظ ہو رہا ہے..." : "عطیات کی ترتیبات محفوظ کریں"}</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+
+        {/* TAB: TESTIMONIALS SECTION CONFIGURATION */}
+        {activeTab === "testimonials" && (
+          <div className="space-y-6 max-w-6xl mx-auto">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/30 shadow-2xl space-y-6">
+              <div className="border-b border-[#C9B38D]/20 pb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5 text-[#C9B38D]" />
+                    <span>اکابرین، علمائے کرام و سرپرستوں کے تاثرات کا انتظام (Testimonials CMS)</span>
+                  </h3>
+                  <p className="text-xs text-stone-300 mt-1 leading-[2.1]">
+                    ہوم پیج پر ظاہر ہونے والے تمام ریویوز اور تاثرات یہاں سے شامل کریں، تبدیل کریں یا حذف کریں۔
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleOpenNewTestimonialModal}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-xs font-bold hover:brightness-105 shadow transition cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>نیا تاثر شامل کریں</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveAll()}
+                    disabled={saving}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition cursor-pointer"
+                  >
+                    <Save className="w-3.5 h-3.5 text-[#C9B38D]" />
+                    <span>{saving ? "محفوظ ہو رہا ہے..." : "تبدیلیاں محفوظ کریں"}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Category Filter */}
+              <div className="flex flex-wrap items-center gap-2">
+                {[
+                  { id: "all", label: "تمام تاثرات" },
+                  { id: "scholars", label: "علمائے کرام" },
+                  { id: "parents", label: "محترم سرپرست و والدین" },
+                  { id: "alumni", label: "فارغ التحصیل طلبہ" }
+                ].map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setTestimonialsFilter(cat.id)}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                      testimonialsFilter === cat.id
+                        ? "bg-[#C9B38D] text-[#120A05]"
+                        : "bg-[#120A05] text-stone-300 hover:text-white border border-[#C9B38D]/20"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+                <span className="text-xs text-stone-400 mr-auto">
+                  کل تاثرات: {testimonialsData.length}
+                </span>
+              </div>
+
+              {/* Testimonials Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {testimonialsData
+                  .filter((t) => testimonialsFilter === "all" || t.category === testimonialsFilter)
+                  .map((t, idx) => (
+                    <div
+                      key={t.id || idx}
+                      className="p-5 rounded-2xl bg-[#120A05] border border-[#C9B38D]/20 hover:border-[#C9B38D]/50 transition shadow-lg space-y-4 flex flex-col justify-between"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2.5">
+                            <div className="relative w-11 h-11 rounded-full overflow-hidden border border-[#C9B38D]/40 bg-stone-900 shrink-0">
+                              <img
+                                src={t.avatar || "/images/layout/avatar1.jpg"}
+                                alt={t.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="text-right">
+                              <h4 className="font-bold text-white text-xs">{t.name}</h4>
+                              <span className="text-[11px] text-[#C9B38D] block">{t.role}</span>
+                            </div>
+                          </div>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#1C1009] border border-[#C9B38D]/30 text-[#C9B38D] font-semibold">
+                            {t.badge || t.categoryLabel}
+                          </span>
+                        </div>
+
+                        {/* Stars */}
+                        <div className="flex items-center gap-1 text-amber-400">
+                          {Array.from({ length: 5 }).map((_, sIdx) => (
+                            <Star
+                              key={sIdx}
+                              className={`w-3.5 h-3.5 ${
+                                sIdx < (t.rating || 5)
+                                  ? "fill-amber-400 text-amber-400"
+                                  : "text-stone-600"
+                              }`}
+                            />
+                          ))}
+                        </div>
+
+                        {/* Quote */}
+                        <p className="text-xs text-stone-300 font-urdu leading-[2.2] line-clamp-4">
+                          &ldquo;{t.quote}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="pt-3 border-t border-stone-800 flex items-center justify-between text-[11px] text-stone-400">
+                        <span>{t.location} • {t.date}</span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditTestimonialModal(t)}
+                            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-stone-300 hover:text-[#C9B38D] transition"
+                            title="تبدیل کریں"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteTestimonial(t.id)}
+                            className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 transition"
+                            title="حذف کریں"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: QUICK MEDIA UPLOADER (For any Homepage Section) */}
+        {activeTab === "media" && (
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/30 shadow-2xl max-w-4xl mx-auto space-y-6">
+            <div className="border-b border-[#C9B38D]/20 pb-4">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Film className="w-5 h-5 text-[#C9B38D]" />
+                <span>ہوم پیج کے کسی بھی سیکشن کے لیے نئی تصویر یا ویڈیو شامل کریں</span>
+              </h3>
+              <p className="text-xs text-stone-300 mt-1 leading-[2.1]">
+                یہاں سے شامل کی جانے والی تصاویر اور ویڈیوز فوراً ہوم پیج کے متعلقہ سیکشن میں ظاہر ہوں گی۔
+              </p>
+            </div>
+
+            {quickMediaSuccess && (
+              <div className="p-4 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 flex items-center gap-3">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                <span className="text-sm font-bold">
+                  میڈیا آئٹم کامیابی سے شامل ہو گیا اور ہوم پیج پر لائیو ہو گیا ہے!
+                </span>
+              </div>
+            )}
+
+            <form onSubmit={handleAddQuickMedia} className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                {/* Target Homepage Section */}
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    ہوم پیج کا سیکشن منتخب فرمائیں:
+                  </label>
+                  <select
+                    value={quickMedia.section}
+                    onChange={(e) => setQuickMedia({ ...quickMedia, section: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                  >
+                    <option value="campus">سیکشن ۱: کیمپس و عمارات (Campus Media)</option>
+                    <option value="library">سیکشن ۲: کتب خانہ و لائبریری (Library Gallery)</option>
+                    <option value="activities">سیکشن ۳: بچوں کے کھیل کود (Student Activities)</option>
+                    <option value="picnic">سیکشن ۴: بچوں کی پکنک (Student Picnic)</option>
+                    <option value="celebrations">سیکشن ۵: جشن و تقاریب (Celebrations)</option>
+                  </select>
+                </div>
+
+                {/* Media Type */}
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    میڈیا کی قسم:
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setQuickMedia({ ...quickMedia, type: "image" })}
+                      className={`h-10 rounded-xl text-xs font-bold flex items-center justify-center gap-2 border transition cursor-pointer ${
+                        quickMedia.type === "image"
+                          ? "bg-[#C9B38D] text-[#120A05] border-[#C9B38D]"
+                          : "bg-[#120A05] text-stone-300 border-[#C9B38D]/30"
+                      }`}
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      <span>تصویر (Image)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuickMedia({ ...quickMedia, type: "video" })}
+                      className={`h-10 rounded-xl text-xs font-bold flex items-center justify-center gap-2 border transition cursor-pointer ${
+                        quickMedia.type === "video"
+                          ? "bg-[#C9B38D] text-[#120A05] border-[#C9B38D]"
+                          : "bg-[#120A05] text-stone-300 border-[#C9B38D]/30"
+                      }`}
+                    >
+                      <Video className="w-3.5 h-3.5" />
+                      <span>ویڈیو (Video Clip)</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Title & Category */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    میڈیا کا عنوان (Title) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: کرکٹ ٹورنامنٹ فائنل یا مرکزی لائبریری ہال"
+                    value={quickMedia.title}
+                    onChange={(e) => setQuickMedia({ ...quickMedia, title: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    کیٹیگری (Category)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="مثال: کھیل کود، تقاریب"
+                    value={quickMedia.category}
+                    onChange={(e) => setQuickMedia({ ...quickMedia, category: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Upload or URL for Media */}
+              <div className="p-4 rounded-2xl bg-[#120A05] border border-[#C9B38D]/30 space-y-3">
+                <label className="block text-xs font-bold text-[#C9B38D]">
+                  فائل اپلوڈ کریں یا براہ راست لنک دیں:
+                </label>
+
+                <input
+                  type="file"
+                  ref={quickMediaFileInputRef}
+                  onChange={handleQuickMediaUpload}
+                  accept="image/*,video/mp4,video/webm"
+                  className="hidden"
+                />
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => quickMediaFileInputRef.current?.click()}
+                    disabled={uploadingQuickMedia}
+                    className="px-5 py-2.5 rounded-xl bg-[#C9B38D]/20 hover:bg-[#C9B38D]/30 text-[#FAF7F2] border border-[#C9B38D]/40 text-xs font-bold flex items-center gap-2 transition cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
+                    <span>
+                      {uploadingQuickMedia
+                        ? "اپلوڈ ہو رہا ہے..."
+                        : "کمپیوٹر سے فائل اپلوڈ کریں (تصویر یا ویڈیو)"}
+                    </span>
+                  </button>
+
+                  {quickMedia.imageUrl && (
+                    <span className="text-xs text-emerald-400 flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5" />
+                      فائل منتخب ہے
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <div>
+                    <label className="block text-[11px] font-bold text-stone-400 mb-1">
+                      تصویر کا URL (Poster Image):
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="/images/... یا https://..."
+                      value={quickMedia.imageUrl}
+                      onChange={(e) => setQuickMedia({ ...quickMedia, imageUrl: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/25 text-white text-xs font-mono focus:border-[#C9B38D] focus:outline-none"
+                      dir="ltr"
+                    />
+                  </div>
+
+                  {quickMedia.type === "video" && (
+                    <div>
+                      <label className="block text-[11px] font-bold text-stone-400 mb-1">
+                        ویڈیو کا URL یا یوٹیوب لنک:
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="https://youtube.com/watch?v=... یا /uploads/video.mp4"
+                        value={quickMedia.videoUrl}
+                        onChange={(e) => setQuickMedia({ ...quickMedia, videoUrl: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/25 text-white text-xs font-mono focus:border-[#C9B38D] focus:outline-none"
+                        dir="ltr"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {quickMedia.type === "video" && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-stone-400 mb-1">
+                      ویڈیو کا دورانیہ (مثال: ۰۳:۱۵):
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="۰۳:۱۵"
+                      value={quickMedia.videoDuration}
+                      onChange={(e) =>
+                        setQuickMedia({ ...quickMedia, videoDuration: e.target.value })
+                      }
+                      className="w-40 px-3 py-1.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Description, Date, Location */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    تاریخ یا موقع (Date):
+                  </label>
+                  <input
+                    type="text"
+                    value={quickMedia.date}
+                    onChange={(e) => setQuickMedia({ ...quickMedia, date: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                    مقام (Location):
+                  </label>
+                  <input
+                    type="text"
+                    value={quickMedia.location}
+                    onChange={(e) => setQuickMedia({ ...quickMedia, location: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-stone-300 mb-1.5">
+                  تفصیل / کیپشن (Description):
+                </label>
+                <textarea
+                  rows={2}
+                  value={quickMedia.description}
+                  onChange={(e) => setQuickMedia({ ...quickMedia, description: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 text-white text-xs leading-[2.1] focus:border-[#C9B38D] focus:outline-none"
+                  placeholder="اس تصویر یا ویڈیو کے متعلق مختصر وضاحتی جملہ..."
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={uploadingQuickMedia}
+                  className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-sm font-bold hover:brightness-105 shadow-xl transition cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>یہ میڈیا ہوم پیج پر شامل کریں</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

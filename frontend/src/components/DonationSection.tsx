@@ -1,9 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { HeartHandshake, ShieldCheck, Check, Copy, Landmark, Sparkles, Gift } from "lucide-react";
-import { donationAccounts } from "@/data/madarsaData";
+import { HeartHandshake, ShieldCheck, Check, Copy, Landmark, Sparkles, Gift, Send, Loader2 } from "lucide-react";
+import { donationAccounts as fallbackAccounts } from "@/data/madarsaData";
+import { api } from "@/services/api";
+
+export interface DonationInfo {
+  hadithArabic?: string;
+  hadithUrdu?: string;
+  hadithSource?: string;
+  boxImage?: string;
+  studentSponsorship?: string;
+  foodSponsorship?: string;
+  presetAmounts?: string[];
+}
 
 interface DonationSectionProps {
   header?: {
@@ -11,10 +22,11 @@ interface DonationSectionProps {
     title?: string;
     subtitle?: string;
   };
+  donationInfo?: DonationInfo;
   onOpenDonationModal?: () => void;
 }
 
-export default function DonationSection({ header, onOpenDonationModal }: DonationSectionProps) {
+export default function DonationSection({ header, donationInfo, onOpenDonationModal }: DonationSectionProps) {
   const [selectedAmount, setSelectedAmount] = useState("2500");
   const [customAmount, setCustomAmount] = useState("2500");
   const [currency, setCurrency] = useState("PKR");
@@ -25,7 +37,36 @@ export default function DonationSection({ header, onOpenDonationModal }: Donatio
   const [showBankInfo, setShowBankInfo] = useState(true);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
-  const presetAmounts = ["1500", "2500", "5000", "10000", "25000"];
+  // Dynamic Bank Accounts
+  const [accounts, setAccounts] = useState<any[]>(fallbackAccounts);
+  const [accountsLoading, setAccountsLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submittedMessage, setSubmittedMessage] = useState("");
+
+  const presetAmounts = donationInfo?.presetAmounts && donationInfo.presetAmounts.length > 0
+    ? donationInfo.presetAmounts
+    : ["1500", "2500", "5000", "10000", "25000"];
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLiveAccounts = async () => {
+      setAccountsLoading(true);
+      try {
+        const res = await api.donations.getAccounts();
+        if (isMounted && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          setAccounts(res.data);
+        }
+      } catch (err) {
+        console.warn("Using fallback donation accounts:", err);
+      } finally {
+        if (isMounted) setAccountsLoading(false);
+      }
+    };
+    fetchLiveAccounts();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSelectAmount = (amt: string) => {
     setSelectedAmount(amt);
@@ -38,9 +79,27 @@ export default function DonationSection({ header, onOpenDonationModal }: Donatio
     setTimeout(() => setCopiedIndex(null), 2500);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setShowBankInfo(true);
+    if (!name && !contact) return;
+
+    setSubmitting(true);
+    try {
+      await api.donations.submitSlip({
+        donorName: name || "محترم معاون",
+        phone: contact,
+        amount: `${customAmount} ${currency}`,
+        donationType: frequency,
+        notes: message,
+      });
+      setSubmittedMessage("عطیہ کی نیت کامیابی سے محفوظ ہو گئی۔ نیچے دیے گئے اکاؤنٹس میں رقم منتقل فرما سکتے ہیں۔");
+      setTimeout(() => setSubmittedMessage(""), 6000);
+    } catch (err) {
+      console.warn("Donation submission note:", err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -71,7 +130,7 @@ export default function DonationSection({ header, onOpenDonationModal }: Donatio
               <div className="bg-[#1A0E08] rounded-[26px] p-2.5 overflow-hidden">
                 <div className="relative h-[420px] sm:h-[520px] w-full rounded-[20px] overflow-hidden group">
                   <Image
-                    src="/images/layout/donation-box.jpg"
+                    src={donationInfo?.boxImage || "/images/layout/donation-box.jpg"}
                     alt="عطیات و صدقات مدرسہ صاحب الزمان"
                     fill
                     className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
@@ -80,18 +139,18 @@ export default function DonationSection({ header, onOpenDonationModal }: Donatio
                   
                   <div className="absolute bottom-6 right-6 left-6 text-white text-right space-y-2.5">
                     <span className="text-xs font-urdu font-bold px-3.5 py-1 rounded-full bg-white text-[#120A05] border border-[#C9B38D] inline-block shadow">
-                      فرمانِ معصوم علیہ السلام
+                      {donationInfo?.hadithSource || "فرمانِ معصوم علیہ السلام"}
                     </span>
                     <p className="text-base sm:text-lg font-bold font-arabic text-[#D9C7A7]">
-                      &ldquo;مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ&rdquo;
+                      &ldquo;{donationInfo?.hadithArabic || "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ"}&rdquo;
                     </p>
                     <p className="text-xs sm:text-sm text-stone-300 font-urdu leading-[2.2] sm:leading-[2.4]">
-                      صدقہ کبھی مال میں کمی نہیں کرتا، بلکہ برکت، حفاظت اور درجات کی بلندی کا سبب بنتا ہے۔
+                      {donationInfo?.hadithUrdu || "صدقہ کبھی مال میں کمی نہیں کرتا، بلکہ برکت، حفاظت اور درجات کی بلندی کا سبب بنتا ہے۔"}
                     </p>
 
                     <div className="pt-3 border-t border-[#C9B38D]/20 flex items-center justify-between text-xs font-urdu text-[#C9B38D] font-semibold">
-                      <span>ماہانہ طالب علم کفالت: 1500 روپے</span>
-                      <span>طعام کفالت: 10,000 روپے</span>
+                      <span>{donationInfo?.studentSponsorship || "ماہانہ طالب علم کفالت: 1500 روپے"}</span>
+                      <span>{donationInfo?.foodSponsorship || "طعام کفالت: 10,000 روپے"}</span>
                     </div>
                   </div>
                 </div>
@@ -211,12 +270,23 @@ export default function DonationSection({ header, onOpenDonationModal }: Donatio
                     className="w-full py-2.5 px-4 rounded-xl border border-[#C9B38D]/20 bg-[#1A0E08] text-white focus:border-[#C9B38D] outline-none text-sm placeholder:text-stone-500 font-urdu transition"
                   />
 
+                  {submittedMessage && (
+                    <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-urdu text-xs text-right animate-fadeIn">
+                      {submittedMessage}
+                    </div>
+                  )}
+
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full inline-flex items-center justify-center gap-2.5 h-12 px-7 rounded-full bg-white hover:bg-stone-100 text-[#120A05] border-2 border-[#C9B38D] font-urdu font-bold text-base shadow-lg transition-all duration-300 active:scale-95"
+                    disabled={submitting}
+                    className="w-full inline-flex items-center justify-center gap-2.5 h-12 px-7 rounded-full bg-white hover:bg-stone-100 text-[#120A05] border-2 border-[#C9B38D] font-urdu font-bold text-base shadow-lg transition-all duration-300 active:scale-95 disabled:opacity-60"
                   >
-                    <HeartHandshake className="w-5 h-5 text-[#C9B38D]" />
+                    {submitting ? (
+                      <Loader2 className="w-5 h-5 text-[#C9B38D] animate-spin" />
+                    ) : (
+                      <HeartHandshake className="w-5 h-5 text-[#C9B38D]" />
+                    )}
                     <span>بینک اکاؤنٹس دیکھیں اور تصدیق حاصل کریں</span>
                   </button>
                 </form>
@@ -234,21 +304,26 @@ export default function DonationSection({ header, onOpenDonationModal }: Donatio
                     </div>
 
                     <div className="space-y-3">
-                      {donationAccounts.map((acc, idx) => (
+                      {accounts.map((acc, idx) => (
                         <div
-                          key={idx}
+                          key={acc.id || idx}
                           className="p-3.5 rounded-2xl border border-[#C9B38D]/20 hover:border-[#C9B38D]/50 bg-[#1A0E08]/90 flex items-center justify-between text-xs transition"
                         >
                           <div className="text-right">
                             <span className="font-urdu font-bold text-white block">{acc.bankName}</span>
                             <span className="text-stone-400 font-urdu">{acc.accountTitle}</span>
+                            {acc.iban && (
+                              <span className="text-[11px] text-stone-400 font-mono block mt-0.5" dir="ltr">
+                                IBAN: {acc.iban}
+                              </span>
+                            )}
                             <span className="font-mono font-bold text-[#C9B38D] block mt-0.5" dir="ltr">
                               {acc.accountNumber}
                             </span>
                           </div>
                           <button
                             type="button"
-                            onClick={() => handleCopy(acc.accountNumber, idx)}
+                            onClick={() => handleCopy(acc.iban || acc.accountNumber, idx)}
                             className="px-4 py-2 rounded-xl bg-[#120A05] text-[#C9B38D] border border-[#C9B38D]/40 hover:bg-white hover:text-[#120A05] transition flex items-center gap-1.5 font-urdu font-bold text-xs"
                           >
                             {copiedIndex === idx ? (
