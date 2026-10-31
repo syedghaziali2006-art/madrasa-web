@@ -15,18 +15,62 @@ import {
 } from "lucide-react";
 import { madarsaInfo } from "@/data/madarsaData";
 
+export interface HeroData {
+  bismillah?: string;
+  title?: string;
+  titleSuffix?: string;
+  tagline?: string;
+  bgType?: "image" | "video";
+  bgMediaUrl?: string;
+  badges?: Array<{ id: string; text: string }>;
+  addressText?: string;
+  googleMapsUrl?: string;
+  admissionBtnText?: string;
+  contactBtnText?: string;
+  posterImage?: string;
+  posterTitle?: string;
+}
+
 interface HeroProps {
+  data?: HeroData;
   onOpenAdmission: () => void;
   onOpenContact?: () => void;
   onExploreCourses?: () => void;
 }
 
-export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses }: HeroProps) {
+export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCourses }: HeroProps) {
   const [isPosterZoomed, setIsPosterZoomed] = useState(false);
 
+  const bismillah = data?.bismillah || madarsaInfo.bismillah || "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
+  const title = data?.title || "مدرسہ صاحب الزمان";
+  const titleSuffix = data?.titleSuffix || "(عج)";
+  const tagline =
+    data?.tagline ||
+    "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی";
+  const bgType = data?.bgType || "image";
+  const bgMediaUrl = data?.bgMediaUrl || "/images/hero-banner.png";
+  const isBgVideo =
+    bgType === "video" ||
+    bgMediaUrl.endsWith(".mp4") ||
+    bgMediaUrl.endsWith(".webm") ||
+    bgMediaUrl.endsWith(".ogg");
+  const badges = data?.badges && data.badges.length > 0
+    ? data.badges
+    : [
+        { id: "1", text: "۵ سالہ حوزوی نصاب" },
+        { id: "2", text: "مفت ہاسٹل و معیاری طعام" },
+        { id: "3", text: "کمپیوٹر لیب و لائبریری" }
+      ];
+  const addressText =
+    data?.addressText || "پلاٹ بی 25، احسن آباد، گلزارِ ہجری، اسکیم 33، کراچی، پاکستان";
   const googleMapsUrl =
+    data?.googleMapsUrl ||
     "https://maps.google.com/?q=" +
-    encodeURIComponent("Madarsa Sahib uz Zaman Ahsanabad 3 Gulzar-e-Hijri Scheme 33 Karachi");
+      encodeURIComponent("Madarsa Sahib uz Zaman Ahsanabad 3 Gulzar-e-Hijri Scheme 33 Karachi");
+  const admissionBtnText = data?.admissionBtnText || "داخلہ لیں";
+  const contactBtnText = data?.contactBtnText || "ہم سے رابطہ کریں";
+  const posterImage = data?.posterImage || "/images/admission-poster.jpeg";
+  const posterTitle = data?.posterTitle || "داخلہ پراسپیکٹس و شرائط — مدرسہ صاحب الزمان (عج)";
 
   return (
     <section
@@ -39,13 +83,24 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
       {/*    cinematic gradient (bg-cover bg-center)                     */}
       {/* ============================================================== */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/hero-banner.png"
-          alt="مدرسہ کی خوبصورت عمارت اور سرسبز درخت"
-          fill
-          priority
-          className="object-cover object-center scale-100 transform transition-transform duration-1000 ease-out"
-        />
+        {isBgVideo ? (
+          <video
+            src={bgMediaUrl}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover object-center scale-100"
+          />
+        ) : (
+          <Image
+            src={bgMediaUrl}
+            alt="مدرسہ کی خوبصورت عمارت اور سرسبز درخت"
+            fill
+            priority
+            className="object-cover object-center scale-100 transform transition-transform duration-1000 ease-out"
+          />
+        )}
 
         {/* Dark Cinematic Warm Brown Gradient Overlay for high text contrast */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#120A05]/95 via-[#1A0E08]/75 to-[#120A05]/85" />
@@ -71,7 +126,7 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
             <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-[#1A0E08]/80 border border-[#C9B38D]/40 backdrop-blur-md shadow-lg shadow-black/40 group hover:border-[#C9B38D] transition-colors">
               <span className="w-2.5 h-2.5 rounded-full bg-[#C9B38D] shadow-[0_0_12px_#C9B38D] animate-pulse shrink-0" />
               <p className="font-arabic text-lg sm:text-2xl font-bold tracking-wider text-[#D9C7A7] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                {madarsaInfo.bismillah}
+                {bismillah}
               </p>
             </div>
 
@@ -79,32 +134,31 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
             <div className="space-y-6 sm:space-y-8 w-full">
               {/* Accessible Semantic Heading with Dull Gold Accent */}
               <h1 className="urdu-title text-4xl sm:text-6xl lg:text-7xl leading-[2.05] sm:leading-[2.15] select-none pb-2 sm:pb-3 text-white">
-                <span>مدرسہ صاحب الزمان</span>
-                <span className="inline-block mr-3 sm:mr-5 text-2xl sm:text-4xl lg:text-5xl text-[#C9B38D] font-bold">
-                  (عج)
-                </span>
+                <span>{title}</span>
+                {titleSuffix && (
+                  <span className="inline-block mr-3 sm:mr-5 text-2xl sm:text-4xl lg:text-5xl text-[#C9B38D] font-bold">
+                    {titleSuffix}
+                  </span>
+                )}
               </h1>
 
               {/* Urdu Tagline & Mission */}
               <p className="font-urdu text-base sm:text-lg md:text-xl text-[#FAF7F2] leading-[2.4] sm:leading-[2.6] max-w-3xl font-medium drop-shadow-md pt-3 sm:pt-4">
-                دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی
+                {tagline}
               </p>
             </div>
 
             {/* C. Quick Institutional Feature Badges in White & Dull Gold */}
             <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 font-urdu text-xs sm:text-sm">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1A0E08]/80 border border-[#C9B38D]/35 text-[#D9C7A7] backdrop-blur-sm">
-                <GraduationCap className="w-3.5 h-3.5 text-[#C9B38D]" />
-                ۵ سالہ حوزوی نصاب
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1A0E08]/80 border border-[#C9B38D]/35 text-white backdrop-blur-sm">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#C9B38D]" />
-                مفت ہاسٹل و معیاری طعام
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1A0E08]/80 border border-[#C9B38D]/35 text-white backdrop-blur-sm">
-                <Building className="w-3.5 h-3.5 text-[#C9B38D]" />
-                کمپیوٹر لیب و لائبریری
-              </span>
+              {badges.map((b) => (
+                <span
+                  key={b.id}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1A0E08]/80 border border-[#C9B38D]/35 text-[#D9C7A7] backdrop-blur-sm"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#C9B38D]" />
+                  {b.text}
+                </span>
+              ))}
             </div>
 
             {/* D. Location Tag (Urdu Address with Red Location Pin) */}
@@ -120,7 +174,7 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
                 <MapPin className="relative w-4 h-4 text-red-500 fill-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]" />
               </span>
               <span className="font-urdu text-xs sm:text-sm text-white group-hover:text-[#D9C7A7] transition-colors">
-                پلاٹ بی 25، احسن آباد، گلزارِ ہجری، اسکیم 33، کراچی، پاکستان
+                {addressText}
               </span>
               <ExternalLink className="w-3.5 h-3.5 text-[#C9B38D] group-hover:translate-x-0.5 transition-transform" />
             </a>
@@ -133,7 +187,7 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
                 className="group inline-flex items-center justify-center gap-2.5 sm:gap-3 h-11 sm:h-12 px-7 sm:px-9 rounded-full bg-white hover:bg-stone-100 border-2 border-[#C9B38D] text-[#120A05] font-urdu font-bold text-lg sm:text-xl shadow-[0_10px_25px_rgba(0,0,0,0.6)] hover:shadow-[0_0_25px_rgba(201,179,141,0.5)] transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer"
                 aria-label="آن لائن داخلہ لیں"
               >
-                <span>داخلہ لیں</span>
+                <span>{admissionBtnText}</span>
                 <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#8C6D3F] transition-transform duration-300 group-hover:-translate-x-1" />
               </button>
 
@@ -143,7 +197,7 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
                   onClick={onOpenContact}
                   className="inline-flex items-center justify-center h-11 sm:h-12 px-6 sm:px-8 rounded-full bg-[#1A0E08]/75 hover:bg-[#C9B38D]/20 text-white font-urdu font-bold text-base sm:text-lg border border-[#C9B38D] transition-all duration-300 backdrop-blur-md hover:scale-[1.02] active:scale-95 cursor-pointer shadow-md"
                 >
-                  <span>ہم سے رابطہ کریں</span>
+                  <span>{contactBtnText}</span>
                 </button>
               )}
             </div>
@@ -161,8 +215,8 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
             >
               <div className="relative w-full rounded-[20px] overflow-hidden bg-[#1A0E07]">
                 <Image
-                  src="/images/admission-poster.jpeg"
-                  alt="داخلے جاری ہیں - مدرسہ صاحب الزمان"
+                  src={posterImage}
+                  alt={posterTitle}
                   width={720}
                   height={994}
                   priority
@@ -197,7 +251,7 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
             {/* Modal Header */}
             <div className="w-full flex items-center justify-between pb-3 border-b border-amber-500/30 mb-3">
               <span className="font-urdu text-sm sm:text-base font-bold text-amber-300">
-                داخلہ پراسپیکٹس و شرائط — مدرسہ صاحب الزمان (عج)
+                {posterTitle}
               </span>
               <button
                 onClick={() => setIsPosterZoomed(false)}
@@ -211,8 +265,8 @@ export default function Hero({ onOpenAdmission, onOpenContact, onExploreCourses 
             {/* Poster Graphic Container */}
             <div className="relative w-full h-[62vh] sm:h-[70vh] rounded-2xl overflow-hidden bg-black/60 border border-amber-500/30">
               <Image
-                src="/images/admission-poster.jpeg"
-                alt="داخلے جاری ہیں مدرسہ صاحب الزمان مکمل پوسٹر"
+                src={posterImage}
+                alt={posterTitle}
                 fill
                 className="object-contain"
                 priority

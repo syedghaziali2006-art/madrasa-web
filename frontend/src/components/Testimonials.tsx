@@ -38,7 +38,15 @@ interface TestimonialItem {
   initialLikes: number;
 }
 
-export default function Testimonials() {
+interface TestimonialsProps {
+  header?: {
+    badge?: string;
+    title?: string;
+    subtitle?: string;
+  };
+}
+
+export default function Testimonials({ header }: TestimonialsProps = {}) {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [spotlightIndex, setSpotlightIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -280,17 +288,17 @@ export default function Testimonials() {
         <div className="text-center max-w-4xl mx-auto mb-14 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
             <Sparkles className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">علماء و سرپرستوں کے ارشادات و آراء</span>
+            <span className="font-urdu">{header?.badge || "علماء و سرپرستوں کے ارشادات و آراء"}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
-            اہلِ علم و والدین کے <span className="text-[#C9B38D]">گراں قدر تاثرات</span>
+            {header?.title || "اہلِ علم و والدین کے گراں قدر تاثرات"}
           </h2>
 
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
           <p className="text-sm sm:text-base md:text-lg text-[#FAF7F2] font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-medium">
-            علمائے کرام، معزز سرپرستوں اور فارغ التحصیل طلبہ کے مدرسہ صاحب الزمان کی علمی، اخلاقی و فلاحی خدمات سے متعلق دلی خیالات
+            {header?.subtitle || "علمائے کرام، معزز سرپرستوں اور فارغ التحصیل طلبہ کے مدرسہ صاحب الزمان کی علمی، اخلاقی و فلاحی خدمات سے متعلق دلی خیالات"}
           </p>
         </div>
 

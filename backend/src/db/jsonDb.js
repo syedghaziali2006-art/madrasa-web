@@ -164,5 +164,6 @@ export const db = {
   gallery: new Collection("gallery", seed.gallery),
   donationAccounts: new Collection("donationAccounts", seed.donationAccounts),
   donorSubmissions: new Collection("donorSubmissions", seed.donorSubmissions),
-  settings: new SingletonDocument("settings", seed.settings)
+  settings: new SingletonDocument("settings", seed.settings),
+  homeContent: new SingletonDocument("homeContent", seed.homeContent)
 };

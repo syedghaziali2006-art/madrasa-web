@@ -263,6 +263,20 @@ export const api = {
       }),
   },
 
+  // Homepage Dynamic Content & Sections
+  homepage: {
+    get: () => fetchApi("/homepage"),
+    update: (data: any) =>
+      fetchApi("/homepage", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    reset: () =>
+      fetchApi("/homepage/reset", {
+        method: "POST",
+      }),
+  },
+
   // Dashboard Stats
   stats: {
     getDashboard: () => fetchApi("/stats/dashboard"),

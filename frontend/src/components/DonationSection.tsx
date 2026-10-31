@@ -6,10 +6,15 @@ import { HeartHandshake, ShieldCheck, Check, Copy, Landmark, Sparkles, Gift } fr
 import { donationAccounts } from "@/data/madarsaData";
 
 interface DonationSectionProps {
+  header?: {
+    badge?: string;
+    title?: string;
+    subtitle?: string;
+  };
   onOpenDonationModal?: () => void;
 }
 
-export default function DonationSection({ onOpenDonationModal }: DonationSectionProps) {
+export default function DonationSection({ header, onOpenDonationModal }: DonationSectionProps) {
   const [selectedAmount, setSelectedAmount] = useState("2500");
   const [customAmount, setCustomAmount] = useState("2500");
   const [currency, setCurrency] = useState("PKR");
@@ -46,14 +51,14 @@ export default function DonationSection({ onOpenDonationModal }: DonationSection
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1A0E08]/80 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-10 sm:mb-14 shadow-sm">
             <Sparkles className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">صدقہ جاریہ و خیرات</span>
+            <span className="font-urdu">{header?.badge || "صدقہ جاریہ و خیرات"}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-urdu font-bold text-white mb-5 leading-[2.1] sm:leading-[2.2] pt-2">
-            اپنا عطیہ اور <span className="text-[#C9B38D]">صدقات پیش کریں</span>
+            {header?.title || "اپنا عطیہ اور صدقات پیش کریں"}
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-5 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
           <p className="text-base sm:text-lg md:text-xl text-stone-200 font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-normal">
-            دینی طلباء کی تعلیم و کفالت، دسترخوانِ امام زمانہؑ، اور کتب خانہ کے امور میں آپ کا مخلصانہ تعاون صدقہ جاریہ اور آخرت کا بہترین ذخیرہ ہے۔
+            {header?.subtitle || "دینی طلباء کی تعلیم و کفالت، دسترخوانِ امام زمانہؑ، اور کتب خانہ کے امور میں آپ کا مخلصانہ تعاون صدقہ جاریہ اور آخرت کا بہترین ذخیرہ ہے۔"}
           </p>
         </div>
 

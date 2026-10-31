@@ -16,10 +16,20 @@ interface Book {
   description: string;
 }
 
-export default function BooksSection() {
+import { api } from "@/services/api";
+
+interface BooksSectionProps {
+  header?: {
+    badge?: string;
+    title?: string;
+    subtitle?: string;
+  };
+}
+
+export default function BooksSection({ header }: BooksSectionProps) {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
-  const books: Book[] = [
+  const defaultBooks: Book[] = [
     {
       id: "1",
       title: "شہادتِ امام حسینؑ",
@@ -77,6 +87,34 @@ export default function BooksSection() {
     },
   ];
 
+  const [books, setBooks] = useState<Book[]>(defaultBooks);
+
+  React.useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const res = await api.books.getAll();
+        if (res.success && res.data && res.data.length > 0) {
+          // Map backend book data to Book interface if needed
+          const mapped: Book[] = res.data.slice(0, 10).map((b: any, idx: number) => ({
+            id: b.id || String(idx),
+            title: b.title,
+            author: b.author || "مصنف",
+            category: b.category || "عام",
+            coverImage: b.coverImage || `/images/books/book-${(idx % 5) + 1}.jpg`,
+            rating: b.rating || 5,
+            reviewsCount: b.reviewsCount || 100 + idx * 10,
+            pages: b.pages || 250,
+            description: b.description || "مستند دینی و علمی تصنیف"
+          }));
+          setBooks(mapped);
+        }
+      } catch (err) {
+        // fallback
+      }
+    };
+    fetchBooks();
+  }, []);
+
   return (
     <section id="books" className="py-20 sm:py-28 relative overflow-hidden bg-[#120A05] islamic-dark-pattern" dir="rtl">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-[#C9B38D]/5 rounded-full blur-[140px] pointer-events-none" />
@@ -85,17 +123,17 @@ export default function BooksSection() {
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
             <Sparkles className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">علمی و تحقیقی ذخیرہ</span>
+            <span className="font-urdu">{header?.badge || "علمی و تحقیقی ذخیرہ"}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
-            منتخب کتب و <span className="text-[#C9B38D]">اہم مطبوعات</span>
+            {header?.title || "منتخب کتب و اہم مطبوعات"}
           </h2>
 
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
           <p className="text-sm sm:text-base md:text-lg text-[#FAF7F2] font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-medium">
-            مدرسہ صاحب الزمان کی لائبریری میں دستیاب تاریخِ اسلام، سیرتِ اہلِ بیتؑ اور تحقیق پر مبنی معتبر کتب
+            {header?.subtitle || "مدرسہ صاحب الزمان کی لائبریری میں دستیاب تاریخِ اسلام، سیرتِ اہلِ بیتؑ اور تحقیق پر مبنی معتبر کتب"}
           </p>
         </div>
 

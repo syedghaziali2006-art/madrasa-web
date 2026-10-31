@@ -5,10 +5,20 @@ import Image from "next/image";
 import { Compass, Play, MapPin, Sparkles, Video, Camera } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
 
-export default function StudentPicnicSection() {
+import { api } from "@/services/api";
+
+interface StudentPicnicSectionProps {
+  header?: {
+    badge?: string;
+    title?: string;
+    subtitle?: string;
+  };
+}
+
+export default function StudentPicnicSection({ header }: StudentPicnicSectionProps) {
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
-  const picnicMoments: MediaItem[] = [
+  const defaultPicnicMoments: MediaItem[] = [
     {
       id: "picnic-beach",
       title: "ساحلِ سمندر (سی ویو) کی تفریحی پکنک ۲۰۲۵",
@@ -53,6 +63,22 @@ export default function StudentPicnicSection() {
     },
   ];
 
+  const [picnicMoments, setPicnicMoments] = useState<MediaItem[]>(defaultPicnicMoments);
+
+  React.useEffect(() => {
+    const fetchPicnic = async () => {
+      try {
+        const res = await api.gallery.getAll({ section: "picnic" });
+        if (res.success && res.data && res.data.length > 0) {
+          setPicnicMoments(res.data);
+        }
+      } catch (err) {
+        // fallback
+      }
+    };
+    fetchPicnic();
+  }, []);
+
   // Specific rotation classes for authentic polaroid scrapbook aesthetic
   const rotations = ["-rotate-2", "rotate-2", "-rotate-1", "rotate-3"];
 
@@ -67,17 +93,17 @@ export default function StudentPicnicSection() {
         <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
             <Compass className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">یادگار لمحات و تفریح</span>
+            <span className="font-urdu">{header?.badge || "یادگار لمحات و تفریح"}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
-            بچوں کی <span className="text-[#C9B38D]">پکنک کی تصویریں اور ویڈیوز</span>
+            {header?.title || "بچوں کی پکنک کی تصویریں اور ویڈیوز"}
           </h2>
 
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
           <p className="text-sm sm:text-base md:text-lg text-[#FAF7F2] font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-medium">
-            مدرسے کے بچوں کے تفریحی دوروں، ساحلِ سمندر کی پکنک، اور قدرتی مناظر میں گزارے ہوئے ناقابلِ فراموش ایام
+            {header?.subtitle || "مدرسے کے بچوں کے تفریحی دوروں، ساحلِ سمندر کی پکنک، اور قدرتی مناظر میں گزارے ہوئے ناقابلِ فراموش ایام"}
           </p>
         </div>
 

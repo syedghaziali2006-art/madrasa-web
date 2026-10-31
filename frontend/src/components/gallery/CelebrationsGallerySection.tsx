@@ -5,11 +5,21 @@ import Image from "next/image";
 import { Award, Play, Calendar, MapPin, Sparkles, Star, ChevronLeft, ChevronRight, Video } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
 
-export default function CelebrationsGallerySection() {
+import { api } from "@/services/api";
+
+interface CelebrationsGallerySectionProps {
+  header?: {
+    badge?: string;
+    title?: string;
+    subtitle?: string;
+  };
+}
+
+export default function CelebrationsGallerySection({ header }: CelebrationsGallerySectionProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
-  const events: MediaItem[] = [
+  const defaultEvents: MediaItem[] = [
     {
       id: "event-convocation",
       title: "سالانہ تقریبِ تقسیمِ اسناد، انعامات اور شیلڈز ۲۰۲۶",
@@ -54,13 +64,31 @@ export default function CelebrationsGallerySection() {
     },
   ];
 
-  const currentEvent = events[activeIdx];
+  const [events, setEvents] = useState<MediaItem[]>(defaultEvents);
+
+  React.useEffect(() => {
+    const fetchCelebrations = async () => {
+      try {
+        const res = await api.gallery.getAll({ section: "celebrations" });
+        if (res.success && res.data && res.data.length > 0) {
+          setEvents(res.data);
+        }
+      } catch (err) {
+        // fallback
+      }
+    };
+    fetchCelebrations();
+  }, []);
+
+  const currentEvent = events[activeIdx] || events[0] || defaultEvents[0];
 
   const handleNext = () => {
+    if (events.length === 0) return;
     setActiveIdx((prev) => (prev + 1) % events.length);
   };
 
   const handlePrev = () => {
+    if (events.length === 0) return;
     setActiveIdx((prev) => (prev - 1 + events.length) % events.length);
   };
 
@@ -75,17 +103,17 @@ export default function CelebrationsGallerySection() {
         <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
             <Award className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">تقاریب و یادگار ایام</span>
+            <span className="font-urdu">{header?.badge || "تقاریب و یادگار ایام"}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
-            بچوں کے <span className="text-[#C9B38D]">جشنوں اور تقاریب کی تصویریں و ویڈیوز</span>
+            {header?.title || "بچوں کے جشنوں اور تقاریب کی تصویریں و ویڈیوز"}
           </h2>
 
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
           <p className="text-sm sm:text-base md:text-lg text-[#FAF7F2] font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-medium">
-            جشنِ میلاد، سالانہ تقسیمِ اسناد، قرآنی مقابلے اور عمامہ پوشی کے شاندار اسٹیج و پُروقار لمحات
+            {header?.subtitle || "جشنِ میلاد، سالانہ تقسیمِ اسناد، قرآنی مقابلے اور عمامہ پوشی کے شاندار اسٹیج و پُروقار لمحات"}
           </p>
         </div>
 

@@ -5,11 +5,21 @@ import Image from "next/image";
 import { BookOpen, ChevronRight, ChevronLeft, Sparkles, ZoomIn, Library, Eye } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
 
-export default function LibraryGallerySection() {
-  const [currentIndex, setCurrentIndex] = useState(2); // Center on item 2
+import { api } from "@/services/api";
+
+interface LibraryGallerySectionProps {
+  header?: {
+    badge?: string;
+    title?: string;
+    subtitle?: string;
+  };
+}
+
+export default function LibraryGallerySection({ header }: LibraryGallerySectionProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
-  const libraryItems: MediaItem[] = [
+  const defaultLibraryItems: MediaItem[] = [
     {
       id: "lib-1",
       title: "مرکزی مطالعہ ہال و کتب الماری",
@@ -62,11 +72,29 @@ export default function LibraryGallerySection() {
     },
   ];
 
+  const [libraryItems, setLibraryItems] = useState<MediaItem[]>(defaultLibraryItems);
+
+  React.useEffect(() => {
+    const fetchLibraryMedia = async () => {
+      try {
+        const res = await api.gallery.getAll({ section: "library" });
+        if (res.success && res.data && res.data.length > 0) {
+          setLibraryItems(res.data);
+        }
+      } catch (err) {
+        // fallback
+      }
+    };
+    fetchLibraryMedia();
+  }, []);
+
   const handleNext = () => {
+    if (libraryItems.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % libraryItems.length);
   };
 
   const handlePrev = () => {
+    if (libraryItems.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + libraryItems.length) % libraryItems.length);
   };
 
@@ -81,17 +109,17 @@ export default function LibraryGallerySection() {
         <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
             <Library className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">علم و تحقیق کا گہوارہ</span>
+            <span className="font-urdu">{header?.badge || "علم و تحقیق کا گہوارہ"}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
-            لائبریری کی <span className="text-[#C9B38D]">تصویریں و نوادرات</span>
+            {header?.title || "لائبریری کی تصویریں و نوادرات"}
           </h2>
 
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
           <p className="text-sm sm:text-base md:text-lg text-[#FAF7F2] font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-medium">
-            مدرسہ صاحب الزمان کی عظیم الشان لائبریری، نایاب مخطوطات اور مطالعہ ہال کی تصویری جھلکیاں
+            {header?.subtitle || "مدرسہ صاحب الزمان کی عظیم الشان لائبریری، نایاب مخطوطات اور مطالعہ ہال کی تصویری جھلکیاں"}
           </p>
         </div>
 

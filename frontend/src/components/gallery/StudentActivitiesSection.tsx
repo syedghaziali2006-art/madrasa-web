@@ -5,10 +5,20 @@ import Image from "next/image";
 import { Trophy, Play, Video, Sparkles, Smile, Eye, Activity } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
 
-export default function StudentActivitiesSection() {
+import { api } from "@/services/api";
+
+interface StudentActivitiesSectionProps {
+  header?: {
+    badge?: string;
+    title?: string;
+    subtitle?: string;
+  };
+}
+
+export default function StudentActivitiesSection({ header }: StudentActivitiesSectionProps) {
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
-  const activities: MediaItem[] = [
+  const defaultActivities: MediaItem[] = [
     {
       id: "sports-cricket",
       title: "سالانہ کرکٹ ٹورنامنٹ ۲۰۲۶ - فائنل میچ اور بچوں کی خوشی",
@@ -64,6 +74,22 @@ export default function StudentActivitiesSection() {
     },
   ];
 
+  const [activities, setActivities] = useState<MediaItem[]>(defaultActivities);
+
+  React.useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const res = await api.gallery.getAll({ section: "activities" });
+        if (res.success && res.data && res.data.length > 0) {
+          setActivities(res.data);
+        }
+      } catch (err) {
+        // fallback
+      }
+    };
+    fetchActivities();
+  }, []);
+
   return (
     <section id="student-activities" className="py-20 sm:py-28 bg-[#140B06] islamic-dark-pattern relative overflow-hidden" dir="rtl">
       <div className="absolute top-1/3 left-1/4 w-[600px] h-[350px] bg-[#C9B38D]/5 rounded-full blur-[140px] pointer-events-none" />
@@ -72,17 +98,17 @@ export default function StudentActivitiesSection() {
         <div className="text-center max-w-4xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
             <Trophy className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">نشاط و جسمانی صحت</span>
+            <span className="font-urdu">{header?.badge || "نشاط و جسمانی صحت"}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
-            بچوں کے <span className="text-[#C9B38D]">کھیل کود اور سرگرمیاں</span>
+            {header?.title || "بچوں کے کھیل کود اور سرگرمیاں"}
           </h2>
 
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
           <p className="text-sm sm:text-base md:text-lg text-[#FAF7F2] font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-medium">
-            تعلیم و تربیت کے ساتھ ساتھ طلبہ کی جسمانی تندرستی، کرکٹ، بیڈمنٹن اور دوستانہ مقابلوں کی پُرشوق جھلکیاں
+            {header?.subtitle || "تعلیم و تربیت کے ساتھ ساتھ طلبہ کی جسمانی تندرستی، کرکٹ، بیڈمنٹن اور دوستانہ مقابلوں کی پُرشوق جھلکیاں"}
           </p>
         </div>
 

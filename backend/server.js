@@ -16,6 +16,7 @@ import donationsRoutes from "./src/routes/donations.routes.js";
 import settingsRoutes from "./src/routes/settings.routes.js";
 import uploadRoutes from "./src/routes/upload.routes.js";
 import statsRoutes from "./src/routes/stats.routes.js";
+import homeContentRoutes from "./src/routes/homeContent.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,6 +56,7 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/api/donations", donationsRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/homepage", homeContentRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/stats", statsRoutes);
 

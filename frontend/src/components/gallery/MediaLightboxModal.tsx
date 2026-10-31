@@ -11,6 +11,7 @@ export interface MediaItem {
   type: "image" | "video";
   imageUrl: string;
   videoDuration?: string;
+  videoUrl?: string;
   date?: string;
   location?: string;
   description: string;
@@ -22,6 +23,12 @@ interface MediaLightboxModalProps {
 }
 
 export default function MediaLightboxModal({ item, onClose }: MediaLightboxModalProps) {
+  const [isPlaying, setIsPlaying] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsPlaying(false);
+  }, [item]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -37,6 +44,18 @@ export default function MediaLightboxModal({ item, onClose }: MediaLightboxModal
   }, [item, onClose]);
 
   if (!item) return null;
+
+  // Helper to extract YouTube embed URL if applicable
+  const getEmbedUrl = (url?: string) => {
+    if (!url) return null;
+    const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    if (ytMatch) {
+      return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+    }
+    return null;
+  };
+
+  const embedUrl = getEmbedUrl(item.videoUrl);
 
   return (
     <div
@@ -55,7 +74,7 @@ export default function MediaLightboxModal({ item, onClose }: MediaLightboxModal
               {item.type === "video" ? (
                 <>
                   <Film className="w-3.5 h-3.5 text-[#C9B38D]" />
-                  <span>ویڈیو کلپ ({item.videoDuration})</span>
+                  <span>ویڈیو کلپ {item.videoDuration ? `(${item.videoDuration})` : ""}</span>
                 </>
               ) : (
                 <>
@@ -71,7 +90,7 @@ export default function MediaLightboxModal({ item, onClose }: MediaLightboxModal
 
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-[#1A0E08] hover:bg-[#2A170E] border border-[#C9B38D]/40 text-stone-300 hover:text-white flex items-center justify-center transition"
+            className="w-9 h-9 rounded-full bg-[#1A0E08] hover:bg-[#2A170E] border border-[#C9B38D]/40 text-stone-300 hover:text-white flex items-center justify-center transition cursor-pointer"
             aria-label="بند کریں"
           >
             <X className="w-5 h-5" />
@@ -80,24 +99,49 @@ export default function MediaLightboxModal({ item, onClose }: MediaLightboxModal
 
         {/* Media Preview Box */}
         <div className="relative w-full h-[45vh] sm:h-[55vh] bg-[#0A0503] flex items-center justify-center overflow-hidden">
-          <Image
-            src={item.imageUrl}
-            alt={item.title}
-            fill
-            className="object-contain"
-            priority
-          />
+          {item.type === "video" && isPlaying ? (
+            embedUrl ? (
+              <iframe
+                src={embedUrl}
+                title={item.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full border-0"
+              />
+            ) : item.videoUrl ? (
+              <video
+                src={item.videoUrl}
+                controls
+                autoPlay
+                className="w-full h-full object-contain"
+              />
+            ) : (
+              <div className="text-stone-300 font-urdu text-sm">ویڈیو کا ربط دستیاب نہیں ہے</div>
+            )
+          ) : (
+            <>
+              <Image
+                src={item.imageUrl}
+                alt={item.title}
+                fill
+                className="object-contain"
+                priority
+              />
 
-          {/* If Video: Overlay Simulated Player Controls */}
-          {item.type === "video" && (
-            <div className="absolute inset-0 bg-black/35 flex flex-col items-center justify-center">
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-white/90 hover:bg-white text-[#120A05] border-2 border-[#C9B38D] flex items-center justify-center shadow-[0_0_35px_rgba(201,179,141,0.8)] cursor-pointer transform hover:scale-110 active:scale-95 transition-all duration-300">
-                <Play className="w-8 h-8 fill-[#120A05] text-[#120A05] mr-1" />
-              </div>
-              <span className="mt-4 px-4 py-1.5 rounded-full bg-[#120A05]/85 text-xs font-urdu text-stone-200 border border-[#C9B38D]/40 backdrop-blur-sm">
-                ویڈیو چلانے کے لیے کلک فرمائیں
-              </span>
-            </div>
+              {item.type === "video" && (
+                <div
+                  onClick={() => setIsPlaying(true)}
+                  className="absolute inset-0 bg-black/40 hover:bg-black/20 flex flex-col items-center justify-center cursor-pointer transition-colors"
+                >
+                  <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-white/90 hover:bg-white text-[#120A05] border-2 border-[#C9B38D] flex items-center justify-center shadow-[0_0_35px_rgba(201,179,141,0.8)] transform hover:scale-110 active:scale-95 transition-all duration-300">
+                    <Play className="w-8 h-8 fill-[#120A05] text-[#120A05] mr-1" />
+                  </div>
+                  <span className="mt-4 px-4 py-1.5 rounded-full bg-[#120A05]/85 text-xs font-urdu text-stone-200 border border-[#C9B38D]/40 backdrop-blur-sm">
+                    ویڈیو چلانے کے لیے کلک فرمائیں ▶
+                  </span>
+                </div>
+              )}
+            </>
           )}
         </div>
 

@@ -32,17 +32,23 @@ const fileFilter = (req, file, cb) => {
     "image/png",
     "image/webp",
     "image/gif",
-    "application/pdf"
+    "image/svg+xml",
+    "application/pdf",
+    "video/mp4",
+    "video/webm",
+    "video/ogg",
+    "video/quicktime",
+    "video/x-matroska"
   ];
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("صرف تصاویر (JPG, PNG, WEBP) اور پی ڈی ایف دستاویزات کی اجازت ہے"), false);
+    cb(new Error("صرف تصاویر (JPG, PNG, WEBP, GIF)، ویڈیوز (MP4, WEBM, MOV) اور پی ڈی ایف کی اجازت ہے"), false);
   }
 };
 
 export const upload = multer({
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit for videos and media
   fileFilter: fileFilter
 });
