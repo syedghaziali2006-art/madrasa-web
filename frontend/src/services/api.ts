@@ -1,7 +1,9 @@
 // API client for Madrasa Sahib uz Zaman Frontend & Admin Panel
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_URL) ||
+  (typeof process !== "undefined" && process.env && (process.env.VITE_API_URL || process.env.NEXT_PUBLIC_API_URL)) ||
+  "/api";
 
 const getAuthToken = (): string | null => {
   if (typeof window === "undefined") return null;

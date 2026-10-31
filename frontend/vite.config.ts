@@ -4,9 +4,15 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    'process.env': {},
+  },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(import.meta.dirname, './src'),
+      'next/image': path.resolve(import.meta.dirname, './src/shims/next-image.tsx'),
+      'next/link': path.resolve(import.meta.dirname, './src/shims/next-link.tsx'),
+      'next/navigation': path.resolve(import.meta.dirname, './src/shims/next-navigation.tsx'),
     },
   },
   server: {
