@@ -1012,6 +1012,8 @@ export default function AdminHomePage() {
               </button>
             </div>
           </form>
+        )}
+
         {/* TAB: DONATIONS SECTION CONFIGURATION */}
         {activeTab === "donations" && (
           <form onSubmit={handleSaveAll} className="space-y-6 max-w-5xl mx-auto">
@@ -1573,6 +1575,203 @@ export default function AdminHomePage() {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Testimonial Add/Edit Modal */}
+        {isTestimonialModalOpen && editingTestimonial && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto animate-fadeIn">
+            <div className="bg-[#1C1009] border border-[#C9B38D]/40 p-6 sm:p-8 rounded-3xl max-w-2xl w-full shadow-2xl relative my-8">
+              <button
+                type="button"
+                onClick={() => setIsTestimonialModalOpen(false)}
+                className="absolute top-5 left-5 p-2 rounded-full bg-white/10 text-white hover:text-[#C9B38D] transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-[#C9B38D]" />
+                <span>{editingTestimonial.name ? "تاثر / ریویو کی تفصیل تبدیل کریں" : "نیا تاثر شامل کریں"}</span>
+              </h3>
+
+              <form onSubmit={handleSaveTestimonial} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1">
+                      نامِ گرامی *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editingTestimonial.name}
+                      onChange={(e) => setEditingTestimonial({ ...editingTestimonial, name: e.target.value })}
+                      placeholder="مثال: علامہ سید عابد رضوی"
+                      className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1">
+                      عہدہ / حیثیت (Role)
+                    </label>
+                    <input
+                      type="text"
+                      value={editingTestimonial.role}
+                      onChange={(e) => setEditingTestimonial({ ...editingTestimonial, role: e.target.value })}
+                      placeholder="مثال: فاضل حوزہ علمیہ قم و محقق"
+                      className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1">
+                      کیٹیگری (Category)
+                    </label>
+                    <select
+                      value={editingTestimonial.category}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        const labelMap: any = {
+                          scholars: "علمائے کرام",
+                          parents: "محترم سرپرست و والدین",
+                          alumni: "فارغ التحصیل طلبہ"
+                        };
+                        setEditingTestimonial({
+                          ...editingTestimonial,
+                          category: val,
+                          categoryLabel: labelMap[val] || "علمائے کرام"
+                        });
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none cursor-pointer"
+                    >
+                      <option value="scholars">علمائے کرام</option>
+                      <option value="parents">محترم سرپرست و والدین</option>
+                      <option value="alumni">فارغ التحصیل طلبہ</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1">
+                      بیج (Badge Label)
+                    </label>
+                    <input
+                      type="text"
+                      value={editingTestimonial.badge}
+                      onChange={(e) => setEditingTestimonial({ ...editingTestimonial, badge: e.target.value })}
+                      placeholder="مثال: جید عالمِ دین"
+                      className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1">
+                      اسٹارز ریٹنگ (1-5)
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={5}
+                      value={editingTestimonial.rating || 5}
+                      onChange={(e) => setEditingTestimonial({ ...editingTestimonial, rating: Number(e.target.value) })}
+                      className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1">
+                      شہر / مقام (Location)
+                    </label>
+                    <input
+                      type="text"
+                      value={editingTestimonial.location}
+                      onChange={(e) => setEditingTestimonial({ ...editingTestimonial, location: e.target.value })}
+                      placeholder="کراچی / قم"
+                      className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-stone-300 mb-1">
+                      تاریخ یا سال (Date)
+                    </label>
+                    <input
+                      type="text"
+                      value={editingTestimonial.date}
+                      onChange={(e) => setEditingTestimonial({ ...editingTestimonial, date: e.target.value })}
+                      placeholder="شوال ۱۴۴۵ھ"
+                      className="w-full px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1">
+                    اواتار تصویر (Avatar URL):
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      dir="ltr"
+                      value={editingTestimonial.avatar}
+                      onChange={(e) => setEditingTestimonial({ ...editingTestimonial, avatar: e.target.value })}
+                      className="flex-1 px-3 py-2 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
+                      placeholder="/images/layout/avatar1.jpg"
+                    />
+                    <input
+                      type="file"
+                      ref={avatarInputRef}
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarUpload}
+                    />
+                    <button
+                      type="button"
+                      disabled={uploadingAvatar}
+                      onClick={() => avatarInputRef.current?.click()}
+                      className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
+                      <span>{uploadingAvatar ? "اپلوڈ..." : "تصویر چنیں"}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-300 mb-1">
+                    تاثر / ریویو کا مکمل متن (Quote) *
+                  </label>
+                  <textarea
+                    rows={4}
+                    required
+                    value={editingTestimonial.quote}
+                    onChange={(e) => setEditingTestimonial({ ...editingTestimonial, quote: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/25 text-white text-xs font-urdu leading-[2.3] focus:border-[#C9B38D] focus:outline-none"
+                    placeholder="مدرسہ کے متعلق تاثرات یہاں درج کریں..."
+                  />
+                </div>
+
+                <div className="pt-3 flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsTestimonialModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-stone-300 text-xs font-bold transition"
+                  >
+                    منسوخ کریں
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 rounded-xl bg-gradient-to-l from-[#C9B38D] to-[#EFE5D2] text-[#120A05] text-xs font-bold hover:brightness-105 shadow transition cursor-pointer"
+                  >
+                    محفوظ کریں
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
       </div>
