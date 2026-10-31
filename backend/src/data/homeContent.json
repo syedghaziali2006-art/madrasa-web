@@ -283,5 +283,207 @@
       "description": "طلبہ کے لیے سرسبز و شاداب قدرتی ماحول، چہل قدمی اور فکری مباحثوں کی کشادہ جگہ۔"
     }
   ],
-  "updatedAt": "2026-10-31T06:15:00.000Z"
+  "libraryMedia": [
+    {
+      "id": "lib-1",
+      "title": "مرکزی مطالعہ ہال و کتب الماری",
+      "category": "مطالعہ و کتب",
+      "type": "image",
+      "imageUrl": "/images/gallery/library-interior.jpg",
+      "date": "کتب خانہ صاحب الزمان",
+      "location": "ہال نمبر ۱ - حوزوی کتب",
+      "description": "شاہکار لکڑی کی الماریوں میں سجی ہزاروں کتب، پرسکون ماحول اور طلبہ کے لیے وسیع اسٹڈی ٹیبلز۔"
+    },
+    {
+      "id": "lib-2",
+      "title": "قدیم نایاب خطی نسخے و قلمی نوادرات",
+      "category": "مخطوطات و نوادرات",
+      "type": "image",
+      "imageUrl": "/images/library.jpg",
+      "date": "نایاب کتب",
+      "location": "خصوصی ریسرچ سیکشن",
+      "description": "صدیوں پرانے قلمی نسخے، تفاسیر اور علمائے سلف کے نایاب ہاتھ کے لکھے ہوئے کتب کے اوراق۔"
+    },
+    {
+      "id": "lib-3",
+      "title": "کتبِ تفاسیر، احادیث و فقہی انسائیکلوپیڈیا",
+      "category": "علومِ آلِ محمدؑ",
+      "type": "image",
+      "imageUrl": "/images/books/book-3.jpg",
+      "date": "بنیادی مآخذ",
+      "location": "شعبہ تحقیق و فقہ",
+      "description": "کتبِ اربعہ، بحار الانوار، وسائل الشیعہ اور تفاسیر قرآن کا عظیم الشان اور مستند مجموعہ۔"
+    },
+    {
+      "id": "lib-4",
+      "title": "ڈیجیٹل لائبریری و آن لائن ریسرچ سسٹم",
+      "category": "ڈیجیٹل کیٹلاگ",
+      "type": "image",
+      "imageUrl": "/images/books/book-2.jpg",
+      "date": "جدید تحقیق",
+      "location": "کمپیوٹر کیٹلاگ کارنر",
+      "description": "آن لائن پورٹل جہاں سے طلبہ دنیا بھر کے اسلامی مقالات اور پی ڈی ایف کتب تک رسائی حاصل کرتے ہیں۔"
+    },
+    {
+      "id": "lib-5",
+      "title": "محققین و اساتذہ کا فکری کارنر",
+      "category": "ریسرچ کارنر",
+      "type": "image",
+      "imageUrl": "/images/books/book-5.jpg",
+      "date": "علمی نشستیں",
+      "location": "سیمینار روم",
+      "description": "اساتذہ اور محقق طلبہ کے سنجیدہ فکری مباحث اور علمی مقالہ نگاری کے لیے مختص جگہ۔"
+    }
+  ],
+  "activitiesMedia": [
+    {
+      "id": "sports-cricket",
+      "title": "سالانہ کرکٹ ٹورنامنٹ ۲۰۲۶ - فائنل میچ اور بچوں کی خوشی",
+      "category": "کھیل کود و اسپورٹس",
+      "type": "video",
+      "videoDuration": "۰۳:۲۰",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "imageUrl": "/images/gallery/sports-day.jpg",
+      "date": "ہفتہ وار اسپورٹس ڈے",
+      "location": "مدرسہ صاحب الزمان پلے گراؤنڈ",
+      "description": "طلبہ کے درمیان تفریحی کرکٹ میچ کی پُرجوش جھلکیاں، چھکے چوکے اور فاتح ٹیم کی فتح کا جشن۔"
+    },
+    {
+      "id": "indoor-games",
+      "title": "ان ڈور گیمز - کیرم اور شطرنج کے مقابلے",
+      "category": "ذہنی تفریح",
+      "type": "image",
+      "imageUrl": "/images/gallery/indoor-games.jpg",
+      "date": "شام کا تفریحی وقت",
+      "location": "اسٹوڈنٹس ایکٹیویٹی روم",
+      "description": "کیرم بورڈ، شطرنج اور فکری کھیلوں میں طلبہ کی بھرپور دلچسپی، مسکراہٹیں اور باہمی رفاقت۔"
+    },
+    {
+      "id": "morning-exercise",
+      "title": "صبح کی باقاعدہ پی ٹی اور جسمانی ورزش",
+      "category": "صحت و تندرستی",
+      "type": "video",
+      "videoDuration": "۰۱:۴۵",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "imageUrl": "/images/gallery/exercise.jpg",
+      "date": "روزانہ فجر کے بعد",
+      "location": "مرکزی کورٹ یارڈ و گراؤنڈ",
+      "description": "صحت مند دماغ کے لیے تندرست جسم — روزانہ صبح باقاعدہ اسٹریچنگ، جاگنگ اور نظم و ضبط۔"
+    },
+    {
+      "id": "tug-of-war",
+      "title": "رسی کشی کا سنسنی خیز اور دوستانہ مقابلہ",
+      "category": "اسپورٹس فیسٹیول",
+      "type": "image",
+      "imageUrl": "/images/gallery/tug-of-war.jpg",
+      "date": "سالانہ فیسٹیول",
+      "location": "اوپن گراؤنڈ",
+      "description": "مختلف کلاسوں کے طلبہ کے درمیان زور آزمائی، اجتماعی ٹیم ورک اور بچوں کی پرلطف ہنسی۔"
+    },
+    {
+      "id": "friendly-badminton",
+      "title": "بیڈمنٹن چیمپئن شپ اور طلبہ کی مسکراہٹیں",
+      "category": "میدانی کھیل",
+      "type": "video",
+      "videoDuration": "۰۲:۱۰",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "imageUrl": "/images/gallery/badminton.jpg",
+      "date": "عصر کے بعد",
+      "location": "بیڈمنٹن کورٹ",
+      "description": "طلبہ کی چستی، مہارت اور کھیل کے دوران باہمی محبت، اخوت اور اسپورٹس مین اسپرٹ کا مظاہرہ۔"
+    }
+  ],
+  "picnicMedia": [
+    {
+      "id": "picnic-beach",
+      "title": "ساحلِ سمندر (سی ویو) کی تفریحی پکنک ۲۰۲۵",
+      "category": "سالانہ پکنک",
+      "type": "video",
+      "videoDuration": "۰۴:۵۰",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "imageUrl": "/images/gallery/picnic-beach.jpg",
+      "date": "اکتوبر ۲۰۲۵",
+      "location": "کلفٹن و سی ویو ساحل، کراچی",
+      "description": "طلبہ اور اساتذہ کا ساحلِ سمندر کا یادگار سفر، باجماعت نماز، لذیذ ظہرانہ اور ساحلی ہوائیں و کھیل۔"
+    },
+    {
+      "id": "botanical-garden",
+      "title": "باغِ ابنِ قاسم کا تفریحی و علمی وزٹ",
+      "category": "تعلیمی دورہ",
+      "type": "image",
+      "imageUrl": "/images/layout/sunset-mosque.jpg",
+      "date": "بہار ۲۰۲۵",
+      "location": "باغِ ابن قاسم، کراچی",
+      "description": "قدرت کے مناظر، سرسبز باغات اور طلبہ کے لیے معلوماتی تفریحی واک۔"
+    },
+    {
+      "id": "amusement-park",
+      "title": "تفریحی پارک میں طلبہ کی پرلطف مسکراہٹیں",
+      "category": "ایکٹیویٹی ڈے",
+      "type": "video",
+      "videoDuration": "۰۲:۱۵",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "imageUrl": "/images/layout/lattice-prayer.jpg",
+      "date": "دسمبر ۲۰۲۵",
+      "location": "تھیم پارک، کراچی",
+      "description": "جھولوں کی تفریح، دوستانہ محفل اور طلبہ کے چہروں پر مسکراہٹیں اور خوشیاں۔"
+    },
+    {
+      "id": "hill-view-lunch",
+      "title": "پہاڑی مقام پر ظہرانہ اور روحانی دعا",
+      "category": "سیر و سیاحت",
+      "type": "image",
+      "imageUrl": "/images/layout/congregation.jpg",
+      "date": "جنوری ۲۰۲۶",
+      "location": "پکنک پوائنٹ",
+      "description": "کھلے آسمان تلے باجماعت دعا اور اساتذہ کی رفاقت میں یادگار لمحات۔"
+    }
+  ],
+  "celebrationsMedia": [
+    {
+      "id": "event-convocation",
+      "title": "سالانہ تقریبِ تقسیمِ اسناد، انعامات اور شیلڈز ۲۰۲۶",
+      "category": "تقسیمِ انعامات",
+      "type": "video",
+      "videoDuration": "۰۶:۳۰",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "imageUrl": "/images/gallery/celebration-stage.jpg",
+      "date": "شعبان المعظم ۱۴۴۷ھ",
+      "location": "مرکزی پنڈال و اسٹیج",
+      "description": "ممتاز پوزیشن حاصل کرنے والے ہونہار طلبہ کو علمائے کرام کے دستِ مبارک سے اعزازی شیلڈز، کتب اور سرٹیفکیٹس کی تقسیم۔"
+    },
+    {
+      "id": "event-milad",
+      "title": "جشنِ ولادتِ باسعادت حضرت محمد مصطفیٰ ﷺ و امام جعفر صادقؑ",
+      "category": "جشن و میلاد",
+      "type": "image",
+      "imageUrl": "/images/layout/mosque-arches.jpg",
+      "date": "۱۷ ربیع الاول",
+      "location": "مرکزی کانفرنس ہال",
+      "description": "عطر بیز محفلِ میلاد، بچوں کی نعت خوانی، قصیدہ گوئی اور شیرینی کی تقسیم کا بابرکت منظر۔"
+    },
+    {
+      "id": "event-quran-comp",
+      "title": "آل پاکستان مقابلہ حسنِ قرائت و تجویدِ قرآن",
+      "category": "قرآنی مقابلہ",
+      "type": "video",
+      "videoDuration": "۰۳:۴۵",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "imageUrl": "/images/layout/quran-study.jpg",
+      "date": "رمضان المبارک",
+      "location": "مسجد صاحب الزمان",
+      "description": "ملک بھر کے نامور قراء کی موجودگی میں طلبہ کے درمیان لحنِ داؤدی اور تجوید کے روح پرور مقابلے۔"
+    },
+    {
+      "id": "event-turban",
+      "title": "روحانی تقریبِ عمامہ پوشی برائے فارغ التحصیل علماء",
+      "category": "عمامہ پوشی",
+      "type": "image",
+      "imageUrl": "/images/layout/congregation.jpg",
+      "date": "عیدِ غدیر",
+      "location": "مرکزی حسینیہ",
+      "description": "حوزوی نصاب مکمل کرنے والے فاضل طلبہ کو مراجعِ عظام کے نمائندگان کے ہاتھوں تاجِ رسول ﷺ پہنانے کی تقریب۔"
+    }
+  ],
+  "updatedAt": "2026-10-31T06:40:00.000Z"
 }

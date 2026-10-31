@@ -1,5 +1,20 @@
 [
   {
+    "id": "gal-mvw1376r",
+    "title": "ویڈیو",
+    "section": "campus",
+    "category": "کیمپس و عمارات",
+    "type": "video",
+    "imageUrl": "/images/layout/mosque-arches.jpg",
+    "videoDuration": "",
+    "videoUrl": "http://localhost:5000/uploads/whatsapp_video_2026-10-27_at_10_05_11_am-1793428576635-696711.mp4",
+    "date": "تعلیمی سال ۲۰۲۶",
+    "location": "کراچی کیمپس",
+    "description": "",
+    "featured": true,
+    "createdAt": "2026-10-31T06:36:49.059Z"
+  },
+  {
     "id": "gal-campus-1",
     "title": "مدرسہ کا مرکزی بیرونی منظر و گنبد",
     "section": "campus",
