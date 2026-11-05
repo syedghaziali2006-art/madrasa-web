@@ -1,22 +1,21 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { motion, PanInfo } from "framer-motion";
 import {
   Quote,
-  Sparkles,
   Star,
-  CheckCircle2,
-  ShieldCheck,
   ChevronLeft,
   ChevronRight,
   MessageSquarePlus,
   X,
   Send,
   Heart,
-  Award,
-  SlidersHorizontal
+  Hand,
+  CheckCircle2,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface TestimonialItem {
   id: number | string;
@@ -191,17 +190,12 @@ const defaultTestimonialsList: TestimonialItem[] = [
 ];
 
 export default function Testimonials({ header, items }: TestimonialsProps = {}) {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleCount, setVisibleCount] = useState(3);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [exitX, setExitX] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [likedReviews, setLikedReviews] = useState<{ [key: string]: boolean }>({});
   const [likeCounts, setLikeCounts] = useState<{ [key: string]: number }>({});
-
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -211,81 +205,39 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
     message: ""
   });
 
-  const categories = [
-    { id: "all", label: "تمام تاثرات" },
-    { id: "scholars", label: "علمائے کرام" },
-    { id: "parents", label: "محترم سرپرست و والدین" },
-    { id: "alumni", label: "فارغ التحصیل طلبہ" }
-  ];
-
   const testimonialsList: TestimonialItem[] =
     items && Array.isArray(items) && items.length > 0 ? items : defaultTestimonialsList;
 
-  // Responsive visible count: 1 on mobile, 2 on tablet, 3 on desktop, 4 on ultra-wide
-  useEffect(() => {
-    const updateVisibleCount = () => {
-      if (typeof window === "undefined") return;
-      if (window.innerWidth < 640) {
-        setVisibleCount(1);
-      } else if (window.innerWidth < 1024) {
-        setVisibleCount(2);
-      } else if (window.innerWidth < 1536) {
-        setVisibleCount(3);
-      } else {
-        setVisibleCount(4);
-      }
-    };
-    updateVisibleCount();
-    window.addEventListener("resize", updateVisibleCount);
-    return () => window.removeEventListener("resize", updateVisibleCount);
-  }, []);
-
-  const filteredTestimonials = useMemo(() => {
-    if (activeCategory === "all") return testimonialsList;
-    return testimonialsList.filter((item) => item.category === activeCategory);
-  }, [activeCategory, testimonialsList]);
-
-  // Reset index when category changes
-  useEffect(() => {
-    setCurrentIndex(0);
-  }, [activeCategory]);
-
-  const maxIndex = Math.max(0, filteredTestimonials.length - visibleCount);
-
-  // Auto-play sliding
-  useEffect(() => {
-    if (!isAutoPlaying || filteredTestimonials.length <= visibleCount) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
-    }, 4500);
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, filteredTestimonials.length, visibleCount, maxIndex]);
+  // Handle Drag Gesture
+  const handleDragEnd = (
+    _event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    if (Math.abs(info.offset.x) > 80) {
+      const direction = info.offset.x > 0 ? 300 : -300;
+      setExitX(direction);
+      setTimeout(() => {
+        // Cycle card
+        setCurrentIndex((prev) => (prev + 1) % testimonialsList.length);
+        setExitX(0);
+      }, 200);
+    }
+  };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    setExitX(-280);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonialsList.length);
+      setExitX(0);
+    }, 200);
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
-  };
-
-  // Touch Swipe for mobile devices
-  const minSwipeDistance = 50;
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    if (distance > minSwipeDistance) {
-      handleNext();
-    } else if (distance < -minSwipeDistance) {
-      handlePrev();
-    }
+    setExitX(280);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev - 1 + testimonialsList.length) % testimonialsList.length);
+      setExitX(0);
+    }, 200);
   };
 
   const handleLike = (id: number | string) => {
@@ -318,401 +270,334 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
   };
 
   return (
-    <section id="testimonials" className="py-20 sm:py-28 bg-[#120A05] islamic-navy-pattern relative overflow-hidden w-full" dir="rtl">
-      {/* Background Radial Glow Accents for rich Glassmorphism refraction */}
-      <div className="absolute top-1/4 -right-20 w-[700px] h-[450px] bg-[#C9B38D]/15 rounded-full blur-[150px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[400px] bg-amber-600/10 rounded-full blur-[170px] pointer-events-none" />
-      <div className="absolute bottom-5 -left-20 w-[600px] h-[450px] bg-emerald-700/10 rounded-full blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[350px] bg-[#C9B38D]/10 rounded-full blur-[140px] pointer-events-none" />
+    <section
+      id="reviews"
+      dir="rtl"
+      className="py-24 sm:py-32 relative overflow-hidden bg-[#0A0503] text-[#FAF7F2]"
+    >
+      {/* Background ambient lighting */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(201,179,141,0.12)_0%,_transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_rgba(255,185,0,0.08)_0%,_transparent_65%)] pointer-events-none" />
 
-      {/* Header and Controls Area */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* ======================================================== */}
-        {/* 1. SECTION HEADER: Center Majestic Urdu Typography       */}
-        {/* ======================================================== */}
-        <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.06] border border-white/20 text-[#E5D7BE] text-xs sm:text-sm font-semibold backdrop-blur-xl mb-4 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.25)]">
-            <Sparkles className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">{header?.badge || "اکابرین و سرپرستوں کے تاثرات"}</span>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 relative z-10">
+
+        {/* 1. SECTION HEADER */}
+        <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-18 space-y-4">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/85 border border-[#C9B38D]/40 text-[#D9C7A7] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg shadow-black/40">
+            
+            <span className="font-urdu">
+              {header?.badge || "اکابرین و سرپرستوں کے تاثرات"}
+            </span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
-            {header?.title || "اہلِ علم، اکابرین و والدین کے گراں قدر تاثرات"}
+            {header?.title || (
+              <>
+                علمائے کرام و اکابرین کے{" "}
+                <span className="text-[#C9B38D]">مبارک تاثرات و پیغامات</span>
+              </>
+            )}
           </h2>
 
-          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
-
-          <p className="text-sm sm:text-base md:text-lg text-[#FAF7F2] font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-medium">
-            {header?.subtitle || "علمائے کرام، معزز سرپرستوں اور فارغ التحصیل طلبہ کے مدرسہ صاحب الزمان کی علمی، اخلاقی و فلاحی خدمات سے متعلق دلی خیالات"}
+          <p className="font-urdu text-sm sm:text-lg text-stone-300 leading-relaxed max-w-2xl mx-auto pt-2">
+            {header?.subtitle || "مدرسہ کی علمی و اخلاقی خدمات پر جید علماء اور سرپرستوں کے تاثرات"}
           </p>
 
-          {/* Rating Pill with Frosted Glass Effect */}
-          <div className="mt-5 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.05] border border-white/15 backdrop-blur-xl text-xs font-urdu text-[#E5D7BE] shadow-[0_8px_20px_rgba(0,0,0,0.35),inset_0_1px_1px_0_rgba(255,255,255,0.2)]">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.6)]" />
-              ))}
-            </div>
-            <span className="text-white font-bold font-sans">5.0 / 5.0</span>
-            <span className="text-stone-400">•</span>
-            <span>۱۰۰٪ مصدقہ و باضابطہ آراء</span>
+          {/* Interactive Action Bar */}
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#1A0E08]/90 hover:bg-[#C9B38D] border border-[#C9B38D]/50 text-[#D9C7A7] hover:text-[#120A05] font-urdu text-xs sm:text-sm font-bold shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <MessageSquarePlus className="w-4 h-4" />
+              <span>اپنی رائے شامل کریں (Feedback)</span>
+            </button>
+
+            {/* Gesture Hint Badge */}
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-stone-300 text-xs font-urdu">
+              <Hand className="w-3.5 h-3.5 text-[#C9B38D] animate-bounce" />
+              <span>کارڈ کو دائیں یا بائیں سوائپ (Swipe) کریں</span>
+            </span>
           </div>
         </div>
 
-        {/* ======================================================== */}
-        {/* 2. CATEGORY TABS & SLIDER CONTROLS ROW                   */}
-        {/* ======================================================== */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 pb-4 border-b border-white/10 font-urdu">
-          
-          {/* Category Filter Buttons with Glass Effect */}
-          <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
-            {categories.map((cat) => {
-              const count =
-                cat.id === "all"
-                  ? testimonialsList.length
-                  : testimonialsList.filter((t) => t.category === cat.id).length;
+        {/* 2. STACKED MOTION CARD CAROUSEL (Framer-Motion Gesture Stack) */}
+        <div className="relative w-full max-w-2xl mx-auto h-[440px] sm:h-[400px] flex items-center justify-center">
 
-              const isActive = activeCategory === cat.id;
+          {/* Left Arrow Button (Next) */}
+          <button
+            onClick={handlePrev}
+            aria-label="پچھلی رائے"
+            className="absolute -right-4 sm:-right-14 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-md border border-[#f5deb3]/15 shadow-[inset_0_1px_1px_rgba(255,245,230,0.2),0_10px_25px_rgba(0,0,0,0.6)] text-[#f5deb3] hover:text-white hover:bg-white/[0.12] hover:border-[#f5deb3]/35 hover:scale-105 active:scale-95 transition-all duration-300 z-20 flex items-center justify-center cursor-pointer"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          {/* Right Arrow Button (Prev) */}
+          <button
+            onClick={handleNext}
+            aria-label="اگلی رائے"
+            className="absolute -left-4 sm:-left-14 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-md border border-[#f5deb3]/15 shadow-[inset_0_1px_1px_rgba(255,245,230,0.2),0_10px_25px_rgba(0,0,0,0.6)] text-[#f5deb3] hover:text-white hover:bg-white/[0.12] hover:border-[#f5deb3]/35 hover:scale-105 active:scale-95 transition-all duration-300 z-20 flex items-center justify-center cursor-pointer"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          {/* Stacked Cards Area */}
+          <div className="relative w-full h-full max-w-[560px] flex items-center justify-center">
+            {testimonialsList.map((item, index) => {
+              const isCurrentCard = index === currentIndex;
+              const isPrevCard = index === (currentIndex + 1) % testimonialsList.length;
+              const isNextCard = index === (currentIndex + 2) % testimonialsList.length;
+
+              if (!isCurrentCard && !isPrevCard && !isNextCard) return null;
+
+              const isLiked = !!likedReviews[String(item.id)];
+              const currentLikes =
+                (item.initialLikes || 35) + (likeCounts[String(item.id)] || 0);
 
               return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2 cursor-pointer ${
-                    isActive
-                      ? "bg-gradient-to-r from-[#C9B38D] via-[#DFCBB0] to-[#C9B38D] text-[#120A05] shadow-[0_0_20px_rgba(201,179,141,0.5)] scale-105 border border-white/30"
-                      : "bg-white/[0.05] backdrop-blur-xl text-stone-300 border border-white/10 hover:border-[#C9B38D]/60 hover:bg-white/[0.09] hover:text-white shadow-sm"
-                  }`}
+                <motion.div
+                  key={item.id}
+                  className={cn(
+                    "absolute w-full rounded-3xl p-6 sm:p-8 select-none cursor-grab active:cursor-grabbing",
+                    "bg-gradient-to-b from-[#2a1e14]/55 to-[#140e09]/75 hover:from-[#38281b]/65",
+                    "border border-[#f5deb3]/15 hover:border-[#f5deb3]/30",
+                    "shadow-[inset_0_1px_1px_0_rgba(255,245,230,0.18),0_12px_32px_-8px_rgba(0,0,0,0.6)] hover:shadow-[inset_0_1px_2px_0_rgba(255,245,230,0.28),0_16px_40px_-8px_rgba(0,0,0,0.7)]",
+                    "backdrop-blur-xl transition-all duration-300 ease-out"
+                  )}
+                  style={{
+                    zIndex: isCurrentCard ? 3 : isPrevCard ? 2 : 1,
+                  }}
+                  drag={isCurrentCard ? "x" : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.65}
+                  onDragEnd={isCurrentCard ? handleDragEnd : undefined}
+                  initial={{
+                    scale: 0.95,
+                    opacity: 0,
+                    y: isCurrentCard ? 0 : isPrevCard ? 10 : 20,
+                    rotate: isCurrentCard ? 0 : isPrevCard ? -2.5 : -5,
+                  }}
+                  animate={{
+                    scale: isCurrentCard ? 1 : isPrevCard ? 0.96 : 0.92,
+                    opacity: isCurrentCard ? 1 : isPrevCard ? 0.6 : 0.3,
+                    x: isCurrentCard ? exitX : 0,
+                    y: isCurrentCard ? 0 : isPrevCard ? 10 : 20,
+                    rotate: isCurrentCard ? exitX / 20 : isPrevCard ? -2.5 : -5,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 22,
+                  }}
                 >
-                  <span>{cat.label}</span>
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-sans font-bold ${
-                      isActive ? "bg-[#120A05] text-[#C9B38D]" : "bg-white/10 text-stone-300"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
+                  {/* Subtle Top-Center Specular Golden Light Bleed */}
+                  <div className="absolute top-0 inset-x-10 h-[1.5px] bg-gradient-to-r from-transparent via-[#f5deb3]/50 to-transparent pointer-events-none" />
+
+                  {/* Card Header: Category + Rating Stars */}
+                  <div className="flex items-center justify-between pb-4 border-b border-[#f5deb3]/15">
+                    <span className="font-urdu text-xs font-bold px-3.5 py-1.5 rounded-full bg-white/[0.04] backdrop-blur-md border border-[#f5deb3]/15 shadow-[inset_0_1px_1px_rgba(255,245,230,0.15)] text-[#f5deb3] hover:bg-white/[0.09] transition-all duration-300">
+                      {item.categoryLabel}
+                    </span>
+
+                    {/* 5 Rating Stars */}
+                    <div className="flex items-center gap-1" dir="ltr">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="w-4 h-4 fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]"
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Card Body: Quote */}
+                  <div className="relative py-4 sm:py-5 min-h-[140px] sm:min-h-[130px] flex items-center">
+                    <Quote className="absolute top-2 right-0 w-8 h-8 text-[#f5deb3]/15 pointer-events-none rotate-180" />
+                    <p className="font-urdu text-stone-200 text-sm sm:text-base leading-[2.1] sm:leading-[2.2] text-right font-medium relative z-10">
+                      &ldquo;{item.quote}&rdquo;
+                    </p>
+                  </div>
+
+                  {/* Card Footer: Reviewer Info + Interactive Like */}
+                  <div className="pt-4 border-t border-[#f5deb3]/15 flex items-center justify-between">
+                    {/* User Meta */}
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-12 h-12 rounded-full overflow-hidden border border-[#f5deb3]/40 shadow-md shrink-0 bg-[#120A05]">
+                        <Image
+                          src={item.avatar}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="text-right">
+                        <h4 className="font-urdu font-bold text-base text-white leading-tight">
+                          {item.name}
+                        </h4>
+                        <p className="font-urdu text-xs text-[#f5deb3] leading-tight mt-0.5">
+                          {item.role} • {item.location}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Interactive Like Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLike(item.id);
+                      }}
+                      className={cn(
+                        "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full backdrop-blur-md border transition-all duration-300 text-xs font-bold cursor-pointer",
+                        isLiked
+                          ? "bg-red-500/20 border-red-500/40 text-red-300 shadow-[inset_0_1px_1px_rgba(255,200,200,0.25),0_0_14px_rgba(239,68,68,0.35)]"
+                          : "bg-white/[0.04] border-[#f5deb3]/15 text-stone-300 shadow-[inset_0_1px_1px_rgba(255,245,230,0.15)] hover:bg-white/[0.09] hover:border-[#f5deb3]/30 hover:text-white"
+                      )}
+                      title="اس تاثر کو پسند کریں"
+                    >
+                      <Heart
+                        className={cn(
+                          "w-3.5 h-3.5 transition-colors",
+                          isLiked ? "fill-red-500 text-red-500" : "text-stone-300"
+                        )}
+                      />
+                      <span>{currentLikes}</span>
+                    </button>
+                  </div>
+                </motion.div>
               );
             })}
           </div>
+        </div>
 
-          {/* Action & Slider Navigation Controls with Glass Effect */}
-          <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-            {/* Modal Trigger Button */}
+        {/* 3. PAGINATION DOTS (Clickable Indicators) */}
+        <div className="mt-8 flex justify-center items-center gap-2">
+          {testimonialsList.map((_, index) => (
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.07] hover:bg-white/[0.13] backdrop-blur-xl text-stone-100 text-xs font-bold border border-white/20 hover:border-[#C9B38D] transition shadow-[0_4px_16px_rgba(0,0,0,0.3)] cursor-pointer"
-            >
-              <MessageSquarePlus className="w-4 h-4 text-[#C9B38D]" />
-              <span>اپنی رائے درج کریں</span>
-            </button>
-
-            {/* Slider Navigation Arrows (< & >) */}
-            <div className="flex items-center gap-2 bg-white/[0.05] backdrop-blur-xl p-1.5 rounded-full border border-white/15 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.15)]">
-              <button
-                onClick={handlePrev}
-                aria-label="پچھلا تاثر"
-                title="پچھلا تاثر"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-stone-300 hover:text-[#120A05] bg-white/[0.06] hover:bg-[#C9B38D] border border-white/10 hover:border-[#C9B38D] transition active:scale-95 cursor-pointer shadow-sm"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-
-              <span className="text-xs font-mono font-bold text-[#C9B38D] px-2.5" dir="ltr">
-                {currentIndex + 1} / {Math.max(1, filteredTestimonials.length)}
-              </span>
-
-              <button
-                onClick={handleNext}
-                aria-label="اگلا تاثر"
-                title="اگلا تاثر"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-stone-300 hover:text-[#120A05] bg-white/[0.06] hover:bg-[#C9B38D] border border-white/10 hover:border-[#C9B38D] transition active:scale-95 cursor-pointer shadow-sm"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* ======================================================== */}
-      {/* 3. FULL-WIDTH SINGLE ROW TESTIMONIALS SLIDER CAROUSEL     */}
-      {/* ======================================================== */}
-      <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 relative z-10">
-        <div
-          className="relative overflow-hidden w-full py-6"
-          dir="ltr"
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-          onMouseEnter={() => setIsAutoPlaying(false)}
-          onMouseLeave={() => setIsAutoPlaying(true)}
-        >
-          {filteredTestimonials.length === 0 ? (
-            <div className="text-center py-12 text-stone-400 font-urdu text-sm" dir="rtl">
-              اس کیٹیگری میں فی الحال کوئی تاثر موجود نہیں ہے۔
-            </div>
-          ) : (
-            <div
-              className="flex transition-transform duration-500 ease-out"
-              style={{
-                transform: `translateX(-${currentIndex * (100 / visibleCount)}%)`,
-              }}
-            >
-              {filteredTestimonials.map((item, idx) => {
-                const currentLikes = (likeCounts[String(item.id)] || 0) + (item.initialLikes || 30);
-                const isLiked = !!likedReviews[String(item.id)];
-
-                return (
-                  <div
-                    key={item.id || idx}
-                    className="shrink-0 px-2 sm:px-3 lg:px-3.5 flex flex-col"
-                    style={{ width: `${100 / visibleCount}%` }}
-                    dir="rtl"
-                  >
-                    {/* Glassmorphic Card Container */}
-                    <div className="h-full p-6 sm:p-7 rounded-[28px] bg-gradient-to-b from-white/[0.09] via-white/[0.03] to-[#120A05]/70 backdrop-blur-2xl backdrop-saturate-150 border border-white/15 hover:border-[#C9B38D]/70 shadow-[0_20px_50px_rgba(0,0,0,0.65),inset_0_1px_1px_0_rgba(255,255,255,0.22),inset_0_0_20px_rgba(201,179,141,0.04)] hover:shadow-[0_25px_60px_rgba(201,179,141,0.25),inset_0_1px_1px_0_rgba(255,255,255,0.35)] transition-all duration-300 flex flex-col justify-between text-right relative group hover:-translate-y-1.5 overflow-hidden">
-                      
-                      {/* Top Corner Specular Sheen & Ambient Refraction Glow */}
-                      <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-white/[0.12] via-transparent to-transparent pointer-events-none" />
-                      <div className="absolute -top-20 -right-20 w-44 h-44 bg-[#C9B38D]/15 rounded-full blur-2xl pointer-events-none group-hover:bg-[#C9B38D]/25 transition-all duration-500" />
-                      
-                      {/* Subtle Ambient Quote Watermark */}
-                      <Quote className="absolute top-4 left-4 w-14 h-14 text-[#C9B38D]/10 pointer-events-none group-hover:text-[#C9B38D]/20 transition-colors" />
-
-                      {/* Top Row: Category Tag, Stars & Date */}
-                      <div className="relative z-10">
-                        <div className="flex items-center justify-between gap-2 mb-4">
-                          <span className="px-3 py-1 rounded-full bg-white/[0.07] backdrop-blur-md text-[11px] font-urdu font-bold text-[#EAD8B8] border border-white/20 shadow-inner">
-                            {item.badge || item.categoryLabel}
-                          </span>
-
-                          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/10 shadow-sm">
-                            <div className="flex text-amber-400">
-                              {[...Array(item.rating || 5)].map((_, i) => (
-                                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.5)]" />
-                              ))}
-                            </div>
-                            <span className="text-[10px] font-urdu text-stone-300">
-                              {item.date}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Quote Text in clear Urdu typography */}
-                        <p className="text-xs sm:text-sm text-stone-100 font-urdu leading-[2.4] mb-6 line-clamp-5 font-normal">
-                          &ldquo;{item.quote}&rdquo;
-                        </p>
-                      </div>
-
-                      {/* Reviewer Details Bottom Row */}
-                      <div className="pt-4 border-t border-white/10 relative z-10">
-                        <div className="flex items-center justify-between gap-3">
-                          
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#C9B38D]/80 shrink-0 shadow-lg bg-[#120A05]/80 ring-2 ring-white/15">
-                              <Image
-                                src={item.avatar || "/images/layout/avatar1.jpg"}
-                                alt={item.name}
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-
-                            <div className="min-w-0">
-                              <h4 className="text-sm sm:text-base font-urdu font-bold text-white group-hover:text-[#E8D7B8] transition-colors truncate">
-                                {item.name}
-                              </h4>
-                              <p className="text-xs text-[#C9B38D] font-urdu font-medium truncate mt-0.5">
-                                {item.role}
-                              </p>
-                              <p className="text-[10px] text-stone-300 font-urdu truncate">
-                                {item.location} • {item.association}
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Reaction Heart Button with Glass Styling */}
-                          <button
-                            onClick={() => handleLike(item.id)}
-                            aria-label="مفید تاثر"
-                            title="مفید تاثر"
-                            className={`w-9 h-9 rounded-full flex items-center justify-center transition shrink-0 backdrop-blur-md border cursor-pointer ${
-                              isLiked
-                                ? "bg-rose-500/20 border-rose-400/80 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.4)]"
-                                : "bg-white/[0.06] border-white/15 text-stone-300 hover:text-white hover:border-[#C9B38D] hover:bg-white/[0.12]"
-                            }`}
-                          >
-                            <Heart
-                              className={`w-4 h-4 transition-transform duration-200 ${
-                                isLiked ? "fill-rose-400 text-rose-400 scale-110" : ""
-                              }`}
-                            />
-                          </button>
-
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={cn(
+                "rounded-full transition-all duration-300 cursor-pointer",
+                index === currentIndex
+                  ? "w-8 h-2.5 bg-[#C9B38D] shadow-[0_0_10px_#C9B38D]"
+                  : "w-2.5 h-2.5 bg-white/20 hover:bg-white/40"
+              )}
+              aria-label={`رائے نمبر ${index + 1}`}
+            />
+          ))}
         </div>
 
-        {/* ======================================================== */}
-        {/* 4. DOT INDICATORS FOR SLIDER (Frosted Glass Pill)        */}
-        {/* ======================================================== */}
-        {filteredTestimonials.length > visibleCount && (
-          <div className="flex items-center justify-center mt-4">
-            <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] backdrop-blur-xl border border-white/15 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.15)]">
-              {Array.from({ length: maxIndex + 1 }).map((_, dIdx) => (
-                <button
-                  key={dIdx}
-                  onClick={() => setCurrentIndex(dIdx)}
-                  aria-label={`سلائیڈ ${dIdx + 1}`}
-                  className={`transition-all duration-300 rounded-full cursor-pointer ${
-                    currentIndex === dIdx
-                      ? "w-8 h-2 bg-gradient-to-r from-[#C9B38D] to-[#EFE5D2] shadow-[0_0_12px_rgba(201,179,141,0.8)]"
-                      : "w-2 h-2 bg-white/20 hover:bg-white/40"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* ======================================================== */}
-      {/* 5. MODAL: SUBMIT REVIEW / FEEDBACK FORM                  */}
-      {/* ======================================================== */}
+      {/* ============================================================== */}
+      {/* 4. MODAL: "اپنی رائے شامل کریں" (FEEDBACK MODAL)                  */}
+      {/* ============================================================== */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fadeIn" dir="rtl">
-          <div className="relative w-full max-w-lg bg-gradient-to-b from-[#1C1009]/95 to-[#120A05]/95 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.85),inset_0_1px_1px_0_rgba(255,255,255,0.2)] text-right max-h-[90vh] overflow-y-auto">
-            
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-5 left-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-stone-300 hover:text-white transition flex items-center justify-center cursor-pointer"
-              aria-label="بند کریں"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <div className="mb-6">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2A160D] border border-[#C9B38D]/30 text-[#C9B38D] text-xs font-urdu mb-2">
-                <Heart className="w-3.5 h-3.5" />
-                <span>رائے و تجاویز</span>
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-lg bg-gradient-to-b from-[#1C1108] to-[#120A05] border-2 border-[#C9B38D]/40 rounded-3xl p-6 sm:p-8 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+            dir="rtl"
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-[#C9B38D]/25 mb-5">
+              <div className="flex items-center gap-2">
+                <MessageSquarePlus className="w-5 h-5 text-[#C9B38D]" />
+                <h3 className="font-urdu font-bold text-lg text-white">
+                  اپنی قیمتی رائے ارسال فرمائیں
+                </h3>
               </div>
-              <h3 className="text-xl sm:text-2xl font-urdu font-bold text-white leading-[1.7]">
-                اپنا گراں قدر تاثر درج فرمائیں
-              </h3>
-              <p className="text-xs text-stone-300 font-urdu mt-1 leading-[1.8]">
-                آپ کی رائے اور تاثرات ہمارے لیے مشعلِ راہ ہیں۔ برائے مہربانی اپنا پیغام درج کریں۔
-              </p>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
             {feedbackSubmitted ? (
-              <div className="p-6 rounded-2xl bg-emerald-950/60 border border-emerald-500/50 text-center space-y-3">
-                <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
-                <h4 className="font-urdu font-bold text-lg text-white">شکریہ! آپ کی رائے موصول ہو گئی</h4>
-                <p className="font-urdu text-xs text-stone-200">
-                  آپ کے نیک جذبات اور گراں قدر خیالات کا بہت شکریہ۔ تصدیق کے بعد ویب سائٹ پر شائع کر دیا جائے گا۔
+              <div className="py-8 text-center space-y-3 font-urdu">
+                <CheckCircle2 className="w-14 h-14 text-emerald-400 mx-auto" />
+                <h4 className="text-xl font-bold text-white">جزاک اللہ خیراً!</h4>
+                <p className="text-sm text-stone-300">
+                  آپ کی قیمتی رائے کامیابی سے موصول ہو گئی ہے۔ انتظامیہ کے جائزے کے بعد اسے شائع کر دیا جائے گا۔
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleFormSubmit} className="space-y-4 font-urdu text-xs sm:text-sm">
+              <form onSubmit={handleFormSubmit} className="space-y-4 font-urdu text-right">
                 <div>
-                  <label className="block text-stone-300 mb-1 font-semibold">آپ کا مبارک نام *</label>
+                  <label className="block text-xs font-semibold text-[#D9C7A7] mb-1">
+                    آپ کا اسمِ گرامی *
+                  </label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="مثلاً: الحاج سید علی رضا"
-                    className="w-full bg-[#140A05] border border-[#C9B38D]/30 focus:border-[#C9B38D] rounded-xl px-4 py-2.5 text-white outline-none"
+                    placeholder="مثلاً: علامہ سید محمد رضوی / محمد علی"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 focus:border-[#C9B38D] text-white text-sm outline-none"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-stone-300 mb-1 font-semibold">تعلق / حیثیت</label>
+                    <label className="block text-xs font-semibold text-[#D9C7A7] mb-1">
+                      رابطہ نمبر / شہر
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      placeholder="0300-1234567"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 focus:border-[#C9B38D] text-white text-sm outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-[#D9C7A7] mb-1">
+                      تعلق کی نوعیت
+                    </label>
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full bg-[#140A05] border border-[#C9B38D]/30 focus:border-[#C9B38D] rounded-xl px-4 py-2.5 text-white outline-none cursor-pointer"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 focus:border-[#C9B38D] text-white text-sm outline-none cursor-pointer"
                     >
                       <option value="والدین / سرپرست">والدین / سرپرست</option>
-                      <option value="عالمِ دین / محقق">عالمِ دین / محقق</option>
+                      <option value="علمائے کرام">علمائے کرام</option>
                       <option value="فارغ التحصیل طالب علم">فارغ التحصیل طالب علم</option>
-                      <option value="خیر خواہ و معاون">خیر خواہ و معاون</option>
+                      <option value="معزز مہمان / خیر خواہ">معزز مہمان / خیر خواہ</option>
                     </select>
                   </div>
-
-                  <div>
-                    <label className="block text-stone-300 mb-1 font-semibold">موبائل / واٹس ایپ نمبر</label>
-                    <input
-                      type="tel"
-                      dir="ltr"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="03001234567"
-                      className="w-full bg-[#140A05] border border-[#C9B38D]/30 focus:border-[#C9B38D] rounded-xl px-4 py-2.5 text-white outline-none text-right"
-                    />
-                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-stone-300 mb-1 font-semibold">درجہ بندی (اسٹارز)</label>
-                  <div className="flex gap-2 p-2 bg-[#140A05] rounded-xl border border-[#C9B38D]/20">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        type="button"
-                        key={star}
-                        onClick={() => setFormData({ ...formData, rating: star })}
-                        className="p-1 hover:scale-125 transition-transform cursor-pointer"
-                      >
-                        <Star
-                          className={`w-6 h-6 ${
-                            star <= formData.rating
-                              ? "fill-[#C9B38D] text-[#C9B38D]"
-                              : "text-stone-600"
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-stone-300 mb-1 font-semibold">آپ کا تاثر / پیغام *</label>
+                  <label className="block text-xs font-semibold text-[#D9C7A7] mb-1">
+                    آپ کے تاثرات / تبصرہ *
+                  </label>
                   <textarea
-                    rows={3}
                     required
+                    rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="مدرسہ صاحب الزمان سے متعلق اپنے خیالات یا تاثرات درج فرمائیں..."
-                    className="w-full bg-[#140A05] border border-[#C9B38D]/30 focus:border-[#C9B38D] rounded-xl px-4 py-2 text-white outline-none resize-none leading-[2.1]"
+                    placeholder="مدرسہ صاحب الزمان کی علمی، اخلاقی و تربیتی خدمات کے بارے میں اپنے مخلصانہ تاثرات تحریر فرمائیں..."
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#120A05] border border-[#C9B38D]/30 focus:border-[#C9B38D] text-white text-sm outline-none resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full font-urdu font-bold text-sm py-3 rounded-full bg-[#C9B38D] hover:bg-[#D9C7A7] text-[#120A05] transition shadow-lg mt-2 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 rounded-full bg-gradient-to-r from-[#D9C7A7] to-[#C9B38D] text-[#120A05] font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   <span>تاثرات ارسال کریں</span>
                 </button>
               </form>
             )}
-
           </div>
         </div>
       )}
-
     </section>
   );
 }

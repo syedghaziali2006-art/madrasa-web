@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Award, Play, Calendar, MapPin, Sparkles, Star, ChevronLeft, ChevronRight, Video } from "lucide-react";
+import { Award, Play, Calendar, MapPin, Star, ChevronLeft, ChevronRight, Video } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
 
 import { api } from "@/services/api";
@@ -145,7 +145,7 @@ export default function CelebrationsGallerySection({ header, items }: Celebratio
             {/* Top Badges */}
             <div className="absolute top-4 right-4 left-4 flex items-center justify-between z-10">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#120A05]/90 border border-[#C9B38D] text-xs sm:text-sm font-urdu font-bold text-[#C9B38D] backdrop-blur-md shadow-lg">
-                <Sparkles className="w-4 h-4 text-[#C9B38D]" />
+                
                 <span>{currentEvent.category}</span>
               </span>
 
@@ -196,17 +196,17 @@ export default function CelebrationsGallerySection({ header, items }: Celebratio
             <div className="flex items-center gap-2 self-start sm:self-center">
               <button
                 onClick={handlePrev}
-                className="w-10 h-10 rounded-full bg-[#1A0E08] hover:bg-[#2A170E] border border-[#C9B38D]/40 text-white flex items-center justify-center transition active:scale-95"
+                className="w-10 h-10 rounded-full bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-md border border-[#f5deb3]/15 shadow-[inset_0_1px_1px_rgba(255,245,230,0.2),0_4px_12px_rgba(0,0,0,0.3)] text-[#f5deb3] hover:text-white hover:bg-white/[0.12] hover:border-[#f5deb3]/35 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer"
                 aria-label="پچھلی تقریب"
               >
-                <ChevronRight className="w-5 h-5 text-[#C9B38D]" />
+                <ChevronRight className="w-5 h-5 text-[#f5deb3]" />
               </button>
               <button
                 onClick={handleNext}
-                className="w-10 h-10 rounded-full bg-[#1A0E08] hover:bg-[#2A170E] border border-[#C9B38D]/40 text-white flex items-center justify-center transition active:scale-95"
+                className="w-10 h-10 rounded-full bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-md border border-[#f5deb3]/15 shadow-[inset_0_1px_1px_rgba(255,245,230,0.2),0_4px_12px_rgba(0,0,0,0.3)] text-[#f5deb3] hover:text-white hover:bg-white/[0.12] hover:border-[#f5deb3]/35 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer"
                 aria-label="اگلی تقریب"
               >
-                <ChevronLeft className="w-5 h-5 text-[#C9B38D]" />
+                <ChevronLeft className="w-5 h-5 text-[#f5deb3]" />
               </button>
               <span className="font-urdu text-xs text-stone-400 mr-2">
                 تقریب {activeIdx + 1} از {events.length}

@@ -51,17 +51,15 @@ export default function Home() {
       {/* 6. منتخب کتب و مطبوعات (Selected Books Showcase) */}
       <BooksSection />
 
-      {/* 7. سیکشن ۳: بچوں کے کھیل کود کی تصاویر و ویڈیوز (Sports Masonry Grid) */}
-      <StudentActivitiesSection />
-
-      {/* 8. سیکشن ۴: بچوں کی پکنک کی تصاویر و ویڈیوز (Picnic Polaroid Grid) */}
+      {/* 7. سیکشن ۴: بچوں کی پکنک کی تصاویر و ویڈیوز (Picnic Polaroid Grid) */}
       <StudentPicnicSection />
+
+      {/* 8. سیکشن ۵: بچوں کے کھیل کود کی تصاویر و ویڈیوز (Sports Masonry Grid) */}
+      <StudentActivitiesSection />
 
       {/* 9. سیکشن ۵: بچوں کے جشنوں کی تصاویر و ویڈیوز (Celebrations Spotlight Slider) */}
       <CelebrationsGallerySection />
 
-      {/* 10. عطیات و صدقات (Donations & Bank Accounts with 1-Click Copy) */}
-      <DonationSection />
 
       {/* 11. تاثرات (Scholars & Guardians Testimonials) */}
       <Testimonials />

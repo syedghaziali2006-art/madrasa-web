@@ -5,7 +5,6 @@ import Image from "next/image";
 import {
   MapPin,
   ArrowLeft,
-  Sparkles,
   ZoomIn,
   CheckCircle2,
   X,
@@ -19,6 +18,7 @@ export interface HeroData {
   bismillah?: string;
   title?: string;
   titleSuffix?: string;
+  calligraphyImage?: string;
   tagline?: string;
   bgType?: "image" | "video";
   bgMediaUrl?: string;
@@ -44,6 +44,7 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
   const bismillah = data?.bismillah || madarsaInfo.bismillah || "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
   const title = data?.title || "مدرسہ صاحب الزمان";
   const titleSuffix = data?.titleSuffix || "(عج)";
+  const calligraphyImage = data?.calligraphyImage || "/images/madrasa-calligraphy.png";
   const tagline =
     data?.tagline ||
     "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی";
@@ -120,30 +121,36 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
           {/* RIGHT / MAIN COLUMN (md:col-span-7)                        */}
           {/* Madrasa Branding & Heading in Urdu                         */}
           {/* ---------------------------------------------------------- */}
-          <div className="md:col-span-7 flex flex-col items-start text-right space-y-6 sm:space-y-7 order-1 md:order-1">
+          <div className="md:col-span-7 flex flex-col items-start text-right order-1 md:order-1">
 
-            {/* A. Bismillah Subheading in Elegant Arabic Script with Dull Gold Accent */}
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-[#1A0E08]/80 border border-[#C9B38D]/40 backdrop-blur-md shadow-lg shadow-black/40 group hover:border-[#C9B38D] transition-colors">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#C9B38D] shadow-[0_0_12px_#C9B38D] animate-pulse shrink-0" />
-              <p className="font-arabic text-lg sm:text-2xl font-bold tracking-wider text-[#D9C7A7] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+            {/* A. Bismillah Subheading: Transparent background, blinking golden dot, white text */}
+            <div className="inline-flex items-center gap-3 select-none">
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#C9B38D] animate-blink-gold shrink-0" />
+              <p className="font-arabic text-lg sm:text-2xl md:text-3xl font-bold tracking-wider text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                 {bismillah}
               </p>
             </div>
 
-            {/* B. Main Title: Large, Prominent White & Dull Gold Typography */}
-            <div className="space-y-6 sm:space-y-8 w-full">
-              {/* Accessible Semantic Heading with Dull Gold Accent */}
-              <h1 className="urdu-title text-4xl sm:text-6xl lg:text-7xl leading-[2.05] sm:leading-[2.15] select-none pb-2 sm:pb-3 text-white">
-                <span>{title}</span>
-                {titleSuffix && (
-                  <span className="inline-block mr-3 sm:mr-5 text-2xl sm:text-4xl lg:text-5xl text-[#C9B38D] font-bold">
-                    {titleSuffix}
-                  </span>
-                )}
+            {/* B. Main Title: Large, Prominent Golden Calligraphy Artwork */}
+            <div className="w-full">
+              {/* Semantic Heading with Golden Calligraphy Artwork */}
+              <h1 className="select-none py-1 flex justify-start w-full">
+                <span className="sr-only">
+                  {title || "مدرسہ صاحب الزمان"} {titleSuffix || "(عج)"}
+                </span>
+                <div className="relative w-full max-w-[340px] sm:max-w-[460px] md:max-w-[540px] lg:max-w-[620px] xl:max-w-[680px] aspect-[560/125]">
+                  <Image
+                    src={calligraphyImage}
+                    alt={title || "مدرسہ صاحب الزمان (عج)"}
+                    fill
+                    priority
+                    className="object-contain object-right drop-shadow-[0_12px_35px_rgba(201,179,141,0.35)] drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)]"
+                  />
+                </div>
               </h1>
 
               {/* Urdu Tagline & Mission */}
-              <p className="font-urdu text-base sm:text-lg md:text-xl text-[#FAF7F2] leading-[2.4] sm:leading-[2.6] max-w-3xl font-medium drop-shadow-md pt-3 sm:pt-4">
+              <p className="font-urdu text-base sm:text-lg md:text-xl text-[#FAF7F2] leading-[2.4] sm:leading-[2.6] max-w-3xl font-medium drop-shadow-md pt-1 sm:pt-2">
                 {tagline}
               </p>
             </div>
@@ -166,21 +173,24 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
               href={googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-[#1A0E08]/85 hover:bg-[#25150C] border border-[#C9B38D]/40 hover:border-[#C9B38D] transition-all duration-300 group shadow-lg backdrop-blur-md"
+              className="relative overflow-hidden inline-flex items-center gap-3 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl mt-4 bg-gradient-to-b from-[#2a1e14]/55 to-[#140e09]/75 hover:from-[#38281b]/65 backdrop-blur-lg border border-[#f5deb3]/15 hover:border-[#f5deb3]/35 shadow-[inset_0_1px_1px_0_rgba(255,245,230,0.18),0_12px_32px_-8px_rgba(0,0,0,0.6)] hover:shadow-[inset_0_1px_2px_0_rgba(255,245,230,0.28),0_16px_36px_-8px_rgba(0,0,0,0.7)] transition-all duration-300 ease-out group cursor-pointer"
               title="گوگل میپس پر لوکیشن دیکھیں"
             >
+              {/* Subtle glass sheen sweep on hover */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out pointer-events-none" />
+
               <span className="relative flex h-4 w-4 shrink-0 items-center justify-center">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
                 <MapPin className="relative w-4 h-4 text-red-500 fill-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]" />
               </span>
-              <span className="font-urdu text-xs sm:text-sm text-white group-hover:text-[#D9C7A7] transition-colors">
+              <span className="font-urdu text-xs sm:text-sm text-stone-200 group-hover:text-white transition-colors">
                 {addressText}
               </span>
-              <ExternalLink className="w-3.5 h-3.5 text-[#C9B38D] group-hover:translate-x-0.5 transition-transform" />
+              <ExternalLink className="w-3.5 h-3.5 text-[#f5deb3] group-hover:translate-x-0.5 group-hover:text-white transition-all" />
             </a>
 
             {/* E. Call-To-Action Buttons: White & Dull Golden Buttons */}
-            <div className="pt-2 flex flex-wrap items-center gap-3 sm:gap-4">
+            <div className="pt-4 flex flex-wrap items-center gap-3 sm:gap-4">
               {/* Button 1: White Pill Button with Dull Gold Border */}
               <button
                 onClick={onOpenAdmission}
@@ -240,11 +250,11 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
       {/* ============================================================== */}
       {isPosterZoomed && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          className="fixed inset-0 z-50  backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
           onClick={() => setIsPosterZoomed(false)}
         >
           <div
-            className="relative max-w-2xl w-full max-h-[95vh] flex flex-col items-center bg-[#1A0D08] rounded-3xl p-4 sm:p-6 border-2 border-amber-500/40 shadow-2xl"
+            className="relative max-w-2xl w-full max-h-[95vh] flex flex-col items-center backdrop-blur-2xl backdrop-saturate-150 rounded-3xl p-4 sm:p-6 border-2 border-amber-500/40 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
             dir="rtl"
           >
@@ -257,7 +267,7 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
                 onClick={() => setIsPosterZoomed(false)}
                 className="text-white hover:text-amber-400 text-sm font-bold bg-white/10 hover:bg-white/20 px-3.5 py-1 rounded-full border border-white/20 transition flex items-center gap-1 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-8" />
                 <span>بند کریں</span>
               </button>
             </div>
@@ -280,9 +290,9 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
                   setIsPosterZoomed(false);
                   onOpenAdmission();
                 }}
-                className="flex-1 max-w-sm bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-black py-2.5 px-6 rounded-full shadow-lg text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 max-w-sm text-center bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-black py-2.5 px-6 rounded-full shadow-lg text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Sparkles className="w-4 h-4 text-black" />
+                
                 <span>آن لائن داخلہ فارم پر جائیں</span>
               </button>
 

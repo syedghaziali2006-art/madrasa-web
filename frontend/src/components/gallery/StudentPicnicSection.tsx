@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Compass, Play, MapPin, Sparkles, Video, Camera } from "lucide-react";
+import { Compass, Play, MapPin, Video, Camera } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
 
 import { api } from "@/services/api";

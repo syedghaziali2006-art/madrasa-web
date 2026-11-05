@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { CheckCircle2, Sparkles, BookCheck, Heart, Shield, Award, Users, BookOpenCheck } from "lucide-react";
+import { CheckCircle2, BookCheck, Heart, Shield, Award, Users, BookOpenCheck } from "lucide-react";
 import { institutionalGoals, madarsaInfo } from "@/data/madarsaData";
 
 export default function About() {
@@ -17,7 +17,7 @@ export default function About() {
         {/* Section Header */}
         <div className="text-center max-w-4xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#C9B38D]/15 via-[#C9B38D]/10 to-transparent border border-[#C9B38D]/40 text-[#D9C7A7] text-xs sm:text-sm font-semibold backdrop-blur-md mb-10 sm:mb-14 shadow-sm">
-            <Sparkles className="w-4 h-4 text-[#C9B38D]" />
+            
             <span className="font-urdu">تعارف و اغراض و مقاصد</span>
           </div>
           

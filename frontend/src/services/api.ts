@@ -255,7 +255,20 @@ export const api = {
 
   // Settings
   settings: {
-    get: () => fetchApi("/settings"),
+    get: async () => {
+      if ((api.settings as any)._cache) return (api.settings as any)._cache;
+      if ((api.settings as any)._promise) return (api.settings as any)._promise;
+      const p = fetchApi("/settings").then((res) => {
+        (api.settings as any)._cache = res;
+        (api.settings as any)._promise = null;
+        return res;
+      }).catch((err) => {
+        (api.settings as any)._promise = null;
+        throw err;
+      });
+      (api.settings as any)._promise = p;
+      return p;
+    },
     update: (data: any) =>
       fetchApi("/settings", {
         method: "PUT",
@@ -274,6 +287,36 @@ export const api = {
     reset: () =>
       fetchApi("/homepage/reset", {
         method: "POST",
+      }),
+  },
+
+  // Policy / Intro & Objectives Content
+  policy: {
+    get: () => fetchApi("/policy"),
+    update: (data: any) =>
+      fetchApi("/policy", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+  },
+
+  // History & Staff Content
+  history: {
+    get: () => fetchApi("/history"),
+    update: (data: any) =>
+      fetchApi("/history", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+  },
+
+  // Women's Department Content
+  womens: {
+    get: () => fetchApi("/womens"),
+    update: (data: any) =>
+      fetchApi("/womens", {
+        method: "PUT",
+        body: JSON.stringify(data),
       }),
   },
 

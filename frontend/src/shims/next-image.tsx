@@ -54,6 +54,7 @@ export default function Image({
       className={className}
       style={combinedStyle}
       loading={priority ? 'eager' : loading || 'lazy'}
+      decoding={priority ? 'sync' : 'async'}
       sizes={sizes}
       {...props}
     />

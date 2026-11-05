@@ -3,6 +3,7 @@
     "bismillah": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
     "title": "مدرسہ صاحب الزمان",
     "titleSuffix": "(عج)",
+    "calligraphyImage": "/images/madrasa-calligraphy.png",
     "tagline": "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی",
     "bgType": "image",
     "bgMediaUrl": "/images/hero-banner.png",
@@ -37,7 +38,7 @@
     "library": {
       "enabled": true,
       "badge": "سیکشن ۲: علمی و تحقیقی خزانہ",
-      "title": "مرکزی کتب خانہ و ڈیجیٹل لائبریری",
+      "title": "امتحانات",
       "subtitle": "۲۵ ہزار سے زائد مستند تفاسیر، احادیث، فقہی متون اور نایاب مخطوطات پر مشتمل پُرامن کتب خانہ"
     },
     "books": {
@@ -46,17 +47,17 @@
       "title": "مدرسہ کے اساتذہ و اکابرین کی کتب",
       "subtitle": "علومِ آلِ محمدؑ اور عصری اسلامی افکار پر مشتمل مستند کتب و تصانیف کا مطالعہ فرمائیں"
     },
-    "activities": {
-      "enabled": true,
-      "badge": "سیکشن ۴: جسمانی صحت و تفریح",
-      "title": "طلبہ کے کھیل کود اور اسپورٹس سرگرمیاں",
-      "subtitle": "صحت مند دماغ کے لیے صحت مند جسم — کرکٹ، فٹ بال، بیڈمنٹن اور روایتی کھیلوں کے مقابلے"
-    },
     "picnic": {
       "enabled": true,
-      "badge": "سیکشن ۵: مطالعاتی و تفریحی ٹورز",
+      "badge": "سیکشن ۴: مطالعاتی و تفریحی ٹورز",
       "title": "طلبہ کے سالانہ پکنک اور تفریحی مقامات کے دورے",
       "subtitle": "سمندر کنارے پرلطف لمحات، تاریخی و تفریحی مقامات کے مطالعاتی دورے اور باہمی ہم آہنگی"
+    },
+    "activities": {
+      "enabled": true,
+      "badge": "سیکشن ۵: جسمانی صحت و تفریح",
+      "title": "طلبہ کے کھیل کود اور اسپورٹس سرگرمیاں",
+      "subtitle": "صحت مند دماغ کے لیے صحت مند جسم — کرکٹ، فٹ بال، بیڈمنٹن اور روایتی کھیلوں کے مقابلے"
     },
     "celebrations": {
       "enabled": true,
@@ -67,8 +68,8 @@
     "donations": {
       "enabled": true,
       "badge": "تعاون و نصرتِ دین",
-      "title": "دسترخوانِ امام زمانہؑ اور فلاحی معاونت",
-      "subtitle": "سہمِ امامؑ، سہمِ سادات، افطار و طعام اور تعمیراتی منصوبوں میں اپنا حصہ ڈالیں"
+      "title": "فلاحی و تبرکاتی خدمات اور تعاون",
+      "subtitle": "سہمِ امامؑ، سہمِ سادات، کفالتِ طلباء اور تعمیراتی منصوبوں میں اپنا حصہ ڈالیں"
     },
     "testimonials": {
       "enabled": true,
@@ -236,8 +237,8 @@
       "category": "مرکزی کیمپس",
       "type": "video",
       "videoDuration": "۰۴:۱۵",
-      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "imageUrl": "/images/layout/mosque-arches.jpg",
+      "videoUrl": "http://localhost:5000/uploads/whatsapp_video_2026-10-27_at_10_05_11_am-1793442788564-200776.mp4",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_video_2026-10-27_at_10_05_11_am-1793443601512-972902.mp4",
       "date": "تعلیمی سال ۲۰۲۶",
       "location": "احسن آباد کیمپس، کراچی",
       "description": "مدرسہ صاحب الزمان کی پرشکوہ اسلامی طرزِ تعمیر کی حامل عمارت، محرابیں اور وسیع دالان کا مکمل ویڈیو ٹور۔"
@@ -247,7 +248,7 @@
       "title": "دار الحدیث و مرکزی تدریسی ہال",
       "category": "تدریسی ہال",
       "type": "image",
-      "imageUrl": "/images/layout/congregation.jpg",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_image_2026-10-20_at_11_46_15_am__2_-1793434682168-181292.jpeg",
       "date": "رجب المرجب",
       "location": "دوسری منزل، مرکزی ہال",
       "description": "طلبہ کے روزمرہ دروس، کتبِ اربعہ اور منطق و بلاغت کی محفلِ درس کا خوبصورت منظر۔"
@@ -257,7 +258,7 @@
       "title": "حوزوی کلاس رومز و کتب خوانی",
       "category": "تعلیمی بلاک",
       "type": "image",
-      "imageUrl": "/images/layout/quran-study.jpg",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_image_2026-10-20_at_11_46_14_am-1793434693746-927645.jpeg",
       "date": "روزانہ تدریس",
       "location": "پہلی منزل، کمرہ نمبر ۱۰",
       "description": "طلبہ کے لیے پرسکون، کشادہ اور جدید سہولیات سے آراستہ درس گاہیں جہاں اساتذہ انفرادی توجہ دیتے ہیں۔"
@@ -267,7 +268,7 @@
       "title": "مرکزی کتب خانہ و ریڈنگ ہال",
       "category": "کتب خانہ",
       "type": "image",
-      "imageUrl": "/images/gallery/library-interior.jpg",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_image_2026-10-20_at_11_46_15_am-1793434708204-385852.jpeg",
       "date": "جدید سہولیات",
       "location": "لائبریری بلاک",
       "description": "۲۵ ہزار سے زائد مستند دینی و تحقیقی کتب اور مطالعہ کے لیے پرسکون ماحول۔"
@@ -277,7 +278,7 @@
       "title": "وسیع صحن و بیرونی راہداری",
       "category": "کیمپس ایریا",
       "type": "image",
-      "imageUrl": "/images/layout/sunset-mosque.jpg",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_image_2026-10-20_at_11_46_15_am__1_-1793434721376-528057.jpeg",
       "date": "تفریحی ماحول",
       "location": "مرکزی کورٹ یارڈ",
       "description": "طلبہ کے لیے سرسبز و شاداب قدرتی ماحول، چہل قدمی اور فکری مباحثوں کی کشادہ جگہ۔"
@@ -289,7 +290,7 @@
       "title": "مرکزی مطالعہ ہال و کتب الماری",
       "category": "مطالعہ و کتب",
       "type": "image",
-      "imageUrl": "/images/gallery/library-interior.jpg",
+      "imageUrl": "http://localhost:5000/uploads/img-20261029-wa0038-1793436295980-155742.jpg",
       "date": "کتب خانہ صاحب الزمان",
       "location": "ہال نمبر ۱ - حوزوی کتب",
       "description": "شاہکار لکڑی کی الماریوں میں سجی ہزاروں کتب، پرسکون ماحول اور طلبہ کے لیے وسیع اسٹڈی ٹیبلز۔"
@@ -299,7 +300,7 @@
       "title": "قدیم نایاب خطی نسخے و قلمی نوادرات",
       "category": "مخطوطات و نوادرات",
       "type": "image",
-      "imageUrl": "/images/library.jpg",
+      "imageUrl": "http://localhost:5000/uploads/img-20261029-wa0039-1793436300977-312421.jpg",
       "date": "نایاب کتب",
       "location": "خصوصی ریسرچ سیکشن",
       "description": "صدیوں پرانے قلمی نسخے، تفاسیر اور علمائے سلف کے نایاب ہاتھ کے لکھے ہوئے کتب کے اوراق۔"
@@ -309,7 +310,7 @@
       "title": "کتبِ تفاسیر، احادیث و فقہی انسائیکلوپیڈیا",
       "category": "علومِ آلِ محمدؑ",
       "type": "image",
-      "imageUrl": "/images/books/book-3.jpg",
+      "imageUrl": "http://localhost:5000/uploads/img-20261029-wa0040-1793436305802-187671.jpg",
       "date": "بنیادی مآخذ",
       "location": "شعبہ تحقیق و فقہ",
       "description": "کتبِ اربعہ، بحار الانوار، وسائل الشیعہ اور تفاسیر قرآن کا عظیم الشان اور مستند مجموعہ۔"
@@ -319,20 +320,10 @@
       "title": "ڈیجیٹل لائبریری و آن لائن ریسرچ سسٹم",
       "category": "ڈیجیٹل کیٹلاگ",
       "type": "image",
-      "imageUrl": "/images/books/book-2.jpg",
+      "imageUrl": "http://localhost:5000/uploads/img-20261029-wa0041-1793436311259-884119.jpg",
       "date": "جدید تحقیق",
       "location": "کمپیوٹر کیٹلاگ کارنر",
       "description": "آن لائن پورٹل جہاں سے طلبہ دنیا بھر کے اسلامی مقالات اور پی ڈی ایف کتب تک رسائی حاصل کرتے ہیں۔"
-    },
-    {
-      "id": "lib-5",
-      "title": "محققین و اساتذہ کا فکری کارنر",
-      "category": "ریسرچ کارنر",
-      "type": "image",
-      "imageUrl": "/images/books/book-5.jpg",
-      "date": "علمی نشستیں",
-      "location": "سیمینار روم",
-      "description": "اساتذہ اور محقق طلبہ کے سنجیدہ فکری مباحث اور علمی مقالہ نگاری کے لیے مختص جگہ۔"
     }
   ],
   "activitiesMedia": [
@@ -342,7 +333,7 @@
       "category": "کھیل کود و اسپورٹس",
       "type": "video",
       "videoDuration": "۰۳:۲۰",
-      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoUrl": "",
       "imageUrl": "/images/gallery/sports-day.jpg",
       "date": "ہفتہ وار اسپورٹس ڈے",
       "location": "مدرسہ صاحب الزمان پلے گراؤنڈ",
@@ -364,7 +355,7 @@
       "category": "صحت و تندرستی",
       "type": "video",
       "videoDuration": "۰۱:۴۵",
-      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoUrl": "",
       "imageUrl": "/images/gallery/exercise.jpg",
       "date": "روزانہ فجر کے بعد",
       "location": "مرکزی کورٹ یارڈ و گراؤنڈ",
@@ -386,7 +377,7 @@
       "category": "میدانی کھیل",
       "type": "video",
       "videoDuration": "۰۲:۱۰",
-      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoUrl": "",
       "imageUrl": "/images/gallery/badminton.jpg",
       "date": "عصر کے بعد",
       "location": "بیڈمنٹن کورٹ",
@@ -398,10 +389,10 @@
       "id": "picnic-beach",
       "title": "ساحلِ سمندر (سی ویو) کی تفریحی پکنک ۲۰۲۵",
       "category": "سالانہ پکنک",
-      "type": "video",
+      "type": "image",
       "videoDuration": "۰۴:۵۰",
-      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "imageUrl": "/images/gallery/picnic-beach.jpg",
+      "videoUrl": "",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_image_2026-10-29_at_2_45_11_pm-1793688880233-787948.jpeg",
       "date": "اکتوبر ۲۰۲۵",
       "location": "کلفٹن و سی ویو ساحل، کراچی",
       "description": "طلبہ اور اساتذہ کا ساحلِ سمندر کا یادگار سفر، باجماعت نماز، لذیذ ظہرانہ اور ساحلی ہوائیں و کھیل۔"
@@ -411,7 +402,7 @@
       "title": "باغِ ابنِ قاسم کا تفریحی و علمی وزٹ",
       "category": "تعلیمی دورہ",
       "type": "image",
-      "imageUrl": "/images/layout/sunset-mosque.jpg",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_image_2026-10-29_at_2_45_10_pm__2_-1793688884841-441102.jpeg",
       "date": "بہار ۲۰۲۵",
       "location": "باغِ ابن قاسم، کراچی",
       "description": "قدرت کے مناظر، سرسبز باغات اور طلبہ کے لیے معلوماتی تفریحی واک۔"
@@ -420,10 +411,10 @@
       "id": "amusement-park",
       "title": "تفریحی پارک میں طلبہ کی پرلطف مسکراہٹیں",
       "category": "ایکٹیویٹی ڈے",
-      "type": "video",
+      "type": "image",
       "videoDuration": "۰۲:۱۵",
-      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "imageUrl": "/images/layout/lattice-prayer.jpg",
+      "videoUrl": "",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_image_2026-10-29_at_2_45_10_pm-1793688894457-367753.jpeg",
       "date": "دسمبر ۲۰۲۵",
       "location": "تھیم پارک، کراچی",
       "description": "جھولوں کی تفریح، دوستانہ محفل اور طلبہ کے چہروں پر مسکراہٹیں اور خوشیاں۔"
@@ -433,7 +424,7 @@
       "title": "پہاڑی مقام پر ظہرانہ اور روحانی دعا",
       "category": "سیر و سیاحت",
       "type": "image",
-      "imageUrl": "/images/layout/congregation.jpg",
+      "imageUrl": "http://localhost:5000/uploads/whatsapp_image_2026-10-29_at_2_45_10_pm__1_-1793688890695-28625.jpeg",
       "date": "جنوری ۲۰۲۶",
       "location": "پکنک پوائنٹ",
       "description": "کھلے آسمان تلے باجماعت دعا اور اساتذہ کی رفاقت میں یادگار لمحات۔"
@@ -446,7 +437,7 @@
       "category": "تقسیمِ انعامات",
       "type": "video",
       "videoDuration": "۰۶:۳۰",
-      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoUrl": "",
       "imageUrl": "/images/gallery/celebration-stage.jpg",
       "date": "شعبان المعظم ۱۴۴۷ھ",
       "location": "مرکزی پنڈال و اسٹیج",
@@ -457,7 +448,7 @@
       "title": "جشنِ ولادتِ باسعادت حضرت محمد مصطفیٰ ﷺ و امام جعفر صادقؑ",
       "category": "جشن و میلاد",
       "type": "image",
-      "imageUrl": "/images/layout/mosque-arches.jpg",
+      "imageUrl": "/images/layout/mosque-arches.jpgdbd",
       "date": "۱۷ ربیع الاول",
       "location": "مرکزی کانفرنس ہال",
       "description": "عطر بیز محفلِ میلاد، بچوں کی نعت خوانی، قصیدہ گوئی اور شیرینی کی تقسیم کا بابرکت منظر۔"
@@ -468,8 +459,8 @@
       "category": "قرآنی مقابلہ",
       "type": "video",
       "videoDuration": "۰۳:۴۵",
-      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "imageUrl": "/images/layout/quran-study.jpg",
+      "videoUrl": "",
+      "imageUrl": "/images/layout/quran-study.jpgdbdhb",
       "date": "رمضان المبارک",
       "location": "مسجد صاحب الزمان",
       "description": "ملک بھر کے نامور قراء کی موجودگی میں طلبہ کے درمیان لحنِ داؤدی اور تجوید کے روح پرور مقابلے۔"
@@ -479,11 +470,11 @@
       "title": "روحانی تقریبِ عمامہ پوشی برائے فارغ التحصیل علماء",
       "category": "عمامہ پوشی",
       "type": "image",
-      "imageUrl": "/images/layout/congregation.jpg",
+      "imageUrl": "/images/layout/congregation.jpgdhbdh",
       "date": "عیدِ غدیر",
       "location": "مرکزی حسینیہ",
       "description": "حوزوی نصاب مکمل کرنے والے فاضل طلبہ کو مراجعِ عظام کے نمائندگان کے ہاتھوں تاجِ رسول ﷺ پہنانے کی تقریب۔"
     }
   ],
-  "updatedAt": "2026-10-31T06:53:40.416Z"
+  "updatedAt": "2026-11-03T06:54:58.991Z"
 }

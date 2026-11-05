@@ -10,8 +10,7 @@ import {
   Play,
   Calendar,
   MapPin,
-  X,
-  Sparkles
+  X
 } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { api } from "@/services/api";

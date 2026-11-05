@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
+import { Heart,
   MapPin,
   Phone,
   Mail,
@@ -10,8 +10,7 @@ import {
   X,
   ChevronDown,
   Globe,
-  Sparkles,
-} from "lucide-react";
+  } from "lucide-react";
 
 interface NavbarProps {
   onOpenLogin: () => void;

@@ -20,6 +20,7 @@ export const madarsaInfo = {
   name: "مدرسہ صاحب الزمان (عجل اللہ تعالیٰ فرجہ الشریف)",
   nameEnglish: "Madarsa e Sahib uz Zaman (a.t.f.s)",
   tagline: "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ",
+  logo: "/images/logo.png",
   bismillah: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
   address: "پلاٹ بی 25، احسن آباد 3، احسن آباد، گلزار ہجری، اسکیم 33، کراچی، پاکستان",
   shortAddress: "احسن آباد 3، گلزار ہجری، اسکیم 33، کراچی",

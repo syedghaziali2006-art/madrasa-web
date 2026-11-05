@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import {
   Settings,
   Save,
@@ -7,7 +8,9 @@ import {
   DollarSign,
   AlertCircle,
   CheckCircle2,
-  BellRing
+  BellRing,
+  Upload,
+  Image as ImageIcon
 } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { api } from "@/services/api";
@@ -17,6 +20,7 @@ export default function AdminSettingsPage() {
     madarsaName: "",
     madarsaNameEnglish: "",
     tagline: "",
+    logo: "/images/logo.png",
     address: "",
     shortAddress: "",
     phone: "",
@@ -35,6 +39,8 @@ export default function AdminSettingsPage() {
 
   const [savingSettings, setSavingSettings] = useState(false);
   const [settingsSuccess, setSettingsSuccess] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   // Password state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -58,6 +64,30 @@ export default function AdminSettingsPage() {
     fetchSettings();
   }, []);
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("برائے مہربانی صرف تصویر (PNG, JPG, SVG, WebP) فائل منتخب کریں۔");
+      return;
+    }
+
+    try {
+      setUploadingLogo(true);
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        setSettings((prev: any) => ({ ...prev, logo: res.fileUrl }));
+        window.dispatchEvent(new CustomEvent("msz_logo_updated", { detail: { logo: res.fileUrl } }));
+      }
+    } catch (err: any) {
+      alert("لوگو اپلوڈ کرنے میں خرابی پیش آگئی: " + err.message);
+    } finally {
+      setUploadingLogo(false);
+      if (logoInputRef.current) logoInputRef.current.value = "";
+    }
+  };
+
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     setSettingsSuccess(false);
@@ -66,6 +96,9 @@ export default function AdminSettingsPage() {
       const res = await api.settings.update(settings);
       if (res.success) {
         setSettingsSuccess(true);
+        if (settings.logo) {
+          window.dispatchEvent(new CustomEvent("msz_logo_updated", { detail: { logo: settings.logo } }));
+        }
         setTimeout(() => setSettingsSuccess(false), 3000);
       }
     } catch (err: any) {
@@ -143,6 +176,90 @@ export default function AdminSettingsPage() {
                 className="w-4 h-4 rounded text-[#C9B38D]"
               />
             </label>
+          </div>
+
+          {/* Madrasa Official Logo Upload & Live Preview */}
+          <div className="p-5 rounded-2xl bg-[#24150D] border border-[#C9B38D]/30 space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4 text-[#C9B38D]" />
+                  <span>ادارے کا آفیشل لوگو (Madrasa Official Logo)</span>
+                </h4>
+                <p className="text-xs text-stone-300 mt-0.5">
+                  یہ لوگو ویب سائٹ کے نیویگیشن بار، فوٹر اور ایڈمن پینل کے ہر صفحے پر براہِ راست اپڈیٹ ہوگا۔
+                </p>
+              </div>
+
+              {/* Upload & Reset Buttons */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  ref={logoInputRef}
+                  onChange={handleLogoUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  disabled={uploadingLogo}
+                  onClick={() => logoInputRef.current?.click()}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#C9B38D] to-[#DFCBB0] text-[#120A05] text-xs font-bold hover:brightness-110 active:scale-95 transition flex items-center gap-2 shadow cursor-pointer disabled:opacity-50"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{uploadingLogo ? "اپلوڈ ہو رہا ہے..." : "نیا لوگو اپلوڈ کریں"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSettings((prev: any) => ({ ...prev, logo: "/images/logo.png" }));
+                    window.dispatchEvent(new CustomEvent("msz_logo_updated", { detail: { logo: "/images/logo.png" } }));
+                  }}
+                  className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-stone-300 hover:text-white text-xs border border-white/15 transition cursor-pointer"
+                  title="ڈیفالٹ لوگو بحال کریں"
+                >
+                  ڈیفالٹ بحال کریں
+                </button>
+              </div>
+            </div>
+
+            {/* Live Logo Preview Box */}
+            <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl bg-[#180C06] border border-white/10">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-[#0D0704] border-2 border-[#C9B38D]/60 flex items-center justify-center p-2 shadow-lg overflow-hidden shrink-0 group">
+                <Image
+                  src={settings.logo || "/images/logo.png"}
+                  alt="لوگو کا پیش منظر"
+                  width={96}
+                  height={96}
+                  className="w-full h-full object-contain filter drop-shadow"
+                  unoptimized={Boolean(settings.logo?.startsWith("http"))}
+                />
+              </div>
+
+              <div className="flex-1 w-full space-y-2 text-xs">
+                <div>
+                  <label className="block text-stone-300 font-semibold mb-1">
+                    لوگو کا براہِ راست URL یا فائل ایڈریس:
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.logo || ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSettings({ ...settings, logo: val });
+                      window.dispatchEvent(new CustomEvent("msz_logo_updated", { detail: { logo: val } }));
+                    }}
+                    placeholder="/images/logo.png یا مکمل URL"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#24150D] border border-[#C9B38D]/30 text-white font-mono text-xs focus:outline-none"
+                    dir="ltr"
+                  />
+                </div>
+                <p className="text-[11px] text-stone-400">
+                  تجاویز: شفاف بیک گراؤنڈ والی PNG یا SVG فائل بہترین نتائج دیتی ہے (تجویز کردہ سائز: 256x256 یا 512x512 پکسلز)۔
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">

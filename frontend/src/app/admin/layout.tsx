@@ -47,12 +47,10 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#120A05] text-[#FAF7F2] flex flex-row selection:bg-[#C9B38D] selection:text-[#120A05]">
-      {/* Sidebar on right in RTL */}
+    <div className="min-h-screen text-[#FAF7F2] flex flex-row selection:bg-[#C9B38D] selection:text-[#120A05] relative" style={{ backgroundImage: "url('/images/hero-banner.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
+      <div className="absolute inset-0 backdrop-blur-md bg-[#120A05]/70" />
       <AdminSidebar />
-
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <main className="relative flex-1 flex flex-col min-w-0 overflow-y-auto backdrop-blur-md">
         {children}
       </main>
     </div>

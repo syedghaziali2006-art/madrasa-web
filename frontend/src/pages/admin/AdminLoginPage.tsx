@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Lock, Mail, Shield, AlertCircle, ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { Lock, Mail, Shield, AlertCircle, ArrowRight, CheckCircle2 } from "lucide-react";
 import { api, setAuthToken, setStoredUser } from "@/services/api";
 
 export default function AdminLoginPage() {
@@ -42,11 +42,11 @@ export default function AdminLoginPage() {
           <div className="bg-gradient-to-b from-[#1C1009] to-[#120A05] rounded-[30px] p-7 sm:p-9 text-center">
             
             {/* Logo */}
-            <div className="relative w-20 h-20 mx-auto mb-4 drop-shadow-[0_0_20px_rgba(201,179,141,0.4)]">
+            <div className="relative w-20 h-20 mx-auto mb-4 drop-shadow-[0_0_20px_rgba(201,179,141,0.4)] bg-white rounded-full p-2 border border-[#C9B38D]/50">
               <img
                 src="/images/logo.png"
                 alt="مدرسہ صاحب الزمان لوگو"
-                className="object-contain w-full h-full object-cover"
+                className="object-contain w-full h-full"
               />
             </div>
 

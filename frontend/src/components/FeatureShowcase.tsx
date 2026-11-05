@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { BookOpen, GraduationCap, Users2, Sparkles, CheckCircle2 } from "lucide-react";
+import { BookOpen, GraduationCap, Users2, CheckCircle2 } from "lucide-react";
 
 export default function FeatureShowcase() {
   const features = [
@@ -71,7 +71,7 @@ export default function FeatureShowcase() {
           <div className="lg:col-span-6 order-1 lg:order-2 space-y-8 text-right">
             <div>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-[#E5A93C] text-xs font-semibold mb-3 border border-amber-200">
-                <Sparkles className="w-3.5 h-3.5" />
+                
                 <span>ہماری بنیادی ترجیحات</span>
               </span>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight font-heading">

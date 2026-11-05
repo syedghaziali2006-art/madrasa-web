@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Trophy, Play, Video, Sparkles, Smile, Eye, Activity } from "lucide-react";
+import { Trophy, Play, Video, Smile, Eye, Activity } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
 
 import { api } from "@/services/api";

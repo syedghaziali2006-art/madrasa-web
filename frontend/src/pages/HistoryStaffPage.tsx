@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Sparkles,
   History,
   GraduationCap,
   Users,
@@ -22,8 +21,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AdmissionModal from "@/components/AdmissionModal";
 import FounderSection from "@/components/FounderSection";
+import { api } from "@/services/api";
 
 interface Milestone {
+  id?: string;
   year: string;
   hijriYear: string;
   title: string;
@@ -47,7 +48,7 @@ interface CurrentStaff {
   id: string;
   name: string;
   title: string;
-  category: "leadership" | "faculty" | "admin" | "quran";
+  category: "leadership" | "faculty" | "admin" | "quran" | string;
   department: string;
   qualification: string;
   experience: string;
@@ -60,6 +61,33 @@ interface CurrentStaff {
 export default function HistoryStaffPage() {
   const [isAdmissionOpen, setIsAdmissionOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("all");
+  const [historyData, setHistoryData] = useState<any>(null);
+  const [liveStaff, setLiveStaff] = useState<CurrentStaff[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    api.history
+      .get()
+      .then((res) => {
+        if (isMounted && res.success && res.data) {
+          setHistoryData(res.data);
+        }
+      })
+      .catch((err) => console.error("History fetch error:", err));
+
+    api.staff
+      .getAll()
+      .then((res) => {
+        if (isMounted && res.success && res.data && res.data.length > 0) {
+          setLiveStaff(res.data);
+        }
+      })
+      .catch((err) => console.error("Staff fetch error:", err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const milestones: Milestone[] = [
     {
@@ -261,10 +289,32 @@ export default function HistoryStaffPage() {
     }
   ];
 
+  const currentStaff = liveStaff.length > 0 ? liveStaff : currentStaffList;
   const filteredStaff =
     activeTab === "all"
-      ? currentStaffList
-      : currentStaffList.filter((s) => s.category === activeTab);
+      ? currentStaff
+      : currentStaff.filter((s) => s.category === activeTab);
+
+  const heroBadge = historyData?.hero?.badge || "تاریخ و اساتذہ";
+  const heroTitle = historyData?.hero?.title || "سفرِ مدرسہ و اساتذہ کرام";
+  const heroSubtitle = historyData?.hero?.subtitle || "مدرسہ صاحب الزمان (عجل اللہ تعالیٰ فرجہ الشریف) کے سنگِ بنیاد سے لے کر موجودہ جدید کیمپس تک کا پروقار ۲۸ سالہ سفر اور اس کے بانی، سابق و موجودہ اساتذہ کا تعارف۔";
+
+  const statsList = historyData?.stats && historyData.stats.length > 0
+    ? historyData.stats
+    : [
+        { id: "s1", value: "۱۹۹۸ء", label: "سالِ تاسیس و سنگِ بنیاد" },
+        { id: "s2", value: "۲۸ سال", label: "تسلسل سے تدریسی سفر" },
+        { id: "s3", value: "۵۰۰+", label: "فارغ التحصیل علماء و حفاظ" },
+        { id: "s4", value: "۲۵+", label: "اساتذہ و انتظامی ارکان" }
+      ];
+
+  const milestonesList: Milestone[] = historyData?.milestones && historyData.milestones.length > 0
+    ? historyData.milestones
+    : milestones;
+
+  const formerList: FormerStaff[] = historyData?.formerFaculty && historyData.formerFaculty.length > 0
+    ? historyData.formerFaculty
+    : formerStaffList;
 
   return (
     <div className="min-h-screen bg-[#120A05] text-[#FAF7F2] selection:bg-[#C9B38D] selection:text-[#120A05]" dir="rtl">
@@ -278,49 +328,39 @@ export default function HistoryStaffPage() {
         }}
       />
 
-      <div className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 bg-gradient-to-b from-[#0A241A] via-[#120A05] to-[#120A05] border-b border-[#C9B38D]/20 overflow-hidden">
-        <div className="absolute top-0 right-1/4 w-[600px] h-[350px] bg-[#0E3D2B]/30 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-[#C9B38D]/10 rounded-full blur-[130px] pointer-events-none" />
+      <div className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 bg-gradient-to-b from-[#1C1009] via-[#160B06] to-[#120A05] border-b border-[#C9B38D]/20 overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-[600px] h-[350px] bg-[#C9B38D]/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-[#1A0E08] rounded-full blur-[130px] pointer-events-none" />
 
         <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1A0E08]/85 border border-[#C9B38D]/40 text-xs sm:text-sm font-urdu font-semibold text-[#D9C7A7] mb-6 backdrop-blur-md">
             <Link href="/" className="hover:text-white transition">صفحہ اول</Link>
             <ChevronLeft className="w-3.5 h-3.5 text-[#C9B38D]" />
-            <span>تاریخ و اساتذہ</span>
+            <span>{heroBadge}</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-urdu font-bold text-white leading-[1.7] mb-6">
-            سفرِ مدرسہ و <span className="text-[#C9B38D]">اساتذہ کرام</span>
+            {heroTitle}
           </h1>
 
           <div className="w-28 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full mb-6 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
           <p className="text-base sm:text-lg md:text-xl text-stone-200 font-urdu leading-[2.2] sm:leading-[2.4] max-w-3xl mx-auto font-medium">
-            مدرسہ صاحب الزمان (عجل اللہ تعالیٰ فرجہ الشریف) کے سنگِ بنیاد سے لے کر موجودہ جدید کیمپس تک کا پروقار ۲۸ سالہ سفر اور اس کے بانی، سابق و موجودہ اساتذہ کا تعارف۔
+            {heroSubtitle}
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto mt-12 pt-8 border-t border-[#C9B38D]/20">
-            <div className="p-4 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/25">
-              <span className="text-2xl sm:text-3xl font-bold font-urdu text-[#C9B38D] block">۱۹۹۸ء</span>
-              <span className="text-xs font-urdu text-stone-300 mt-1 block">سالِ تاسیس و سنگِ بنیاد</span>
-            </div>
-            <div className="p-4 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/25">
-              <span className="text-2xl sm:text-3xl font-bold font-urdu text-white block">۲۸ سال</span>
-              <span className="text-xs font-urdu text-stone-300 mt-1 block">تسلسل سے تدریسی سفر</span>
-            </div>
-            <div className="p-4 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/25">
-              <span className="text-2xl sm:text-3xl font-bold font-urdu text-[#C9B38D] block">۵۰۰+</span>
-              <span className="text-xs font-urdu text-stone-300 mt-1 block">فارغ التحصیل علماء و حفاظ</span>
-            </div>
-            <div className="p-4 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/25">
-              <span className="text-2xl sm:text-3xl font-bold font-urdu text-white block">۲۵+</span>
-              <span className="text-xs font-urdu text-stone-300 mt-1 block">اساتذہ و انتظامی ارکان</span>
-            </div>
+            {statsList.map((st: any, idx: number) => (
+              <div key={st.id || idx} className="p-4 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/25">
+                <span className="text-2xl sm:text-3xl font-bold font-urdu text-[#C9B38D] block">{st.value}</span>
+                <span className="text-xs font-urdu text-stone-300 mt-1 block">{st.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      <FounderSection />
+      <FounderSection founder={historyData?.founder} />
 
       <section className="py-20 sm:py-28 bg-[#120A05] islamic-dark-pattern relative overflow-hidden">
         <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
@@ -345,11 +385,11 @@ export default function HistoryStaffPage() {
             <div className="hidden md:block absolute right-1/2 top-4 bottom-4 w-1 bg-gradient-to-b from-[#C9B38D] via-[#8C6D3F] to-[#C9B38D]/20 transform translate-x-1/2 rounded-full" />
 
             <div className="space-y-12 sm:space-y-16">
-              {milestones.map((item, idx) => {
+              {milestonesList.map((item, idx) => {
                 const isEven = idx % 2 === 0;
                 return (
                   <div
-                    key={item.year}
+                    key={item.year || item.id || idx}
                     className={`relative flex flex-col md:flex-row items-center ${
                       isEven ? "md:flex-row-reverse" : ""
                     } gap-6 md:gap-12`}
@@ -416,7 +456,7 @@ export default function HistoryStaffPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {formerStaffList.map((staff) => (
+            {formerList.map((staff) => (
               <div
                 key={staff.id}
                 className="group relative rounded-3xl p-6 bg-gradient-to-b from-[#1C120B] via-[#160D07] to-[#100804] border border-[#C9B38D]/25 hover:border-[#C9B38D] shadow-[0_15px_35px_rgba(0,0,0,0.8)] hover:shadow-[0_20px_45px_rgba(201,179,141,0.25)] transition-all duration-300 flex flex-col justify-between"
@@ -520,8 +560,8 @@ export default function HistoryStaffPage() {
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     {staff.isOnlineActive && (
-                      <span className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 text-[10px] font-urdu font-bold backdrop-blur-sm flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-[#1C1009]/95 text-[#D9C7A7] border border-[#C9B38D]/40 text-[10px] font-urdu font-bold backdrop-blur-sm flex items-center gap-1.5 shadow-md">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C9B38D] animate-pulse" />
                         <span>فعال و حاضر</span>
                       </span>
                     )}

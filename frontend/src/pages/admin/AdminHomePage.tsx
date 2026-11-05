@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import {
-  Sparkles,
   Save,
   Upload,
   Image as ImageIcon,
@@ -49,12 +49,15 @@ export default function AdminHomePage() {
   const [uploadingQuickMedia, setUploadingQuickMedia] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingDonationBox, setUploadingDonationBox] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("/images/logo.png");
 
   const bgFileInputRef = useRef<HTMLInputElement>(null);
   const posterFileInputRef = useRef<HTMLInputElement>(null);
   const quickMediaFileInputRef = useRef<HTMLInputElement>(null);
   const donationBoxInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   // Form State
   const [heroData, setHeroData] = useState({
@@ -98,17 +101,17 @@ export default function AdminHomePage() {
       title: "مدرسہ کے اساتذہ و اکابرین کی کتب",
       subtitle: "علومِ آلِ محمدؑ اور عصری اسلامی افکار پر مشتمل مستند کتب و تصانیف کا مطالعہ فرمائیں"
     },
-    activities: {
-      enabled: true,
-      badge: "سیکشن ۴: جسمانی صحت و تفریح",
-      title: "طلبہ کے کھیل کود اور اسپورٹس سرگرمیاں",
-      subtitle: "صحت مند دماغ کے لیے صحت مند جسم — کرکٹ، فٹ بال، بیڈمنٹن اور روایتی کھیلوں کے مقابلے"
-    },
     picnic: {
       enabled: true,
-      badge: "سیکشن ۵: مطالعاتی و تفریحی ٹورز",
+      badge: "سیکشن ۴: مطالعاتی و تفریحی ٹورز",
       title: "طلبہ کے سالانہ پکنک اور تفریحی مقامات کے دورے",
       subtitle: "سمندر کنارے پرلطف لمحات، تاریخی و تفریحی مقامات کے مطالعاتی دورے اور باہمی ہم آہنگی"
+    },
+    activities: {
+      enabled: true,
+      badge: "سیکشن ۵: جسمانی صحت و تفریح",
+      title: "طلبہ کے کھیل کود اور اسپورٹس سرگرمیاں",
+      subtitle: "صحت مند دماغ کے لیے صحت مند جسم — کرکٹ، فٹ بال، بیڈمنٹن اور روایتی کھیلوں کے مقابلے"
     },
     celebrations: {
       enabled: true,
@@ -154,9 +157,9 @@ export default function AdminHomePage() {
       title: "مدرسہ کا مرکزی بیرونی منظر و گنبد",
       category: "مرکزی کیمپس",
       type: "video",
-      videoDuration: "۰۴:۱۵",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      imageUrl: "/images/layout/mosque-arches.jpg",
+      videoDuration: "",
+      videoUrl: "",
+      imageUrl: "",
       date: "تعلیمی سال ۲۰۲۶",
       location: "احسن آباد کیمپس، کراچی",
       description: "مدرسہ صاحب الزمان کی پرشکوہ اسلامی طرزِ تعمیر کی حامل عمارت، محرابیں اور وسیع دالان کا مکمل ویڈیو ٹور۔"
@@ -263,7 +266,7 @@ export default function AdminHomePage() {
       category: "کھیل کود و اسپورٹس",
       type: "video",
       videoDuration: "۰۳:۲۰",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      videoUrl: "",
       imageUrl: "/images/gallery/sports-day.jpg",
       date: "ہفتہ وار اسپورٹس ڈے",
       location: "مدرسہ صاحب الزمان پلے گراؤنڈ",
@@ -285,7 +288,7 @@ export default function AdminHomePage() {
       category: "صحت و تندرستی",
       type: "video",
       videoDuration: "۰۱:۴۵",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      videoUrl: "",
       imageUrl: "/images/gallery/exercise.jpg",
       date: "روزانہ فجر کے بعد",
       location: "مرکزی کورٹ یارڈ و گراؤنڈ",
@@ -307,7 +310,7 @@ export default function AdminHomePage() {
       category: "میدانی کھیل",
       type: "video",
       videoDuration: "۰۲:۱۰",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      videoUrl: "",
       imageUrl: "/images/gallery/badminton.jpg",
       date: "عصر کے بعد",
       location: "بیڈمنٹن کورٹ",
@@ -322,7 +325,7 @@ export default function AdminHomePage() {
       category: "سالانہ پکنک",
       type: "video",
       videoDuration: "۰۴:۵۰",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      videoUrl: "",
       imageUrl: "/images/gallery/picnic-beach.jpg",
       date: "اکتوبر ۲۰۲۵",
       location: "کلفٹن و سی ویو ساحل، کراچی",
@@ -344,7 +347,7 @@ export default function AdminHomePage() {
       category: "ایکٹیویٹی ڈے",
       type: "video",
       videoDuration: "۰۲:۱۵",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      videoUrl: "",
       imageUrl: "/images/layout/lattice-prayer.jpg",
       date: "دسمبر ۲۰۲۵",
       location: "تھیم پارک، کراچی",
@@ -369,7 +372,7 @@ export default function AdminHomePage() {
       category: "تقسیمِ انعامات",
       type: "video",
       videoDuration: "۰۶:۳۰",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      videoUrl: "",
       imageUrl: "/images/gallery/celebration-stage.jpg",
       date: "شعبان المعظم ۱۴۴۷ھ",
       location: "مرکزی پنڈال و اسٹیج",
@@ -391,7 +394,7 @@ export default function AdminHomePage() {
       category: "قرآنی مقابلہ",
       type: "video",
       videoDuration: "۰۳:۴۵",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      videoUrl: "",
       imageUrl: "/images/layout/quran-study.jpg",
       date: "رمضان المبارک",
       location: "مسجد صاحب الزمان",
@@ -416,6 +419,7 @@ export default function AdminHomePage() {
   const [celebrationsMediaData, setCelebrationsMediaData] = useState<any[]>(defaultCelebrationsMedia);
 
   const [uploadingCampusIdx, setUploadingCampusIdx] = useState<number | null>(null);
+  const [uploadingCampusVideo, setUploadingCampusVideo] = useState(false);
   const [uploadingSectionMedia, setUploadingSectionMedia] = useState<{ section: string; idx: number } | null>(null);
 
   // Quick Media State
@@ -459,6 +463,11 @@ export default function AdminHomePage() {
           setCelebrationsMediaData(res.data.celebrationsMedia);
         }
       }
+
+      try {
+        const sRes = await api.settings.get();
+        if (sRes?.data?.logo) setLogoUrl(sRes.data.logo);
+      } catch {}
     } catch (err) {
       console.error(err);
     } finally {
@@ -469,6 +478,25 @@ export default function AdminHomePage() {
   useEffect(() => {
     fetchHomeContent();
   }, []);
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploadingLogo(true);
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        setLogoUrl(res.fileUrl);
+        await api.settings.update({ logo: res.fileUrl });
+        window.dispatchEvent(new CustomEvent("msz_logo_updated", { detail: { logo: res.fileUrl } }));
+      }
+    } catch (err: any) {
+      alert("لوگو اپلوڈ میں خرابی: " + err.message);
+    } finally {
+      setUploadingLogo(false);
+      if (logoInputRef.current) logoInputRef.current.value = "";
+    }
+  };
 
   const handleSaveAll = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -487,6 +515,10 @@ export default function AdminHomePage() {
         celebrationsMedia: celebrationsMediaData
       };
       const res = await api.homepage.update(payload);
+      if (logoUrl) {
+        await api.settings.update({ logo: logoUrl });
+        window.dispatchEvent(new CustomEvent("msz_logo_updated", { detail: { logo: logoUrl } }));
+      }
       if (res.success) {
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3500);
@@ -619,11 +651,99 @@ export default function AdminHomePage() {
     }
   };
 
+  const isVideoUrl = (url?: string) => {
+    if (!url) return false;
+    return !!url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i);
+  };
+
+  const generateThumbnailFromVideo = (videoFile: File): Promise<File | null> => {
+    return new Promise((resolve) => {
+      try {
+        const video = document.createElement("video");
+        const url = URL.createObjectURL(videoFile);
+        video.src = url;
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+
+        video.onloadedmetadata = () => {
+          video.currentTime = Math.min(0.5, video.duration > 0.5 ? 0.5 : 0.1);
+        };
+
+        video.onseeked = () => {
+          try {
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 360;
+            const ctx = canvas.getContext("2d");
+            if (ctx) {
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+              canvas.toBlob(
+                (blob) => {
+                  URL.revokeObjectURL(url);
+                  if (blob) {
+                    const thumbFile = new File([blob], `thumb-${Date.now()}.jpg`, {
+                      type: "image/jpeg",
+                    });
+                    resolve(thumbFile);
+                  } else {
+                    resolve(null);
+                  }
+                },
+                "image/jpeg",
+                0.88
+              );
+            } else {
+              URL.revokeObjectURL(url);
+              resolve(null);
+            }
+          } catch {
+            URL.revokeObjectURL(url);
+            resolve(null);
+          }
+        };
+
+        video.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve(null);
+        };
+      } catch {
+        resolve(null);
+      }
+    });
+  };
+
   const handleCampusMediaUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
       setUploadingCampusIdx(index);
+
+      // If user uploaded a video into the poster field for campus video (index 0)
+      if (index === 0 && file.type.startsWith("video/")) {
+        const res = await api.upload.file(file);
+        if (res.success && res.fileUrl) {
+          let thumbUrl = "";
+          try {
+            const thumbFile = await generateThumbnailFromVideo(file);
+            if (thumbFile) {
+              const resThumb = await api.upload.file(thumbFile);
+              if (resThumb.success) thumbUrl = resThumb.fileUrl;
+            }
+          } catch {}
+          setCampusMediaData((prev) => {
+            const next = [...prev];
+            next[0] = {
+              ...next[0],
+              videoUrl: res.fileUrl,
+              imageUrl: thumbUrl || res.fileUrl,
+            };
+            return next;
+          });
+        }
+        return;
+      }
+
       const res = await api.upload.file(file);
       if (res.success && res.fileUrl) {
         setCampusMediaData((prev) => {
@@ -633,9 +753,46 @@ export default function AdminHomePage() {
         });
       }
     } catch (err: any) {
-      alert("تصویر اپلوڈ کرنے میں خرابی: " + err.message);
+      alert("فائل اپلوڈ کرنے میں خرابی: " + err.message);
     } finally {
       setUploadingCampusIdx(null);
+    }
+  };
+
+  const handleCampusVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setUploadingCampusVideo(true);
+      const res = await api.upload.file(file);
+      if (res.success && res.fileUrl) {
+        let generatedThumbUrl = "";
+        try {
+          const thumbFile = await generateThumbnailFromVideo(file);
+          if (thumbFile) {
+            const thumbRes = await api.upload.file(thumbFile);
+            if (thumbRes.success && thumbRes.fileUrl) {
+              generatedThumbUrl = thumbRes.fileUrl;
+            }
+          }
+        } catch (thumbErr) {
+          console.warn("Could not generate thumbnail image:", thumbErr);
+        }
+
+        setCampusMediaData((prev) => {
+          const next = [...prev];
+          next[0] = {
+            ...next[0],
+            videoUrl: res.fileUrl,
+            imageUrl: generatedThumbUrl || res.fileUrl,
+          };
+          return next;
+        });
+      }
+    } catch (err: any) {
+      alert("ویڈیو اپلوڈ کرنے میں خرابی: " + err.message);
+    } finally {
+      setUploadingCampusVideo(false);
     }
   };
 
@@ -933,7 +1090,7 @@ export default function AdminHomePage() {
                 : "text-stone-300 hover:text-white hover:bg-white/5"
             }`}
           >
-            <Sparkles className="w-4 h-4" />
+            
             <span>ہیرو سیکشن و بینر (Main Hero)</span>
           </button>
 
@@ -1007,9 +1164,79 @@ export default function AdminHomePage() {
               <div className="lg:col-span-7 space-y-6">
                 <div className="p-6 rounded-3xl bg-[#1C1009] border border-[#C9B38D]/25 space-y-5 shadow-xl">
                   <h3 className="text-base font-bold text-[#C9B38D] flex items-center gap-2 border-b border-[#C9B38D]/20 pb-3">
-                    <Sparkles className="w-4 h-4" />
+                    
                     <span>عنوان، تعارف اور مشن (Titles & Branding)</span>
                   </h3>
+
+                  {/* Official Madrasa Logo Uploader */}
+                  <div className="p-4 rounded-2xl bg-[#120A05] border border-[#C9B38D]/25 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <label className="text-xs font-bold text-[#C9B38D] flex items-center gap-2">
+                        <ImageIcon className="w-4 h-4 text-[#C9B38D]" />
+                        <span>ادارے کا آفیشل لوگو (Madrasa Logo)</span>
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="file"
+                          ref={logoInputRef}
+                          onChange={handleLogoUpload}
+                          accept="image/*"
+                          className="hidden"
+                        />
+                        <button
+                          type="button"
+                          disabled={uploadingLogo}
+                          onClick={() => logoInputRef.current?.click()}
+                          className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#C9B38D] to-[#DFCBB0] text-[#120A05] text-xs font-bold hover:brightness-110 active:scale-95 transition flex items-center gap-1.5 shadow cursor-pointer disabled:opacity-50"
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>{uploadingLogo ? "اپلوڈ جاری ہے..." : "نیا لوگو اپلوڈ کریں"}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            setLogoUrl("/images/logo.png");
+                            await api.settings.update({ logo: "/images/logo.png" });
+                            window.dispatchEvent(new CustomEvent("msz_logo_updated", { detail: { logo: "/images/logo.png" } }));
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-stone-300 text-xs transition cursor-pointer"
+                        >
+                          ڈیفالٹ
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-16 h-16 rounded-xl bg-[#0D0704] border border-[#C9B38D]/50 flex items-center justify-center p-1.5 shrink-0 shadow overflow-hidden">
+                        <Image
+                          src={logoUrl || "/images/logo.png"}
+                          alt="لوگو"
+                          width={64}
+                          height={64}
+                          className="w-full h-full object-contain filter drop-shadow"
+                          unoptimized={Boolean(logoUrl?.startsWith("http"))}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <input
+                          type="text"
+                          value={logoUrl || ""}
+                          onChange={async (e) => {
+                            const val = e.target.value;
+                            setLogoUrl(val);
+                            await api.settings.update({ logo: val });
+                            window.dispatchEvent(new CustomEvent("msz_logo_updated", { detail: { logo: val } }));
+                          }}
+                          placeholder="/images/logo.png یا تصویری URL"
+                          className="w-full px-3 py-1.5 rounded-xl bg-[#1C1009] border border-white/15 text-white font-mono text-xs focus:border-[#C9B38D] focus:outline-none"
+                          dir="ltr"
+                        />
+                        <p className="text-[10px] text-stone-400 mt-1">
+                          نیویگیشن بار، فوٹر اور ایڈمن سائڈبار پر خودکار طور پر یہی لوگو ظاہر ہوگا۔
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* Bismillah */}
                   <div>
@@ -1465,17 +1692,48 @@ export default function AdminHomePage() {
                           </div>
 
                           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                            <div className="relative w-32 h-20 rounded-xl overflow-hidden bg-black/60 border border-[#C9B38D]/40 shrink-0">
-                              <img
-                                src={campusMediaData[0]?.imageUrl || "/images/layout/mosque-arches.jpg"}
-                                alt="Video Poster"
-                                className="w-full h-full object-cover"
-                              />
+                            <div className="relative w-32 h-20 rounded-xl overflow-hidden bg-black/60 border border-[#C9B38D]/40 shrink-0 flex items-center justify-center">
+                              {(() => {
+                                const directVideo = isVideoUrl(campusMediaData[0]?.videoUrl)
+                                  ? campusMediaData[0]?.videoUrl
+                                  : isVideoUrl(campusMediaData[0]?.imageUrl)
+                                  ? campusMediaData[0]?.imageUrl
+                                  : null;
+
+                                if (campusMediaData[0]?.imageUrl && !isVideoUrl(campusMediaData[0]?.imageUrl)) {
+                                  return (
+                                    <img
+                                      src={campusMediaData[0].imageUrl}
+                                      alt="Video Poster"
+                                      className="w-full h-full object-cover"
+                                    />
+                                  );
+                                }
+
+                                if (directVideo) {
+                                  return (
+                                    <video
+                                      src={`${directVideo}#t=0.5`}
+                                      preload="metadata"
+                                      muted
+                                      playsInline
+                                      className="w-full h-full object-cover pointer-events-none"
+                                    />
+                                  );
+                                }
+
+                                return (
+                                  <div className="w-full h-full flex flex-col items-center justify-center text-stone-500 bg-[#120A05]">
+                                    <Film className="w-6 h-6 text-[#C9B38D]/50 mb-1" />
+                                    <span className="text-[10px] text-stone-400">کوئی ویڈیو نہیں</span>
+                                  </div>
+                                );
+                              })()}
                             </div>
 
                             <div className="flex-1 w-full space-y-1.5">
                               <label className="block text-[11px] font-bold text-stone-400">
-                                ویڈیو کی پوسٹر / تھمب نیل تصویر (Poster Image):
+                                ویڈیو کی پوسٹر / تھمب نیل تصویر (اختیاری - خودکار طریقے سے ویڈیو کا پہلا فریم نظر آئے گا):
                               </label>
                               <div className="flex items-center gap-2">
                                 <input
@@ -1484,7 +1742,7 @@ export default function AdminHomePage() {
                                   value={campusMediaData[0]?.imageUrl || ""}
                                   onChange={(e) => updateCampusMediaItem(0, "imageUrl", e.target.value)}
                                   className="flex-1 px-3 py-1.5 rounded-xl bg-[#1C1009] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none"
-                                  placeholder="/images/layout/mosque-arches.jpg"
+                                  placeholder="خودکار ویڈیو فریم یا کسٹم تصویر کا ربط"
                                 />
                                 <label className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 text-xs font-bold border border-white/10 transition flex items-center gap-1 cursor-pointer shrink-0">
                                   <Upload className="w-3.5 h-3.5 text-[#C9B38D]" />
@@ -1530,16 +1788,28 @@ export default function AdminHomePage() {
 
                           <div>
                             <label className="block text-[11px] font-bold text-stone-300 mb-1">
-                              ویڈیو کا ربط (YouTube URL یا MP4 Link)
+                              ویڈیو کا ربط (YouTube URL یا MP4 ویڈیو فائل)
                             </label>
-                            <input
-                              type="text"
-                              dir="ltr"
-                              value={campusMediaData[0]?.videoUrl || ""}
-                              onChange={(e) => updateCampusMediaItem(0, "videoUrl", e.target.value)}
-                              className="w-full px-3 py-1.5 rounded-xl bg-[#1C1009] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none text-left"
-                              placeholder="https://www.youtube.com/watch?v=..."
-                            />
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                dir="ltr"
+                                value={campusMediaData[0]?.videoUrl || ""}
+                                onChange={(e) => updateCampusMediaItem(0, "videoUrl", e.target.value)}
+                                className="flex-1 px-3 py-1.5 rounded-xl bg-[#1C1009] border border-[#C9B38D]/25 text-white text-xs focus:border-[#C9B38D] focus:outline-none text-left"
+                                placeholder="https://www.youtube.com/watch?v=... یا MP4 ویڈیو لنک"
+                              />
+                              <label className="px-3.5 py-1.5 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 text-xs font-bold border border-amber-500/30 transition flex items-center gap-1 cursor-pointer shrink-0">
+                                <Video className="w-3.5 h-3.5 text-[#C9B38D]" />
+                                <span>{uploadingCampusVideo ? "..." : "ویڈیو چنیں"}</span>
+                                <input
+                                  type="file"
+                                  accept="video/*"
+                                  className="hidden"
+                                  onChange={handleCampusVideoUpload}
+                                />
+                              </label>
+                            </div>
                           </div>
                         </div>
 

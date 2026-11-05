@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Mail, Send, Check, Facebook, Twitter, Instagram, Youtube, Phone, MapPin, ExternalLink, Sparkles } from "lucide-react";
+import { Mail, Send, Check, Facebook, Twitter, Instagram, Youtube, Phone, MapPin, ExternalLink } from "lucide-react";
 import { madarsaInfo as fallbackInfo } from "@/data/madarsaData";
 import { api } from "@/services/api";
 
@@ -65,12 +65,13 @@ export default function Footer({ settings: propSettings }: FooterProps) {
           {/* Column 1: Brand & Social Media */}
           <div className="lg:col-span-5 space-y-5 text-right">
             <div className="flex items-center gap-3">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#C9B38D] shadow-[0_0_20px_rgba(201,179,141,0.35)]">
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[#C9B38D] shadow-[0_0_20px_rgba(201,179,141,0.35)] bg-white p-1">
                 <Image
-                  src="/images/logo.png"
+                  src={settings?.logo || "/images/logo.png"}
                   alt="مدرسہ صاحب الزمان لوگو"
                   fill
-                  className="object-contain"
+                  className="object-contain p-0.5"
+                  unoptimized={Boolean(settings?.logo?.startsWith("http"))}
                 />
               </div>
               <div>
@@ -93,13 +94,15 @@ export default function Footer({ settings: propSettings }: FooterProps) {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-start gap-2.5 text-xs sm:text-sm text-stone-300 hover:text-[#C9B38D] transition-colors p-3.5 rounded-2xl bg-[#1A0E08] border border-[#C9B38D]/20 hover:border-[#C9B38D]/40 max-w-md group"
+                className="relative overflow-hidden flex items-start gap-2.5 text-xs sm:text-sm text-stone-300 hover:text-white transition-all duration-300 p-3.5 rounded-2xl bg-gradient-to-b from-[#2a1e14]/55 to-[#140e09]/75 backdrop-blur-lg border border-[#f5deb3]/15 hover:border-[#f5deb3]/30 shadow-[inset_0_1px_1px_0_rgba(255,245,230,0.18),0_8px_24px_rgba(0,0,0,0.5)] hover:shadow-[inset_0_1px_2px_0_rgba(255,245,230,0.28),0_12px_32px_rgba(0,0,0,0.6)] hover:from-[#38281b]/65 max-w-md group cursor-pointer"
               >
-                <MapPin className="w-5 h-5 text-red-500 shrink-0 fill-red-500 mt-0.5" />
+                {/* Sheen sweep reflection on hover */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out pointer-events-none" />
+                <MapPin className="w-5 h-5 text-red-500 shrink-0 fill-red-500 mt-0.5 drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]" />
                 <span className="leading-[2.2] font-urdu">
                   {address}
                 </span>
-                <ExternalLink className="w-4 h-4 text-[#C9B38D] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <ExternalLink className="w-4 h-4 text-[#f5deb3] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
             </div>
 
@@ -120,7 +123,7 @@ export default function Footer({ settings: propSettings }: FooterProps) {
                     <a
                       key={idx}
                       href={social.href}
-                      className="w-10 h-10 rounded-full bg-[#1A0E08] hover:bg-white hover:text-[#120A05] transition flex items-center justify-center text-stone-300 border border-[#C9B38D]/20 hover:border-[#C9B38D] shadow-sm"
+                      className="w-10 h-10 rounded-full bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-md border border-[#f5deb3]/15 shadow-[inset_0_1px_1px_rgba(255,245,230,0.2),0_4px_12px_rgba(0,0,0,0.3)] text-stone-300 hover:text-white hover:bg-white/[0.12] hover:border-[#f5deb3]/35 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center cursor-pointer"
                       aria-label={social.label}
                     >
                       <Icon className="w-4 h-4" />
@@ -139,10 +142,10 @@ export default function Footer({ settings: propSettings }: FooterProps) {
               <h4 className="text-sm sm:text-base font-urdu font-bold text-white text-right">
                 تازہ ترین اعلانات اور خبروں کے لیے سبسکرائب کریں:
               </h4>
-              <form onSubmit={handleSubscribe} className="flex max-w-lg rounded-full bg-[#1A0E08] border border-[#C9B38D]/25 focus-within:border-[#C9B38D] p-1.5 transition shadow-inner">
+              <form onSubmit={handleSubscribe} className="flex max-w-lg rounded-full bg-[#1c130c]/60 backdrop-blur-lg border border-[#f5deb3]/15 focus-within:border-[#f5deb3]/35 p-1.5 transition-all duration-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,245,230,0.12)]">
                 <button
                   type="submit"
-                  className="bg-white hover:bg-stone-100 text-[#120A05] border border-[#C9B38D] font-urdu font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition shadow flex items-center gap-1.5 shrink-0 active:scale-95"
+                  className="bg-white hover:bg-stone-100 text-[#120A05] border border-[#f5deb3]/30 font-urdu font-bold text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all duration-300 shadow-[0_4px_16px_rgba(255,255,255,0.12)] hover:shadow-[0_6px_22px_rgba(245,222,179,0.25)] hover:scale-[1.02] active:scale-95 flex items-center gap-1.5 shrink-0 cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5 text-[#120A05]" />
                   <span>سبسکرائب</span>
@@ -214,9 +217,16 @@ export default function Footer({ settings: propSettings }: FooterProps) {
                     <a href="/#contact" className="hover:text-[#C9B38D] transition leading-[2.2]">رابطہ و پتہ</a>
                   </li>
                   <li>
-                    <a href="/admin" className="text-[#C9B38D] hover:underline transition leading-[2.2] flex items-center gap-1 font-bold">
-                      <span>ایڈمن لاگ ان پورٹل</span>
-                    </a>
+                    <button
+                      onClick={() => {
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                        window.dispatchEvent(new CustomEvent("msz_replay_intro"));
+                      }}
+                      className="text-stone-300 hover:text-[#C9B38D] transition leading-[2.2] flex items-center gap-1.5 cursor-pointer font-urdu"
+                    >
+                      
+                      <span>۳D تعارف دوبارہ دیکھیں</span>
+                    </button>
                   </li>
                 </ul>
               </div>

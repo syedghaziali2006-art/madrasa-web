@@ -2,48 +2,71 @@
 
 import React from "react";
 import Image from "next/image";
-import { Sparkles, Heart, Award, BookOpen, Quote, Star, CheckCircle2 } from "lucide-react";
+import { Heart, Award, BookOpen, Quote, Star, CheckCircle2 } from "lucide-react";
 
-export default function FounderSection() {
-  const achievements = [
-    {
-      title: "مدرسہ کا قیام و سنگِ بنیاد (۱۹۹۸ء)",
-      desc: "محدود وسائل کے باوجود خلوصِ نیت سے علومِ آلِ محمدؑ کی تدریس کے لیے مدرسہ صاحب الزمان کی بنیاد رکھی۔"
-    },
-    {
-      title: "تزکیہ نفس و اخلاقی تربیت کی ترجیح",
-      desc: "صرف کتابیں پڑھانے کے بجائے طلبہ کے دلوں میں عشقِ خدا، ولایتِ اہل بیتؑ اور احترامِ انسانیت بیدار کیا۔"
-    },
-    {
-      title: "دسترخوانِ امام زمانہؑ کی ابتدا",
-      desc: "دینی طلبہ اور نادار مومنین کی کفالت کے لیے بلا تفریق کھانا اور اقامت فراہم کرنے کا فلاحی مشن شروع کیا۔"
-    },
-    {
-      title: "سینکڑوں فارغ التحصیل علماء و مربیان",
-      desc: "ان کے تربیت یافتہ شاگرد آج ملک و بیرونِ ملک محراب و منبر اور علمی ریسرچ کے ذریعے دینِ حق کی خدمت کر رہے ہیں۔"
-    }
-  ];
+interface FounderSectionProps {
+  founder?: {
+    badge?: string;
+    title?: string;
+    subtitle?: string;
+    image?: string;
+    quote?: string;
+    features?: Array<{
+      id?: string;
+      title: string;
+      desc: string;
+    }>;
+  };
+}
+
+export default function FounderSection({ founder }: FounderSectionProps = {}) {
+  const achievements = founder?.features && founder.features.length > 0
+    ? founder.features
+    : [
+        {
+          title: "مدرسہ کا قیام و سنگِ بنیاد (۱۹۹۸ء)",
+          desc: "محدود وسائل کے باوجود خلوصِ نیت سے علومِ آلِ محمدؑ کی تدریس کے لیے مدرسہ صاحب الزمان کی بنیاد رکھی。"
+        },
+        {
+          title: "تزکیہ نفس و اخلاقی تربیت کی ترجیح",
+          desc: "صرف کتابیں پڑھانے کے بجائے طلبہ کے دلوں میں عشقِ خدا، ولایتِ اہل بیتؑ اور احترامِ انسانیت بیدار کیا۔"
+        },
+        {
+          title: "دسترخوانِ امام زمانہؑ کی ابتدا",
+          desc: "دینی طلبہ اور نادار مومنین کی کفالت کے لیے بلا تفریق کھانا اور اقامت فراہم کرنے کا فلاحی مشن شروع کیا۔"
+        },
+        {
+          title: "سینکڑوں فارغ التحصیل علماء و مربیان",
+          desc: "ان کے تربیت یافتہ شاگرد آج ملک و بیرونِ ملک محراب و منبر اور علمی ریسرچ کے ذریعے دینِ حق کی خدمت کر رہے ہیں۔"
+        }
+      ];
+
+  const badgeText = founder?.badge || "مؤسس و بانی";
+  const titleText = founder?.title || "مؤسس و بانیِ ادارہ — باباجانؒ";
+  const subtitleText = founder?.subtitle || "حضرت علامہ سید کاظم موسویؒ (باباجان) کا پرخلوص وژن، انتھک محنت، اور علومِ آلِ محمدؑ کے فروغ کے لیے تاحیات مقدس خدمات کا اعتراف";
+  const quoteText = founder?.quote || "دینِ آلِ محمدؑ کی خدمت، یتیموں اور غریب بچوں کی کردار سازی، اور خلوصِ نیت کے ساتھ علم کا فروغ ہی ہماری دنیا اور آخرت کی نجات ہے۔";
+  const imageUrl = founder?.image || "/images/faculty/founder-scholar.jpg";
 
   return (
     <section id="founder" className="py-20 sm:py-28 bg-[#160C07] islamic-navy-pattern relative overflow-hidden border-b border-[#C9B38D]/20" dir="rtl">
-      <div className="absolute top-1/4 right-1/4 w-[600px] h-[350px] bg-[#0E3D2B]/25 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/4 right-1/4 w-[600px] h-[350px] bg-[#C9B38D]/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-1/4 left-1/4 w-[500px] h-[300px] bg-[#C9B38D]/10 rounded-full blur-[130px] pointer-events-none" />
 
       <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
             <span className="text-[#C9B38D] text-sm">❖</span>
-            <span className="font-urdu">مؤسس و بانی</span>
+            <span className="font-urdu">{badgeText}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[1.8]">
-            مؤسس و بانیِ ادارہ — <span className="text-[#C9B38D]">باباجانؒ</span>
+            {titleText}
           </h2>
 
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
           <p className="text-sm sm:text-base md:text-lg text-stone-300 font-urdu leading-[2.2] sm:leading-[2.4] max-w-2xl mx-auto font-medium">
-            حضرت علامہ سید کاظم موسویؒ (باباجان) کا پرخلوص وژن، انتھک محنت، اور علومِ آلِ محمدؑ کے فروغ کے لیے تاحیات مقدس خدمات کا اعتراف
+            {subtitleText}
           </p>
         </div>
 
@@ -53,8 +76,8 @@ export default function FounderSection() {
               <div className="bg-[#1A0E08] rounded-[30px] p-3 overflow-hidden">
                 <div className="relative h-96 sm:h-[480px] rounded-[24px] overflow-hidden group">
                   <Image
-                    src="/images/faculty/founder-scholar.jpg"
-                    alt="حضرت علامہ سید کاظم موسویؒ باباجان"
+                    src={imageUrl}
+                    alt={titleText}
                     fill
                     className="object-cover sepia-[0.25] contrast-[1.05] group-hover:scale-105 transition-transform duration-700"
                     priority
@@ -63,21 +86,18 @@ export default function FounderSection() {
 
                   <div className="absolute bottom-20 right-5 left-5 text-right z-10">
                     <span className="bg-white text-[#120A05] border border-[#C9B38D] text-xs font-bold font-urdu px-3.5 py-1 rounded-full shadow-md">
-                      بانی و مؤسسِ اعلیٰ
+                      {badgeText}
                     </span>
                     <h3 className="text-xl font-bold text-white font-urdu mt-2 drop-shadow-md">
-                      حضرت علامہ سید کاظم موسویؒ
+                      {titleText}
                     </h3>
-                    <p className="text-xs text-[#C9B38D] font-urdu font-semibold mt-0.5">
-                      (معروف بہ باباجان — سالِ خدمات: ۱۹۹۸ء تا ۲۰۱۲ء)
-                    </p>
                   </div>
                 </div>
 
                 <div className="relative -mt-14 mx-2 bg-gradient-to-b from-[#24130B]/95 to-[#120A05]/95 border-2 border-[#C9B38D]/50 rounded-2xl p-5 shadow-2xl backdrop-blur-md text-center">
                   <Quote className="w-6 h-6 text-[#C9B38D] mx-auto mb-2 opacity-80" />
                   <p className="text-xs sm:text-sm font-urdu font-medium text-amber-100 leading-[2.2]">
-                    &ldquo;دینِ آلِ محمدؑ کی خدمت، یتیموں اور غریب بچوں کی کردار سازی، اور خلوصِ نیت کے ساتھ علم کا فروغ ہی ہماری دنیا اور آخرت کی نجات ہے۔&rdquo;
+                    &ldquo;{quoteText}&rdquo;
                   </p>
                   <p className="text-[11px] text-[#C9B38D] font-urdu font-bold mt-2">
                     — فرموداتِ باباجانؒ

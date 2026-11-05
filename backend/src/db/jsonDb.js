@@ -165,5 +165,8 @@ export const db = {
   donationAccounts: new Collection("donationAccounts", seed.donationAccounts),
   donorSubmissions: new Collection("donorSubmissions", seed.donorSubmissions),
   settings: new SingletonDocument("settings", seed.settings),
-  homeContent: new SingletonDocument("homeContent", seed.homeContent)
+  homeContent: new SingletonDocument("homeContent", seed.homeContent),
+  policyContent: new SingletonDocument("policyContent", seed.policyContent || {}),
+  historyContent: new SingletonDocument("historyContent", seed.historyContent || {}),
+  womensContent: new SingletonDocument("womensContent", seed.womensContent || {})
 };

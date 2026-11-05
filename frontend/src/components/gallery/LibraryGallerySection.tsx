@@ -1,81 +1,107 @@
 "use client";
 
-import React, { useState } from "react";
+import * as React from "react";
 import Image from "next/image";
-import { BookOpen, ChevronRight, ChevronLeft, Sparkles, ZoomIn, Library, Eye } from "lucide-react";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { cn } from "@/lib/utils";
+import {
+  ZoomIn,
+  Play,
+  GraduationCap,
+  MapPin,
+  FileCheck,
+} from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
-
 import { api } from "@/services/api";
 
-interface LibraryGallerySectionProps {
+export interface LibraryGallerySectionProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   header?: {
     badge?: string;
     title?: string;
     subtitle?: string;
+    description?: string;
   };
   items?: MediaItem[];
+  className?: string;
 }
 
-export default function LibraryGallerySection({ header, items }: LibraryGallerySectionProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
+export default function LibraryGallerySection({
+  header,
+  items,
+  className,
+  ...props
+}: LibraryGallerySectionProps) {
+  const [selectedMedia, setSelectedMedia] = React.useState<MediaItem | null>(null);
+  const [activeIndex, setActiveIndex] = React.useState<number>(2);
+  const [windowWidth, setWindowWidth] = React.useState<number>(1200);
 
-  const defaultLibraryItems: MediaItem[] = [
+  const defaultExamItems: MediaItem[] = [
     {
-      id: "lib-1",
-      title: "مرکزی مطالعہ ہال و کتب الماری",
-      category: "مطالعہ و کتب",
+      id: "exam-1",
+      title: "سالانہ امتحانات کا پروقار انعقاد و ہال کا منظر",
+      category: "سالانہ امتحانات",
       type: "image",
       imageUrl: "/images/gallery/library-interior.jpg",
-      date: "کتب خانہ صاحب الزمان",
-      location: "ہال نمبر ۱ - حوزوی کتب",
-      description: "شاہکار لکڑی کی الماریوں میں سجی ہزاروں کتب، پرسکون ماحول اور طلبہ کے لیے وسیع اسٹڈی ٹیبلز۔",
+      date: "تعلیمی سال ۲۰۲۵-۲۰۲۶",
+      location: "مرکزی امتحانی ہال",
+      description: "طلبہ کے سالانہ تحریری امتحانات، مکمل نظم و ضبط، پرسکون ماحول اور نگران اساتذہ کی موجودگی کا منظر۔",
     },
     {
-      id: "lib-2",
-      title: "قدیم نایاب خطی نسخے و قلمی نوادرات",
-      category: "مخطوطات و نوادرات",
+      id: "exam-2",
+      title: "زبانی امتحانات و کتبِ درسیہ کی علمی جانچ",
+      category: "زبانی امتحانات",
       type: "image",
       imageUrl: "/images/library.jpg",
-      date: "نایاب کتب",
-      location: "خصوصی ریسرچ سیکشن",
-      description: "صدیوں پرانے قلمی نسخے، تفاسیر اور علمائے سلف کے نایاب ہاتھ کے لکھے ہوئے کتب کے اوراق۔",
+      date: "ششماہی امتحان",
+      location: "کمیٹی روم نمبر ۲",
+      description: "جید اساتذہ کے روبرو طلبہ کے زبانی ٹیسٹ، تجوید اور فقہی سوالات کے جوابات کا پروقار سیشن۔",
     },
     {
-      id: "lib-3",
-      title: "کتبِ تفاسیر، احادیث و فقہی انسائیکلوپیڈیا",
-      category: "علومِ آلِ محمدؑ",
+      id: "exam-3",
+      title: "حفظِ قرآن کریم کا باقاعدہ امتحانی اجلاس",
+      category: "شعبہ تحفیظ",
       type: "image",
       imageUrl: "/images/books/book-3.jpg",
-      date: "بنیادی مآخذ",
-      location: "شعبہ تحقیق و فقہ",
-      description: "کتبِ اربعہ، بحار الانوار، وسائل الشیعہ اور تفاسیر قرآن کا عظیم الشان اور مستند مجموعہ۔",
+      date: "ماہانہ ٹیسٹ",
+      location: "دار القرآن والحدیث",
+      description: "حفاظِ کرام کی حسنِ قرائت، تجوید کے قواعد اور یادداشت کی کڑی جانچ کا روحانی منظر۔",
     },
     {
-      id: "lib-4",
-      title: "ڈیجیٹل لائبریری و آن لائن ریسرچ سسٹم",
-      category: "ڈیجیٹل کیٹلاگ",
+      id: "exam-4",
+      title: "امتحانی نتائج کا اعلان و پوزیشن ہولڈرز کی حوصلہ افزائی",
+      category: "تقسیمِ اسناد",
       type: "image",
       imageUrl: "/images/books/book-2.jpg",
-      date: "جدید تحقیق",
-      location: "کمپیوٹر کیٹلاگ کارنر",
-      description: "آن لائن پورٹل جہاں سے طلبہ دنیا بھر کے اسلامی مقالات اور پی ڈی ایف کتب تک رسائی حاصل کرتے ہیں۔",
+      date: "اختتامی تقریب",
+      location: "مرکزی آڈیٹوریم",
+      description: "نمایاں پوزیشن حاصل کرنے والے ہونہار طلبہ میں انعامات، تمغات اور تعریفی اسناد کی تقسیم۔",
     },
     {
-      id: "lib-5",
-      title: "محققین و اساتذہ کا فکری کارنر",
-      category: "ریسرچ کارنر",
+      id: "exam-5",
+      title: "نگران اساتذہ و ممتحنین کی مشاورتی نشست",
+      category: "مجلسِ امتحانات",
       type: "image",
       imageUrl: "/images/books/book-5.jpg",
-      date: "علمی نشستیں",
-      location: "سیمینار روم",
-      description: "اساتذہ اور محقق طلبہ کے سنجیدہ فکری مباحث اور علمی مقالہ نگاری کے لیے مختص جگہ۔",
+      date: "امتحانی بورڈ",
+      location: "دفترِ نظامتِ تعلیمات",
+      description: "امتحانی پرچہ جات کی جانچ، معیار کے جائزے اور شفاف نتائج کے لیے اساتذہ کی فکری نشست۔",
     },
   ];
 
-  const [libraryItems, setLibraryItems] = useState<MediaItem[]>(
-    items && items.length > 0 ? items : defaultLibraryItems
+  const [libraryItems, setLibraryItems] = React.useState<MediaItem[]>(
+    items && items.length > 0 ? items : defaultExamItems
   );
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setWindowWidth(window.innerWidth);
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
 
   React.useEffect(() => {
     if (items && items.length > 0) {
@@ -89,149 +115,230 @@ export default function LibraryGallerySection({ header, items }: LibraryGalleryS
           setLibraryItems(res.data);
         }
       } catch (err) {
-        // fallback
+        // fallback to defaultExamItems
       }
     };
     fetchLibraryMedia();
   }, [items]);
 
-  const handleNext = () => {
-    if (libraryItems.length === 0) return;
-    setCurrentIndex((prev) => (prev + 1) % libraryItems.length);
+  // Framer Motion InView controls
+  const controls = useAnimation();
+  const [inViewRef, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.15,
+  });
+
+  React.useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  // Helper function to calculate the final transform values for each card
+  const getCardState = (index: number, total: number) => {
+    const centerIndex = (total - 1) / 2;
+    const distanceFromCenter = index - centerIndex;
+
+    // Responsive horizontal spread
+    const spreadX =
+      windowWidth < 640 ? 52 : windowWidth < 1024 ? 85 : 120;
+    const x = distanceFromCenter * spreadX;
+    // Vertical lift to form the curved arch
+    const y = Math.abs(distanceFromCenter) * -26;
+    // Rotation for the fanned effect
+    const rotate = distanceFromCenter * 9.5;
+
+    return { x, y, rotate };
   };
 
-  const handlePrev = () => {
-    if (libraryItems.length === 0) return;
-    setCurrentIndex((prev) => (prev - 1 + libraryItems.length) % libraryItems.length);
+  // Animation for the container to stagger children
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  // REBUILT ANIMATION LOGIC: Integrated positioning directly into framer-motion
+  const itemVariants = {
+    // All cards start at the center, scaled down
+    hidden: { opacity: 0, scale: 0.8, x: 0, y: 0, rotate: 0 },
+    // Animate to the final calculated position
+    visible: (i: number) => {
+      const state = getCardState(i, libraryItems.length);
+      return {
+        opacity: 1,
+        scale: 1,
+        x: state.x,
+        y: state.y,
+        rotate: state.rotate,
+        zIndex: libraryItems.length - Math.abs(i - (libraryItems.length - 1) / 2),
+        transition: {
+          type: "spring" as const,
+          stiffness: 140,
+          damping: 14,
+        },
+      };
+    },
+    active: (i: number) => {
+      const state = getCardState(i, libraryItems.length);
+      return {
+        opacity: 1,
+        scale: 1.15,
+        x: state.x,
+        y: state.y - 25,
+        rotate: state.rotate,
+        zIndex: 90,
+        transition: {
+          type: "spring" as const,
+          stiffness: 240,
+          damping: 18,
+        },
+      };
+    },
   };
 
   return (
-    <section id="library-gallery" className="py-20 sm:py-28 bg-[#160C07] islamic-navy-pattern relative overflow-hidden" dir="rtl">
-      {/* Background Radial Light */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#C9B38D]/5 rounded-full blur-[140px] pointer-events-none" />
+    <section
+      id="exams"
+      dir="rtl"
+      className={cn(
+        "py-20 sm:py-28 bg-[#160C07] islamic-navy-pattern relative overflow-hidden",
+        className
+      )}
+      {...props}
+    >
+      {/* Ambient background lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-[#C9B38D]/6 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(201,179,141,0.05)_0%,_transparent_70%)] pointer-events-none" />
 
-      <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
-
-        {/* Section Header with generous vertical spacing */}
-        <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
+      <div className="container mx-auto flex flex-col items-center text-center px-4 sm:px-8 relative z-10">
+        {/* Section Header */}
+        <div className="max-w-4xl mx-auto mb-10 sm:mb-14 space-y-3">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
-            <Library className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">{header?.badge || "علم و تحقیق کا گہوارہ"}</span>
+            <GraduationCap className="w-4 h-4 text-[#C9B38D]" />
+            <span className="font-urdu">
+              {header?.badge || "شعبہ امتحانات و تعلیمی جائزہ"}
+            </span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
-            {header?.title || "لائبریری کی تصویریں و نوادرات"}
+            {header?.title || "امتحانات"}
           </h2>
 
-          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-4 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
+          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent mx-auto rounded-full my-3 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />
 
-          <p className="text-sm sm:text-base md:text-lg text-[#FAF7F2] font-urdu leading-[2.4] sm:leading-[2.6] max-w-2xl mx-auto font-medium">
-            {header?.subtitle || "مدرسہ صاحب الزمان کی عظیم الشان لائبریری، نایاب مخطوطات اور مطالعہ ہال کی تصویری جھلکیاں"}
+          <p className="max-w-3xl text-stone-300 md:text-xl font-urdu leading-relaxed mx-auto font-medium">
+            {header?.subtitle ||
+              "مدرسہ صاحب الزمان کے سالانہ، ششماہی اور حوزوی امتحانات کے تصویری مناظر، امتحانی ہال اور انعامات کی تقسیم"}
           </p>
+
+          <div className="pt-2 flex items-center justify-center">
+            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-stone-300 text-xs font-urdu shadow-sm">
+              
+              <span>کارڈ پر ماؤس لے جائیں یا کلک کر کے مکمل منظر دیکھیں</span>
+            </span>
+          </div>
         </div>
 
-        {/* Carousel Slider with Zoomed Center Item (Section 2) */}
-        <div className="relative py-6">
+        {/* Sized container for the absolute positioning & curved fanned arch */}
+        <div className="relative w-full flex flex-col items-center justify-center">
+          <motion.div
+            ref={inViewRef}
+            className="relative mt-8 sm:mt-14 flex items-center justify-center w-full"
+            style={{ minHeight: "380px" }}
+            variants={containerVariants}
+            initial="hidden"
+            animate={controls}
+          >
+            {libraryItems.map((item, index) => {
+              const distanceFromCenter = Math.abs(
+                index - (libraryItems.length - 1) / 2
+              );
+              const isActive = activeIndex === index;
 
-          {/* Navigation Buttons */}
-          <div className="flex items-center justify-between absolute top-1/2 -translate-y-1/2 inset-x-0 z-30 pointer-events-none px-2 sm:px-4">
-            <button
-              onClick={handlePrev}
-              className="pointer-events-auto w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white hover:bg-stone-100 text-[#120A05] border-2 border-[#C9B38D] flex items-center justify-center shadow-[0_10px_25px_rgba(0,0,0,0.8)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
-              aria-label="پچھلی تصویر"
-            >
-              <ChevronRight className="w-6 h-6 text-[#8C6D3F]" />
-            </button>
-            <button
-              onClick={handleNext}
-              className="pointer-events-auto w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white hover:bg-stone-100 text-[#120A05] border-2 border-[#C9B38D] flex items-center justify-center shadow-[0_10px_25px_rgba(0,0,0,0.8)] transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
-              aria-label="اگلی تصویر"
-            >
-              <ChevronLeft className="w-6 h-6 text-[#8C6D3F]" />
-            </button>
-          </div>
-
-          {/* Cards Showcase Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 items-center">
-            {libraryItems.map((item, idx) => {
-              const isCenter = idx === currentIndex;
               return (
-                <div
-                  key={item.id}
+                <motion.div
+                  key={item.id || index}
+                  className={cn(
+                    "absolute w-36 h-52 sm:w-48 sm:h-68 md:w-56 md:h-80 lg:w-64 lg:h-88 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.85)] border-2 transition-all cursor-pointer select-none bg-[#1A0E08]",
+                    isActive
+                      ? "border-[#FFE566] shadow-[0_0_35px_rgba(255,215,0,0.55)] ring-2 ring-[#FFE566]/40"
+                      : "border-[#C9B38D]/40 hover:border-[#C9B38D]"
+                  )}
+                  custom={index}
+                  variants={itemVariants}
+                  animate={inView ? (isActive ? "active" : "visible") : "hidden"}
+                  whileHover={{
+                    scale: 1.18,
+                    y: getCardState(index, libraryItems.length).y - 28,
+                    zIndex: 99,
+                    transition: {
+                      type: "spring" as const,
+                      stiffness: 300,
+                      damping: 20,
+                    },
+                  }}
+                  onHoverStart={() => setActiveIndex(index)}
                   onClick={() => {
-                    setCurrentIndex(idx);
+                    setActiveIndex(index);
                     setSelectedMedia(item);
                   }}
-                  className={`group relative rounded-3xl overflow-hidden bg-[#1A0E08] transition-all duration-500 cursor-pointer flex flex-col ${
-                    isCenter
-                      ? "md:scale-105 lg:scale-110 z-20 border-2 border-[#C9B38D] shadow-[0_0_35px_rgba(201,179,141,0.5)] ring-2 ring-[#C9B38D]/40"
-                      : "opacity-75 hover:opacity-100 border border-[#C9B38D]/25 shadow-lg scale-95"
-                  }`}
                 >
-                  {/* Image Container */}
-                  <div className="relative w-full aspect-[4/5] overflow-hidden bg-[#0A0503]">
+                  {/* Card Media Container */}
+                  <div className="relative w-full h-full bg-[#0D0603]">
                     <Image
                       src={item.imageUrl}
                       alt={item.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
+                      sizes="(max-width: 640px) 160px, (max-width: 1024px) 240px, 280px"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#120A05] via-[#120A05]/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E0704] via-[#0E0704]/40 to-transparent pointer-events-none" />
 
-                    {/* Highlight Badge if Center */}
-                    {isCenter && (
-                      <div className="absolute top-3 right-3 z-10">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#120A05]/90 border border-[#C9B38D] text-xs font-urdu font-bold text-[#C9B38D] shadow-md backdrop-blur-sm">
-                          <Sparkles className="w-3.5 h-3.5 text-[#C9B38D]" />
-                          <span>نمایاں مجموعہ</span>
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Hover Zoom Icon */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[1px]">
-                      <span className="w-12 h-12 rounded-full bg-white text-[#120A05] border border-[#C9B38D] flex items-center justify-center shadow-lg">
-                        <ZoomIn className="w-6 h-6 text-[#8C6D3F]" />
+                    {/* Top Category Badge */}
+                    <div className="absolute top-3 right-3 z-10">
+                      <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-urdu font-bold px-2.5 py-0.5 rounded-full bg-[#120A05]/90 text-[#D9C7A7] border border-[#C9B38D]/40 backdrop-blur-md shadow-md">
+                        {item.type === "video" ? (
+                          <Play className="w-3 h-3 text-[#FFE566] fill-[#FFE566]" />
+                        ) : (
+                          <FileCheck className="w-3 h-3 text-[#C9B38D]" />
+                        )}
+                        <span>{item.category || "امتحانات"}</span>
                       </span>
                     </div>
-                  </div>
 
-                  {/* Caption */}
-                  <div className="p-4 sm:p-5 bg-gradient-to-b from-[#1E110A] to-[#120A05] text-right">
-                    <span className="text-[11px] font-urdu font-semibold text-[#C9B38D] block mb-1">
-                      {item.category}
-                    </span>
-                    <h3 className="font-urdu font-bold text-white text-sm sm:text-base leading-[2.1] group-hover:text-[#D9C7A7] transition-colors line-clamp-2">
-                      {item.title}
-                    </h3>
-                    <p className="font-urdu text-xs text-stone-300 mt-2 leading-[2.1] line-clamp-1">
-                      {item.location}
-                    </p>
+                    {/* Center hover icon */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 z-10">
+                      <div className="w-12 h-12 rounded-full bg-[#1A0E08]/90 text-[#FFE566] border border-[#C9B38D] flex items-center justify-center shadow-lg backdrop-blur-sm">
+                        {item.type === "video" ? (
+                          <Play className="w-6 h-6 fill-current mr-0.5" />
+                        ) : (
+                          <ZoomIn className="w-6 h-6" />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Bottom Caption Overlay */}
+                    <div className="absolute bottom-0 inset-x-0 p-3.5 sm:p-4 text-right bg-gradient-to-t from-black/95 via-black/75 to-transparent z-10 pointer-events-none">
+                      <h4 className="font-urdu font-bold text-white text-xs sm:text-sm line-clamp-2 leading-relaxed">
+                        {item.title}
+                      </h4>
+                      {item.location && (
+                        <p className="font-urdu text-[11px] text-stone-300 flex items-center gap-1 justify-end mt-1">
+                          <span>{item.location}</span>
+                          <MapPin className="w-3 h-3 text-[#C9B38D]" />
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
-
-          {/* Dots Indicator */}
-          <div className="flex items-center justify-center gap-2 mt-8">
-            {libraryItems.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  idx === currentIndex
-                    ? "w-8 bg-[#C9B38D] shadow-[0_0_10px_#C9B38D]"
-                    : "w-2.5 bg-stone-600 hover:bg-stone-400"
-                }`}
-                aria-label={`سلائیڈ ${idx + 1}`}
-              />
-            ))}
-          </div>
-
+          </motion.div>
         </div>
-
       </div>
 
       {/* Lightbox Modal */}

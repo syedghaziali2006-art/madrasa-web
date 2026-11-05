@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, Shield, AlertCircle, ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { Lock, Mail, Shield, AlertCircle, ArrowRight, CheckCircle2 } from "lucide-react";
 import { api, setAuthToken, setStoredUser } from "@/services/api";
 
 export default function AdminLoginPage() {

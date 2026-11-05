@@ -37,7 +37,7 @@ export default function AdminHeader({ title, subtitle, children }: AdminHeaderPr
   }, []);
 
   return (
-    <header className="bg-[#180E08]/80 backdrop-blur-md border-b border-[#C9B38D]/20 px-6 py-4 sticky top-0 z-20" dir="rtl">
+    <header className="backdrop-blur-xl border-b border-[#C9B38D]/20 px-6 py-4 sticky top-0 z-20" dir="rtl">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-urdu">
         {/* Title and breadcrumbs */}
         <div>
@@ -57,14 +57,14 @@ export default function AdminHeader({ title, subtitle, children }: AdminHeaderPr
 
           {/* Date Badge */}
           {currentTime && (
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#22130B] border border-[#C9B38D]/20 text-xs text-stone-300">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#C9B38D]/20 text-xs text-stone-300 backdrop-blur-md">
               <Clock className="w-3.5 h-3.5 text-[#C9B38D]" />
               <span>{currentTime}</span>
             </div>
           )}
 
           {/* User profile capsule */}
-          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#22130B] border border-[#C9B38D]/30 shadow-sm">
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-[#C9B38D]/30 shadow-sm backdrop-blur-md">
             <div className="w-7 h-7 rounded-full bg-[#C9B38D]/20 border border-[#C9B38D] flex items-center justify-center text-[#C9B38D]">
               <Shield className="w-4 h-4" />
             </div>

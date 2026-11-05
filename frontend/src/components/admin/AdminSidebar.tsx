@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
-  Sparkles,
   LayoutDashboard,
-  GraduationCap,
-  BookOpen,
+  FileText,
+  Target,
   Users,
+  Sparkles,
+  BookOpen,
+  GraduationCap,
   Image as ImageIcon,
   HeartHandshake,
   Settings,
@@ -19,12 +21,37 @@ import {
   X,
   ChevronLeft
 } from "lucide-react";
-import { removeAuthToken } from "@/services/api";
+import { removeAuthToken, api } from "@/services/api";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string>("/images/logo.png");
+
+  useEffect(() => {
+    let isMounted = true;
+    api.settings
+      .get()
+      .then((res) => {
+        if (isMounted && res?.data?.logo) {
+          setLogoUrl(res.data.logo);
+        }
+      })
+      .catch(() => {});
+
+    const handleLogoUpdate = (e: any) => {
+      if (e?.detail?.logo) {
+        setLogoUrl(e.detail.logo);
+      }
+    };
+    window.addEventListener("msz_logo_updated", handleLogoUpdate);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener("msz_logo_updated", handleLogoUpdate);
+    };
+  }, []);
 
   const navItems = [
     {
@@ -36,12 +63,22 @@ export default function AdminSidebar() {
     {
       title: "صفحہ اول (ہوم پیج) مواد",
       href: "/admin/homepage",
-      icon: Sparkles,
+      icon: FileText,
     },
     {
-      title: "داخلہ درخواستیں",
-      href: "/admin/admissions",
-      icon: GraduationCap,
+      title: "تعارف و مقاصد",
+      href: "/admin/policy",
+      icon: Target,
+    },
+    {
+      title: "سفر و اساتذہ",
+      href: "/admin/staff",
+      icon: Users,
+    },
+    {
+      title: "شعبہ خواتین",
+      href: "/admin/womens",
+      icon: Sparkles,
     },
     {
       title: "کتب خانہ و فرمائشیں",
@@ -49,9 +86,9 @@ export default function AdminSidebar() {
       icon: BookOpen,
     },
     {
-      title: "اساتذہ و عملہ",
-      href: "/admin/staff",
-      icon: Users,
+      title: "داخلہ درخواستیں",
+      href: "/admin/admissions",
+      icon: GraduationCap,
     },
     {
       title: "میڈیا و گیلری",
@@ -85,16 +122,17 @@ export default function AdminSidebar() {
   };
 
   const NavContent = () => (
-    <div className="flex flex-col h-full bg-[#160D07] border-l border-[#C9B38D]/20 text-[#FAF7F2] font-urdu" dir="rtl">
+    <div className="flex flex-col h-full backdrop-blur-2xl backdrop-saturate-150 border-l border-[#C9B38D]/20 text-[#FAF7F2] font-urdu" dir="rtl">
       {/* Top Header / Logo */}
       <div className="p-5 border-b border-[#C9B38D]/20 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-3">
-          <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-[#C9B38D] shadow-[0_0_15px_rgba(201,179,141,0.4)] shrink-0">
+          <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-[#C9B38D] shadow-[0_0_15px_rgba(201,179,141,0.4)] shrink-0 bg-white p-1">
             <Image
-              src="/images/logo.png"
+              src={logoUrl}
               alt="مدرسہ صاحب الزمان لوگو"
               fill
-              className="object-contain"
+              className="object-contain p-0.5"
+              unoptimized={logoUrl.startsWith("http")}
             />
           </div>
           <div>
@@ -117,7 +155,7 @@ export default function AdminSidebar() {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 backdrop-blur-2xl backdrop-saturate-150 px-3 py-4 space-y-1 overflow-y-auto">
         <div className="px-3 pb-2 text-[11px] font-semibold text-[#C9B38D]/70 uppercase tracking-wider">
           مرکزی مینو
         </div>

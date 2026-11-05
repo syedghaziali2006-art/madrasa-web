@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Sparkles,
   BookOpen,
   Search,
   Library,
@@ -66,6 +65,23 @@ export default function LibraryPage() {
   const [selectedLanguage, setSelectedLanguage] = useState("سب زبانیں");
   const [selectedBook, setSelectedBook] = useState<BookItem | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [liveBooks, setLiveBooks] = useState<BookItem[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    api.books
+      .getAll()
+      .then((res) => {
+        if (isMounted && res.success && res.data && res.data.length > 0) {
+          setLiveBooks(res.data);
+        }
+      })
+      .catch((err) => console.error("Books load error:", err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Modals for Request and Donation
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
@@ -299,7 +315,7 @@ export default function LibraryPage() {
       id: "wing-manuscript",
       title: "شعبہ نایاب خطی مخطوطات",
       subtitle: "صدیوں قدیم قلمی نسخے، مراجعِ عظام کی تحریروں کا محفوظ ریکارڈ",
-      icon: Sparkles,
+      icon: BookOpen,
       badge: "تاریخی نوادرات",
       desc: "کتب خانے کی سب سے بیش قیمت خصوصیت قدیم خطی نسخے ہیں۔ خصوصی درجہ حرارت اور نمی کے کنٹرول والے شیشے کے محفوظ لاکرز میں رکھے گئے ان نسخوں کو اسکین کر کے ہائی ریزولیوشن ڈیجیٹل فارمیٹ میں بھی محققین کے لیے محفوظ کیا جا رہا ہے۔"
     },
@@ -338,7 +354,8 @@ export default function LibraryPage() {
 
   // Filtering Logic
   const filteredBooks = useMemo(() => {
-    return booksList.filter((book) => {
+    const activeBooks = liveBooks.length > 0 ? liveBooks : booksList;
+    return activeBooks.filter((book) => {
       const matchesSearch =
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -353,7 +370,7 @@ export default function LibraryPage() {
 
       return matchesSearch && matchesCategory && matchesLanguage;
     });
-  }, [searchQuery, selectedCategory, selectedLanguage]);
+  }, [searchQuery, selectedCategory, selectedLanguage, liveBooks]);
 
   const handleCopyCode = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -418,6 +435,7 @@ export default function LibraryPage() {
         }}
       />
 
+      <main id="main-content" role="main">
       {/* ======================================================== */}
       {/* 2. HERO BANNER: Cohesive Center Header Matching Policy    */}
       {/* ======================================================== */}
@@ -438,7 +456,7 @@ export default function LibraryPage() {
           {/* Section Glowing Badge */}
           <div className="block mb-4">
             <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#C9B38D]/15 via-[#C9B38D]/10 to-transparent border border-[#C9B38D]/40 text-[#D9C7A7] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
-              <Sparkles className="w-4 h-4 text-[#C9B38D]" />
+              
               <span className="font-urdu">علم و تحقیق کا عظیم الشان گہوارہ</span>
             </div>
           </div>
@@ -561,7 +579,7 @@ export default function LibraryPage() {
                     <Laptop className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="font-urdu font-bold text-white text-sm">نور سافٹ ویئرز اور ڈیجیٹل سسٹم</h4>
+                    <h3 className="font-urdu font-bold text-white text-sm">نور سافٹ ویئرز اور ڈیجیٹل سسٹم</h3>
                     <p className="font-urdu text-xs text-stone-300 mt-0.5 leading-[1.8]">
                       مکتبہ اہل بیتؑ، جامع الاحادیث اور جامع التفاسیر کے ذریعے سیکنڈوں میں تخریج روایات۔
                     </p>
@@ -573,7 +591,7 @@ export default function LibraryPage() {
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="font-urdu font-bold text-white text-sm">خواتین و طالبات کے لیے الگ مخصوص ونگ</h4>
+                    <h3 className="font-urdu font-bold text-white text-sm">خواتین و طالبات کے لیے الگ مخصوص ونگ</h3>
                     <p className="font-urdu text-xs text-stone-300 mt-0.5 leading-[1.8]">
                       طالبات اور معلمات کے لیے مکمل پردے کے ساتھ مخصوص مطالعہ ہال اور اسلامی نسوانی متون۔
                     </p>
@@ -582,10 +600,10 @@ export default function LibraryPage() {
 
                 <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/20">
                   <div className="w-9 h-9 rounded-xl bg-[#24130A] border border-[#C9B38D]/30 flex items-center justify-center shrink-0 text-[#C9B38D]">
-                    <Sparkles className="w-4 h-4" />
+                    
                   </div>
                   <div>
-                    <h4 className="font-urdu font-bold text-white text-sm">نایاب خطی مخطوطات کا تحفظ</h4>
+                    <h3 className="font-urdu font-bold text-white text-sm">نایاب خطی مخطوطات کا تحفظ</h3>
                     <p className="font-urdu text-xs text-stone-300 mt-0.5 leading-[1.8]">
                       صدیوں قدیم قلمی نسخے جو خصوصی ماحولیاتی کنٹرول والے شیشے کے لاکرز میں محفوظ ہیں۔
                     </p>
@@ -730,7 +748,7 @@ export default function LibraryPage() {
                       </span>
                       {book.isManuscript ? (
                         <span className="text-[10px] font-urdu font-bold text-amber-300 bg-amber-950/70 border border-amber-500/40 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 text-amber-400" />
+                          
                           قلمی نسخہ
                         </span>
                       ) : (
@@ -1359,6 +1377,8 @@ export default function LibraryPage() {
           </div>
         </div>
       )}
+
+      </main>
 
       {/* 11. Footer */}
       <Footer />

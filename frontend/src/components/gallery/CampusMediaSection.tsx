@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { Sparkles, Play, ZoomIn, Building2, Eye, Video } from "lucide-react";
+import { Play, ZoomIn, Building2, Eye, Video } from "lucide-react";
 import MediaLightboxModal, { MediaItem } from "./MediaLightboxModal";
 import { api } from "@/services/api";
 
@@ -24,9 +24,9 @@ export default function CampusMediaSection({ header, items }: CampusMediaSection
       title: "مدرسہ کا مرکزی بیرونی منظر و گنبد",
       category: "مرکزی کیمپس",
       type: "video",
-      videoDuration: "۰۴:۱۵",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      imageUrl: "/images/layout/mosque-arches.jpg",
+      videoDuration: "",
+      videoUrl: "",
+      imageUrl: "",
       date: "تعلیمی سال ۲۰۲۶",
       location: "احسن آباد کیمپس، کراچی",
       description: "مدرسہ صاحب الزمان کی پرشکوہ اسلامی طرزِ تعمیر کی حامل عمارت، محرابیں اور وسیع دالان کا مکمل ویڈیو ٹور۔",
@@ -113,12 +113,23 @@ export default function CampusMediaSection({ header, items }: CampusMediaSection
     return combined.slice(0, 4);
   }, [mediaList, videoItem]);
 
+  const isVideoUrl = (url?: string) => {
+    if (!url) return false;
+    return !!url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i);
+  };
+
+  const directVideoSrc = isVideoUrl(videoItem.imageUrl)
+    ? videoItem.imageUrl
+    : isVideoUrl(videoItem.videoUrl)
+    ? videoItem.videoUrl
+    : null;
+
   return (
     <section id="campus-media" className="py-20 sm:py-28 bg-[#120A05] islamic-dark-pattern relative overflow-hidden w-full" dir="rtl">
       {/* Ambient Glow Orbs for Glassmorphic Refraction */}
       <div className="absolute top-1/4 -right-16 w-[650px] h-[400px] bg-[#C9B38D]/15 rounded-full blur-[160px] pointer-events-none" />
       <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[380px] bg-amber-600/10 rounded-full blur-[170px] pointer-events-none" />
-      <div className="absolute bottom-5 -left-16 w-[600px] h-[400px] bg-emerald-700/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-5 -left-16 w-[600px] h-[400px] bg-[#8C6D3F]/10 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
@@ -150,13 +161,27 @@ export default function CampusMediaSection({ header, items }: CampusMediaSection
             onClick={() => setSelectedMedia(videoItem)}
             className="md:col-span-2 lg:col-span-2 lg:row-span-2 group relative rounded-[28px] overflow-hidden bg-gradient-to-b from-white/[0.08] via-white/[0.02] to-[#120A05]/85 backdrop-blur-2xl backdrop-saturate-150 border-2 border-white/20 hover:border-[#C9B38D] shadow-[0_20px_50px_rgba(0,0,0,0.85),inset_0_1px_1px_0_rgba(255,255,255,0.22)] hover:shadow-[0_25px_60px_rgba(201,179,141,0.35),inset_0_1px_1px_0_rgba(255,255,255,0.35)] transition-all duration-500 cursor-pointer min-h-[360px] sm:min-h-[460px] flex flex-col justify-end"
           >
-            {/* Poster / Thumbnail Image */}
-            <Image
-              src={videoItem.imageUrl || "/images/layout/mosque-arches.jpg"}
-              alt={videoItem.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-[0.88]"
-            />
+            {/* Poster / Thumbnail from video first frame or custom image */}
+            {directVideoSrc ? (
+              <video
+                src={`${directVideoSrc}#t=0.5`}
+                preload="metadata"
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-[0.88] pointer-events-none"
+              />
+            ) : videoItem.imageUrl && !isVideoUrl(videoItem.imageUrl) ? (
+              <Image
+                src={videoItem.imageUrl}
+                alt={videoItem.title || "ویڈیو ٹور"}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-[0.88]"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-[#2A160D] to-[#120A05] flex items-center justify-center">
+                <Video className="w-16 h-16 text-[#C9B38D]/25" />
+              </div>
+            )}
             
             {/* Frosted Glass Gradient Overlays */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#120A05] via-[#120A05]/45 to-transparent pointer-events-none" />

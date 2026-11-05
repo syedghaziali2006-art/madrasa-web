@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, CheckCircle, GraduationCap, Send, Sparkles } from "lucide-react";
+import { X, CheckCircle, GraduationCap, Send } from "lucide-react";
 import { coursesData } from "@/data/madarsaData";
 import { api } from "@/services/api";
 
@@ -50,9 +50,9 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
     };
   }, []);
 
-  if (!isOpen) return null;
-
   const [submitting, setSubmitting] = useState(false);
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,9 +81,9 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto animate-fadeIn">
-      <div className="bg-gradient-to-b from-[#EFE5D2] via-[#C9B38D] to-[#876F4B] p-[2px] rounded-[32px] shadow-[0_25px_60px_rgba(0,0,0,0.9)] w-full max-w-2xl my-6">
-        <div className="relative w-full bg-gradient-to-b from-[#1E110A] to-[#120A05] rounded-[30px] p-6 sm:p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 backdrop-blur-md overflow-y-auto animate-fadeIn">
+      <div className="border-2 border-amber-500/40 p-[2px] rounded-[32px] shadow-[0_25px_60px_rgba(0,0,0,0.9)] w-full max-w-2xl my-6">
+        <div className="relative w-full backdrop-blur-2xl backdrop-saturate-150 rounded-[30px] p-6 sm:p-8">
           
           {/* Close Button */}
           <button
@@ -98,10 +98,10 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
             <div>
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1A0E08] text-xs font-urdu font-semibold text-[#C9B38D] border border-[#C9B38D]/40 mb-2">
-                  <Sparkles className="w-3.5 h-3.5 text-[#C9B38D]" />
+                  
                   <span>{settings?.marqueeNotice || "تعلیمی سال ۲۰۲۶ - ۲۰۲۷ (داخلے جاری ہیں)"}</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-urdu font-bold text-white">
+                <h3 className="text-2xl sm:text-3xl font-urdu font-bold text-white pb-3">
                   آن لائن درخواستِ داخلہ فارم
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-300 font-urdu mt-1.5 leading-[2.2]">

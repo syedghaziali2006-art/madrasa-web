@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowUpLeft, Sparkles, Compass } from "lucide-react";
+import { ArrowUpLeft, Compass } from "lucide-react";
 
 interface HeroProps {
   onExplore: () => void;

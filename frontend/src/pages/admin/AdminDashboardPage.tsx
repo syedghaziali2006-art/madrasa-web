@@ -89,7 +89,7 @@ export default function AdminDashboardPage() {
         {/* Top Metric Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {/* Card 1: Admissions */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#22130B] to-[#180E08] border border-[#C9B38D]/25 shadow-lg relative overflow-hidden group hover:border-[#C9B38D]/50 transition">
+          <div className="p-5 rounded-2xl backdrop-blur-[40px] border border-[#C9B38D]/25 shadow-lg relative overflow-hidden group hover:border-[#C9B38D]/50 transition">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-[#C9B38D] font-semibold">آن لائن داخلے</span>
               <div className="w-10 h-10 rounded-xl bg-[#C9B38D]/10 text-[#C9B38D] flex items-center justify-center border border-[#C9B38D]/20">
@@ -113,7 +113,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Card 2: Books in Library */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#22130B] to-[#180E08] border border-[#C9B38D]/25 shadow-lg relative overflow-hidden group hover:border-[#C9B38D]/50 transition">
+          <div className="p-5 rounded-2xl backdrop-blur-xl border border-[#C9B38D]/25 shadow-lg relative overflow-hidden group hover:border-[#C9B38D]/50 transition">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-[#C9B38D] font-semibold">کتب خانہ (کتب)</span>
               <div className="w-10 h-10 rounded-xl bg-[#C9B38D]/10 text-[#C9B38D] flex items-center justify-center border border-[#C9B38D]/20">
@@ -137,7 +137,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Card 3: Staff & Faculty */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#22130B] to-[#180E08] border border-[#C9B38D]/25 shadow-lg relative overflow-hidden group hover:border-[#C9B38D]/50 transition">
+          <div className="p-5 rounded-2xl backdrop-blur-xl border border-[#C9B38D]/25 shadow-lg relative overflow-hidden group hover:border-[#C9B38D]/50 transition">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-[#C9B38D] font-semibold">اساتذہ و عملہ</span>
               <div className="w-10 h-10 rounded-xl bg-[#C9B38D]/10 text-[#C9B38D] flex items-center justify-center border border-[#C9B38D]/20">
@@ -159,7 +159,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Card 4: Verified Donations */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-[#22130B] to-[#180E08] border border-[#C9B38D]/25 shadow-lg relative overflow-hidden group hover:border-[#C9B38D]/50 transition">
+          <div className="p-5 rounded-2xl backdrop-blur-xl border border-[#C9B38D]/25 shadow-lg relative overflow-hidden group hover:border-[#C9B38D]/50 transition">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs text-[#C9B38D] font-semibold">موصولہ عطیات (روپے)</span>
               <div className="w-10 h-10 rounded-xl bg-[#C9B38D]/10 text-[#C9B38D] flex items-center justify-center border border-[#C9B38D]/20">
@@ -181,7 +181,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Action Shortcuts */}
-        <div className="p-5 rounded-2xl bg-[#1C1009] border border-[#C9B38D]/20">
+        <div className="p-5 rounded-2xl backdrop-blur-xl border border-[#C9B38D]/20">
           <h4 className="text-sm font-bold text-white mb-3.5 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#C9B38D]" />
             فوری انتظامی کارروائی (Quick Actions)
@@ -189,35 +189,35 @@ export default function AdminDashboardPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               to="/admin/admissions"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25150C] hover:bg-[#2F1C10] border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-md border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
             >
               <GraduationCap className="w-4 h-4 text-[#C9B38D]" />
               <span>داخلہ درخواستوں کا جائزہ لیں</span>
             </Link>
             <Link
               to="/admin/books"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25150C] hover:bg-[#2F1C10] border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-md border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
             >
               <Plus className="w-4 h-4 text-[#C9B38D]" />
               <span>نئی کتاب شامل کریں</span>
             </Link>
             <Link
               to="/admin/staff"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25150C] hover:bg-[#2F1C10] border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-md border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
             >
               <Plus className="w-4 h-4 text-[#C9B38D]" />
               <span>نیا استاد / عملہ شامل کریں</span>
             </Link>
             <Link
               to="/admin/gallery"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25150C] hover:bg-[#2F1C10] border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-md border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
             >
               <ImageIcon className="w-4 h-4 text-[#C9B38D]" />
               <span>گیلری میڈیا اپلوڈ کریں</span>
             </Link>
             <Link
               to="/admin/settings"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25150C] hover:bg-[#2F1C10] border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl backdrop-blur-md border border-[#C9B38D]/30 text-xs font-semibold text-white transition hover:border-[#C9B38D]"
             >
               <FileText className="w-4 h-4 text-[#C9B38D]" />
               <span>مدرسہ ترتیبات و فیس تبدیل کریں</span>
@@ -226,7 +226,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Recent Admissions Section */}
-        <div className="rounded-2xl bg-[#1C1009] border border-[#C9B38D]/25 overflow-hidden shadow-xl">
+        <div className="rounded-2xl backdrop-blur-xl border border-[#C9B38D]/25 overflow-hidden shadow-xl">
           <div className="p-5 border-b border-[#C9B38D]/20 flex items-center justify-between">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white">
@@ -247,7 +247,7 @@ export default function AdminDashboardPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-right text-xs sm:text-sm">
-              <thead className="bg-[#24150D] text-[#C9B38D] text-xs font-bold border-b border-[#C9B38D]/20">
+              <thead className="backdrop-blur-md text-[#C9B38D] text-xs font-bold border-b border-[#C9B38D]/20">
                 <tr>
                   <th className="p-3.5">درخواست نمبر</th>
                   <th className="p-3.5">طالب علم کا نام</th>
@@ -308,7 +308,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Recent Book Requests */}
-        <div className="rounded-2xl bg-[#1C1009] border border-[#C9B38D]/25 overflow-hidden shadow-xl">
+        <div className="rounded-2xl backdrop-blur-xl border border-[#C9B38D]/25 overflow-hidden shadow-xl">
           <div className="p-5 border-b border-[#C9B38D]/20 flex items-center justify-between">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white">
@@ -329,7 +329,7 @@ export default function AdminDashboardPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-right text-xs sm:text-sm">
-              <thead className="bg-[#24150D] text-[#C9B38D] text-xs font-bold border-b border-[#C9B38D]/20">
+              <thead className="backdrop-blur-md text-[#C9B38D] text-xs font-bold border-b border-[#C9B38D]/20">
                 <tr>
                   <th className="p-3.5">نام طالب علم / محقق</th>
                   <th className="p-3.5">رابطہ نمبر</th>

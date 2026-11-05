@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { womensWingFeatures } from "@/data/madarsaData";
-import { Sparkles, Shield, Heart, GraduationCap, CheckCircle } from "lucide-react";
+import { Shield, Heart, GraduationCap, CheckCircle } from "lucide-react";
 
 interface WomensSectionProps {
   onOpenAdmission: () => void;
@@ -18,7 +18,7 @@ export default function WomensSection({ onOpenAdmission }: WomensSectionProps) {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#120A05]/80 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
-            <Sparkles className="w-4 h-4 text-[#C9B38D]" />
+            
             <span className="font-urdu">خصوصی شعبہ برائے طالبات و خواتین</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white mb-4 leading-relaxed">
