@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Mail, Send, Check, Facebook, Twitter, Instagram, Youtube, Phone, MapPin, ExternalLink } from "lucide-react";
+import { Mail, Send, Check, Facebook, Twitter, Instagram, Youtube, Phone, MapPin, ExternalLink, AlertCircle } from "lucide-react";
 import { madarsaInfo as fallbackInfo } from "@/data/madarsaData";
 import { api } from "@/services/api";
+import { isValidEmail } from "@/lib/validation";
 
 interface FooterProps {
   settings?: any;
@@ -13,6 +14,7 @@ interface FooterProps {
 export default function Footer({ settings: propSettings }: FooterProps) {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [error, setError] = useState("");
   const [settings, setSettings] = useState<any>(propSettings || fallbackInfo);
 
   useEffect(() => {
@@ -40,13 +42,24 @@ export default function Footer({ settings: propSettings }: FooterProps) {
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setTimeout(() => {
-        setSubscribed(false);
-        setEmail("");
-      }, 3500);
+    const nextEmail = email.trim();
+
+    if (!nextEmail) {
+      setError("ای میل درج کرنا ضروری ہے۔");
+      return;
     }
+
+    if (!isValidEmail(nextEmail)) {
+      setError("براہ کرم درست ای میل درج کریں۔");
+      return;
+    }
+
+    setError("");
+    setSubscribed(true);
+    setTimeout(() => {
+      setSubscribed(false);
+      setEmail("");
+    }, 3500);
   };
 
   const address = settings?.address || fallbackInfo.address;
@@ -160,6 +173,12 @@ export default function Footer({ settings: propSettings }: FooterProps) {
                   required
                 />
               </form>
+              {error && (
+                <div className="text-xs text-rose-300 font-urdu flex items-center gap-1 text-right">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{error}</span>
+                </div>
+              )}
               {subscribed && (
                 <div className="text-xs text-green-400 font-urdu flex items-center gap-1 text-right">
                   <Check className="w-3.5 h-3.5" />

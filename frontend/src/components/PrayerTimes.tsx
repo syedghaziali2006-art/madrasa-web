@@ -43,10 +43,6 @@ export default function PrayerTimes() {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#120A05]/80 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
-            
-            <span className="font-urdu">نماز مومن کی معراج ہے</span>
-          </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white mb-4 leading-relaxed">
             اوقاتِ باجماعت <span className="text-[#C9B38D]">نماز و عبادات</span>
           </h2>

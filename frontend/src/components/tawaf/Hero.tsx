@@ -32,7 +32,6 @@ export default function Hero({ onExplore, onOpenBooking }: HeroProps) {
           {/* Welcome Tag */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3B2418]/85 text-[#F2DFCE] text-xs sm:text-sm font-medium border border-[#6D4229]/70 backdrop-blur-md shadow-sm mb-5 hover:border-[#C59B27] transition-all">
             <span>مرحباً بك في منصة طواف!</span>
-            <span className="text-sm">✨</span>
           </div>
 
           {/* Main Title Line 1 */}

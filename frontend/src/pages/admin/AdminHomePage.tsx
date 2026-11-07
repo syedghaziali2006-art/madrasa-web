@@ -67,7 +67,7 @@ export default function AdminHomePage() {
     tagline:
       "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی",
     bgType: "image" as "image" | "video",
-    bgMediaUrl: "/images/hero-banner.png",
+    bgMediaUrl: "/images/hero-banner.webp",
     badges: [
       { id: "1", text: "۵ سالہ حوزوی نصاب" },
       { id: "2", text: "مفت ہاسٹل و معیاری طعام" },
@@ -78,7 +78,7 @@ export default function AdminHomePage() {
       "https://maps.google.com/?q=Madarsa+Sahib+uz+Zaman+Ahsanabad+3+Gulzar-e-Hijri+Scheme+33+Karachi",
     admissionBtnText: "داخلہ لیں",
     contactBtnText: "ہم سے رابطہ کریں",
-    posterImage: "/images/admission-poster.jpeg",
+    posterImage: "/images/admission-poster.webp",
     posterTitle: "داخلہ پراسپیکٹس و شرائط — مدرسہ صاحب الزمان (عج)"
   });
 
@@ -1668,7 +1668,6 @@ export default function AdminHomePage() {
                       <div className="mt-6 pt-5 border-t-2 border-[#C9B38D]/30 space-y-5">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-[#2A160D]/50 p-3 rounded-2xl border border-[#C9B38D]/30">
                           <div className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
                             <h5 className="text-xs sm:text-sm font-bold text-[#E5D7BE] flex items-center gap-1.5">
                               <Film className="w-4 h-4 text-[#C9B38D]" />
                               <span>اس سیکشن کی ویڈیو اور تصاویر (1 ویڈیو + 4 تصاویر)</span>

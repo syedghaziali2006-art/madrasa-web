@@ -38,7 +38,7 @@ export default function AdminPolicyPage() {
       { id: "stat-3", title: "مکمل فلاحی نظام", desc: "مفت رہائش، طعام و کتب", icon: "Heart" }
     ],
     campusCard: {
-      image: "/images/hero-banner.png",
+      image: "/images/hero-banner.webp",
       badge: "کیمپس مدرسہ و جامع مسجد",
       title: "احسن آباد 3، گلزار ہجری، کراچی",
       subtitle: "وسیع و عریض تعلیمی، روحانی و فلاحی کیمپس",

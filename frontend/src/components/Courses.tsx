@@ -33,10 +33,6 @@ export default function Courses({ onSelectCourseForAdmission }: CoursesProps) {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#C9B38D]/15 via-[#C9B38D]/10 to-transparent border border-[#C9B38D]/40 text-[#D9C7A7] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
-            
-            <span className="font-urdu">تعلیمی نصاب و درجات</span>
-          </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white mb-4 leading-relaxed">
             ہمارے مرکزی <span className="text-[#C9B38D]">تعلیمی شعبہ جات</span>
           </h2>

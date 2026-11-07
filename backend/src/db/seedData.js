@@ -482,6 +482,27 @@ export const getSeedData = () => {
       testSubjects: "اردو، انگلش، حساب اور قرآن مجید",
       marqueeNotice: "تعلیمی سال ۲۰۲۶ - ۲۰۲۷ کے لیے نئے داخلے جاری ہیں۔ ٹیسٹ و انٹرویو کے لیے آن لائن فارم پر کریں۔",
       isAdmissionOpen: true,
+      whatsappConfig: {
+        enabled: false,
+        businessNumber: "+92 300 1234567",
+        businessName: "مدرسہ صاحب الزمان",
+        phoneNumberId: "",
+        accessToken: "",
+        apiVersion: "v20.0",
+        webhookVerifyToken: "",
+        appSecret: "",
+        consentRequired: true,
+        templateLanguage: "ur",
+        statusTemplates: {
+          pending: { enabled: true, templateName: "madarsa_status_received", languageCode: "ur" },
+          under_review: { enabled: true, templateName: "madarsa_status_under_review", languageCode: "ur" },
+          interview_scheduled: { enabled: true, templateName: "madarsa_status_under_review", languageCode: "ur" },
+          approved: { enabled: true, templateName: "madarsa_status_approved", languageCode: "ur" },
+          rejected: { enabled: true, templateName: "madarsa_status_rejected", languageCode: "ur" },
+          contacted: { enabled: true, templateName: "madarsa_status_contacted", languageCode: "ur" },
+          completed: { enabled: true, templateName: "madarsa_status_completed", languageCode: "ur" }
+        }
+      },
       stats: {
         studentsCount: "۱۲۰۰+",
         graduatesCount: "۸۵۰+",
@@ -497,7 +518,7 @@ export const getSeedData = () => {
         titleSuffix: "(عج)",
         tagline: "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی",
         bgType: "image",
-        bgMediaUrl: "/images/hero-banner.png",
+        bgMediaUrl: "/images/hero-banner.webp",
         badges: [
           { id: "1", text: "۵ سالہ حوزوی نصاب" },
           { id: "2", text: "مفت ہاسٹل و معیاری طعام" },
@@ -507,7 +528,7 @@ export const getSeedData = () => {
         googleMapsUrl: "https://maps.google.com/?q=Madarsa+Sahib+uz+Zaman+Ahsanabad+3+Gulzar-e-Hijri+Scheme+33+Karachi",
         admissionBtnText: "داخلہ لیں",
         contactBtnText: "ہم سے رابطہ کریں",
-        posterImage: "/images/admission-poster.jpeg",
+        posterImage: "/images/admission-poster.webp",
         posterTitle: "داخلہ پراسپیکٹس و شرائط — مدرسہ صاحب الزمان (عج)"
       },
       sections: {

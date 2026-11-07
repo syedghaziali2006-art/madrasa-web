@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, CheckCircle, GraduationCap, Send } from "lucide-react";
+import { X, CheckCircle, GraduationCap, Send, Copy, Check, AlertCircle } from "lucide-react";
 import { coursesData } from "@/data/madarsaData";
 import { api } from "@/services/api";
+import { isValidPhoneNumber, sanitizeText } from "@/lib/validation";
 
 interface AdmissionModalProps {
   isOpen: boolean;
@@ -23,11 +24,14 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
     previousEducation: "چھٹی جماعت پاس",
     residenceType: "رہائشی (ہاسٹل و طعام کے ساتھ)",
     message: "",
+    whatsappConsent: true,
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [appId, setAppId] = useState("");
+  const [copied, setCopied] = useState(false);
   const [settings, setSettings] = useState<any>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (defaultCourse) {
@@ -52,32 +56,91 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
 
   const [submitting, setSubmitting] = useState(false);
 
+  const validateForm = () => {
+    const nextErrors: Record<string, string> = {};
+    const fullName = sanitizeText(formData.fullName, 80);
+    const fatherName = sanitizeText(formData.fatherName, 80);
+    const city = sanitizeText(formData.city, 80);
+    const age = Number(formData.age);
+    const phone = sanitizeText(formData.phone, 30);
+
+    if (!fullName || fullName.length < 2) nextErrors.fullName = "نام امیدوار درج کریں۔";
+    if (!fatherName || fatherName.length < 2) nextErrors.fatherName = "والد / سرپرست کا نام درج کریں۔";
+    if (!city || city.length < 2) nextErrors.city = "شہر یا علاقہ درج کریں۔";
+    if (!Number.isFinite(age) || age < 8 || age > 35) nextErrors.age = "عمر 8 تا 35 سال کے درمیان ہونی چاہیے۔";
+    if (!phone || !isValidPhoneNumber(phone)) nextErrors.phone = "براہ کرم درست موبائل نمبر درج کریں۔";
+    if (!formData.whatsappConsent) nextErrors.whatsappConsent = "براہِ کرم واٹس ایپ نوٹیفکیشن کے لیے اجازت دیں۔";
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     setSubmitting(true);
     const fallbackId = "MSZ-" + Math.floor(100000 + Math.random() * 900000);
 
     try {
-      const res = await api.admissions.submit(formData);
+      const res = await api.admissions.submit({
+        ...formData,
+        fullName: sanitizeText(formData.fullName, 80),
+        fatherName: sanitizeText(formData.fatherName, 80),
+        city: sanitizeText(formData.city, 80),
+        phone: sanitizeText(formData.phone, 30),
+        message: sanitizeText(formData.message, 500),
+        whatsappConsent: Boolean(formData.whatsappConsent),
+      });
       if (res.success && res.applicationId) {
         setAppId(res.applicationId);
       } else {
         setAppId(fallbackId);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.warn("Backend submit fallback:", err);
       setAppId(fallbackId);
+      setErrors((prev) => ({ ...prev, submit: err.message || "درخواست جمع کرنے میں خرابی ہوئی۔" }));
+      setSubmitting(false);
+      return;
     } finally {
       setSubmitting(false);
-      setSubmitted(true);
     }
+
+    setSubmitted(true);
   };
 
   const handleReset = () => {
     setSubmitted(false);
     onClose();
+  };
+
+  const handleCopyAppId = async () => {
+    if (!appId) return;
+
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(appId);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = appId;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1200);
+    } catch (error) {
+      console.warn("Copy failed:", error);
+    }
   };
 
   return (
@@ -132,6 +195,12 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {errors.submit && (
+                  <div className="flex items-start gap-2 rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-xs text-rose-200">
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                    <span>{errors.submit}</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-urdu font-semibold text-stone-200 mb-1">
@@ -142,9 +211,13 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
                       required
                       placeholder="مثال: علی رضا"
                       value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition"
+                      onChange={(e) => {
+                        setFormData({ ...formData, fullName: e.target.value });
+                        if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: "" }));
+                      }}
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border ${errors.fullName ? "border-rose-500/80" : "border-[#C9B38D]/20"} text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition`}
                     />
+                    {errors.fullName && <p className="mt-1 text-[11px] text-rose-300">{errors.fullName}</p>}
                   </div>
 
                   <div>
@@ -156,9 +229,13 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
                       required
                       placeholder="مثال: محمد رضا"
                       value={formData.fatherName}
-                      onChange={(e) => setFormData({ ...formData, fatherName: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition"
+                      onChange={(e) => {
+                        setFormData({ ...formData, fatherName: e.target.value });
+                        if (errors.fatherName) setErrors((prev) => ({ ...prev, fatherName: "" }));
+                      }}
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border ${errors.fatherName ? "border-rose-500/80" : "border-[#C9B38D]/20"} text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition`}
                     />
+                    {errors.fatherName && <p className="mt-1 text-[11px] text-rose-300">{errors.fatherName}</p>}
                   </div>
                 </div>
 
@@ -170,7 +247,7 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
                     <select
                       value={formData.gender}
                       onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none cursor-pointer"
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none cursor-pointer"
                     >
                       <option value="طالب علم (مرد)" className="bg-[#1A0E08]">طالب علم (مرد)</option>
                       <option value="طالبہ (خاتون - کیمپس زہراء)" className="bg-[#1A0E08]">طالبہ (خاتون - جامعہ زہراء)</option>
@@ -184,14 +261,18 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
                     <input
                       type="number"
                       required
-                      min="10"
-                      max="65"
+                      min="8"
+                      max="35"
                       placeholder="مثال: 14"
                       value={formData.age}
-                      onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition"
+                      onChange={(e) => {
+                        setFormData({ ...formData, age: e.target.value });
+                        if (errors.age) setErrors((prev) => ({ ...prev, age: "" }));
+                      }}
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border ${errors.age ? "border-rose-500/80" : "border-[#C9B38D]/20"} text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition`}
                       dir="ltr"
                     />
+                    {errors.age && <p className="mt-1 text-[11px] text-rose-300">{errors.age}</p>}
                   </div>
 
                   <div>
@@ -203,33 +284,17 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
                       required
                       placeholder="مثال: کراچی / لاہور"
                       value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition"
+                      onChange={(e) => {
+                        setFormData({ ...formData, city: e.target.value });
+                        if (errors.city) setErrors((prev) => ({ ...prev, city: "" }));
+                      }}
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border ${errors.city ? "border-rose-500/80" : "border-[#C9B38D]/20"} text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition`}
                     />
+                    {errors.city && <p className="mt-1 text-[11px] text-rose-300">{errors.city}</p>}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-urdu font-semibold text-stone-200 mb-1">
-                      مطلوبہ شعبہ / کورس *
-                    </label>
-                    <select
-                      value={formData.selectedCourse}
-                      onChange={(e) => setFormData({ ...formData, selectedCourse: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none cursor-pointer"
-                    >
-                      {(coursesData || []).map((course) => (
-                        <option key={course.id} value={course.title} className="bg-[#1A0E08]">
-                          {course.title}
-                        </option>
-                      ))}
-                      <option value="شعبہ خواتین (جامعہ سیدہ فاطمہ الزہراء)" className="bg-[#1A0E08]">
-                        شعبہ خواتین (جامعہ سیدہ فاطمہ الزہراء)
-                      </option>
-                    </select>
-                  </div>
-
                   <div>
                     <label className="block text-xs font-urdu font-semibold text-stone-200 mb-1">
                       واٹس ایپ / رابطہ نمبر *
@@ -239,14 +304,16 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
                       required
                       placeholder="0300-1234567"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition"
+                      onChange={(e) => {
+                        setFormData({ ...formData, phone: e.target.value });
+                        if (errors.phone) setErrors((prev) => ({ ...prev, phone: "" }));
+                      }}
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border ${errors.phone ? "border-rose-500/80" : "border-[#C9B38D]/20"} text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition`}
                       dir="ltr"
                     />
+                    {errors.phone && <p className="mt-1 text-[11px] text-rose-300">{errors.phone}</p>}
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-urdu font-semibold text-stone-200 mb-1">
                       سابقہ تعلیمی قابلیت
@@ -254,28 +321,13 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
                     <select
                       value={formData.previousEducation}
                       onChange={(e) => setFormData({ ...formData, previousEducation: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none cursor-pointer"
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none placeholder:text-stone-500 transition"
                     >
                       <option value="چھٹی جماعت پاس" className="bg-[#1A0E08]">چھٹی جماعت پاس (اہل برائے پانچ سالہ کورس)</option>
                       <option value="مڈل / آٹھویں پاس" className="bg-[#1A0E08]">مڈل / آٹھویں پاس</option>
                       <option value="میٹرک (Matric)" className="bg-[#1A0E08]">میٹرک (Matric)</option>
                       <option value="انٹرمیڈیٹ (FA / FSc)" className="bg-[#1A0E08]">انٹرمیڈیٹ (FA / FSc)</option>
                       <option value="گریجویشن (BA / BS)" className="bg-[#1A0E08]">گریجویشن (BA / BS)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-urdu font-semibold text-stone-200 mb-1">
-                      طریقہ تعلیم / رہائش
-                    </label>
-                    <select
-                      value={formData.residenceType}
-                      onChange={(e) => setFormData({ ...formData, residenceType: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1A0E08] border border-[#C9B38D]/20 text-white text-sm font-urdu focus:border-[#C9B38D] focus:bg-[#22130B] focus:outline-none cursor-pointer"
-                    >
-                      <option value="رہائشی (ہاسٹل و طعام)" className="bg-[#1A0E08]">رہائشی (ہاسٹل و ۳ وقت طعام)</option>
-                      <option value="غیر رہائشی (ڈے اسکالر)" className="bg-[#1A0E08]">غیر رہائشی (ڈے اسکالر)</option>
-                      <option value="آن لائن / فاصلاتی" className="bg-[#1A0E08]">آن لائن / فاصلاتی کلاسز</option>
                     </select>
                   </div>
                 </div>
@@ -293,13 +345,34 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
                   />
                 </div>
 
+                <div className="mt-2 flex items-start gap-3 rounded-xl border border-[#C9B38D]/25 bg-[#1A0E08]/70 p-3 text-xs text-stone-200">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(formData.whatsappConsent)}
+                    onChange={(e) => {
+                      setFormData({ ...formData, whatsappConsent: e.target.checked });
+                      if (errors.whatsappConsent) setErrors((prev) => ({ ...prev, whatsappConsent: "" }));
+                    }}
+                    className="mt-0.5 h-4 w-4 rounded border-[#C9B38D]/30 bg-[#1A0E08] text-[#C9B38D]"
+                  />
+                  <label className="leading-6">
+                    میں اپنی درخواست کے حوالے سے status updates، انٹرویو اور داخلہ کے متعلق WhatsApp اطلاع حاصل کرنے کے لیے رضامند ہوں۔
+                  </label>
+                </div>
+                {errors.whatsappConsent && <p className="mt-1 text-[11px] text-rose-300">{errors.whatsappConsent}</p>}
+
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full inline-flex items-center justify-center gap-2.5 h-12 px-7 rounded-full bg-white hover:bg-stone-100 text-[#120A05] border-2 border-[#C9B38D] font-urdu font-bold text-base shadow-lg transition-all duration-300 active:scale-95"
+                    disabled={submitting}
+                    className="w-full inline-flex items-center justify-center gap-2.5 h-12 px-7 rounded-full bg-white hover:bg-stone-100 text-[#120A05] border-2 border-[#C9B38D] font-urdu font-bold text-base shadow-lg transition-all duration-300 active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    <Send className="w-4 h-4 text-[#C9B38D]" />
-                    <span>درخواست داخلہ جمع کرائیں</span>
+                    {submitting ? (
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#120A05]/40 border-t-[#120A05]" />
+                    ) : (
+                      <Send className="w-4 h-4 text-[#C9B38D]" />
+                    )}
+                    <span>{submitting ? "جمع ہو رہی ہے..." : "درخواست داخلہ جمع کرائیں"}</span>
                   </button>
                 </div>
               </form>
@@ -320,8 +393,19 @@ export default function AdmissionModal({ isOpen, onClose, defaultCourse }: Admis
               </div>
 
               <div className="p-4 rounded-2xl bg-[#1A0E08] border border-[#C9B38D]/40 max-w-sm mx-auto shadow-md">
-                <span className="text-xs font-urdu text-stone-400 block">آپ کا درخواست نمبر (Application ID):</span>
-                <span className="text-xl font-bold font-mono text-[#C9B38D] tracking-wider mt-1 block" dir="ltr">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-urdu text-stone-400 block">آپ کا درخواست نمبر (Application ID):</span>
+                  <button
+                    type="button"
+                    onClick={handleCopyAppId}
+                    aria-label="Copy application ID"
+                    title="Copy application ID"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#C9B38D]/50 bg-[#22130B] text-[#C9B38D] transition hover:bg-[#2B1B12] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#C9B38D]/60"
+                  >
+                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </button>
+                </div>
+                <span className="text-xl font-bold font-mono text-[#C9B38D] tracking-wider mt-2 block" dir="ltr">
                   {appId}
                 </span>
               </div>

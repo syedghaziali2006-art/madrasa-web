@@ -12,7 +12,10 @@ import {
   Printer,
   X,
   FileSpreadsheet,
-  Download
+  Download,
+  MessageCircle,
+  Send,
+  AlertCircle
 } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { api } from "@/services/api";
@@ -30,6 +33,8 @@ export default function AdminAdmissionsPage() {
   const [editInterviewDate, setEditInterviewDate] = useState("");
   const [editNotes, setEditNotes] = useState("");
   const [saving, setSaving] = useState(false);
+  const [sendingWhatsApp, setSendingWhatsApp] = useState(false);
+  const [whatsappNotice, setWhatsappNotice] = useState<{ success: boolean; message: string } | null>(null);
 
   const fetchAdmissions = async () => {
     try {
@@ -77,24 +82,61 @@ export default function AdminAdmissionsPage() {
     setEditStatus(item.status);
     setEditInterviewDate(item.interviewDate || "");
     setEditNotes(item.notes || "");
+    setWhatsappNotice(null);
   };
 
   const handleSaveDetails = async () => {
     if (!selectedItem) return;
     try {
       setSaving(true);
-      await api.admissions.update(selectedItem.id, {
+      const res = await api.admissions.update(selectedItem.id, {
         status: editStatus,
         interviewDate: editInterviewDate,
         notes: editNotes,
       });
       await fetchAdmissions();
+      
+      let msg = "درخواست کی تفصیلات کامیابی کے ساتھ محفوظ ہو گئیں۔";
+      if (res?.whatsapp) {
+        if (res.whatsapp.success) {
+          msg += "\n\n✅ واٹس ایپ نوٹیفکیشن کامیابی کے ساتھ موصول کنندہ کو ارسال ہو گئی!";
+        } else if (res.whatsapp.status !== "skipped") {
+          msg += `\n\n⚠️ واٹس ایپ نوٹیفکیشن کا نوٹ:\n${res.whatsapp.reason}`;
+        }
+      }
+      alert(msg);
       setSelectedItem(null);
-      alert("درخواست کی تفصیلات کامیابی کے ساتھ محفوظ ہو گئیں۔");
     } catch (err: any) {
       alert("محفوظ کرنے میں خرابی: " + err.message);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleManualSendWhatsApp = async () => {
+    if (!selectedItem) return;
+    try {
+      setSendingWhatsApp(true);
+      setWhatsappNotice(null);
+      const res = await api.admissions.sendWhatsApp(selectedItem.id, editStatus);
+      if (res.success) {
+        setWhatsappNotice({
+          success: true,
+          message: "واٹس ایپ نوٹیفکیشن کامیابی کے ساتھ ارسال ہو گئی!"
+        });
+      } else {
+        setWhatsappNotice({
+          success: false,
+          message: res.message || res.data?.reason || "واٹس ایپ نوٹیفکیشن نہیں جا سکی۔"
+        });
+      }
+    } catch (err: any) {
+      setWhatsappNotice({
+        success: false,
+        message: err.message || "نوٹیفکیشن بھیجنے میں خرابی پیش آگئی۔"
+      });
+    } finally {
+      setSendingWhatsApp(false);
     }
   };
 
@@ -366,6 +408,48 @@ export default function AdminAdmissionsPage() {
                   className="w-full px-3 py-2 rounded-xl bg-[#1C1009] border border-[#C9B38D]/30 text-white text-xs focus:outline-none placeholder:text-stone-500 resize-none"
                 />
               </div>
+
+              {/* WhatsApp Notification Direct Trigger */}
+              <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs">
+                  <MessageCircle className="w-4 h-4 text-[#C9B38D]" />
+                  <span className="text-stone-300">واٹس ایپ الرٹ:</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                    selectedItem.whatsappConsent
+                      ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                      : "bg-amber-500/15 text-amber-300 border border-amber-500/30"
+                  }`}>
+                    {selectedItem.whatsappConsent ? "اجازت موجود ہے (Consent Given)" : "عام نوٹیفکیشن"}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleManualSendWhatsApp}
+                  disabled={sendingWhatsApp}
+                  className="px-3.5 py-1.5 rounded-xl bg-[#25150C] hover:bg-[#C9B38D] text-stone-200 hover:text-[#120A05] text-xs font-bold border border-[#C9B38D]/30 transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  title="منتخب کردہ اسٹیٹس کے مطابق ابھی واٹس ایپ پیغام بھیجیں"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{sendingWhatsApp ? "بھیجا جا رہا ہے..." : "ابھی واٹس ایپ میسج بھیجیں"}</span>
+                </button>
+              </div>
+
+              {/* WhatsApp Notice in Modal */}
+              {whatsappNotice && (
+                <div className={`p-3 rounded-xl border text-xs flex items-start gap-2 ${
+                  whatsappNotice.success
+                    ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
+                    : "bg-rose-500/15 border-rose-500/40 text-rose-300"
+                }`}>
+                  {whatsappNotice.success ? (
+                    <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  )}
+                  <span>{whatsappNotice.message}</span>
+                </div>
+              )}
             </div>
 
             {/* Actions */}

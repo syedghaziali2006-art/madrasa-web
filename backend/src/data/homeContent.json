@@ -6,7 +6,7 @@
     "calligraphyImage": "/images/madrasa-calligraphy.png",
     "tagline": "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی",
     "bgType": "image",
-    "bgMediaUrl": "/images/hero-banner.png",
+    "bgMediaUrl": "/images/hero-banner.webp",
     "badges": [
       {
         "id": "1",
@@ -25,7 +25,7 @@
     "googleMapsUrl": "https://maps.google.com/?q=Madarsa+Sahib+uz+Zaman+Ahsanabad+3+Gulzar-e-Hijri+Scheme+33+Karachi",
     "admissionBtnText": "داخلہ لیں",
     "contactBtnText": "ہم سے رابطہ کریں",
-    "posterImage": "/images/admission-poster.jpeg",
+    "posterImage": "/images/admission-poster.webp",
     "posterTitle": "داخلہ پراسپیکٹس و شرائط — مدرسہ صاحب الزمان (عج)"
   },
   "sections": {
@@ -290,7 +290,7 @@
       "title": "مرکزی مطالعہ ہال و کتب الماری",
       "category": "مطالعہ و کتب",
       "type": "image",
-      "imageUrl": "http://localhost:5000/uploads/img-20261029-wa0038-1793436295980-155742.jpg",
+      "imageUrl": "http://localhost:5000/uploads/e692d43d-e664-4714-9d00-9cf40980ca4f-1793954496582-513144.png",
       "date": "کتب خانہ صاحب الزمان",
       "location": "ہال نمبر ۱ - حوزوی کتب",
       "description": "شاہکار لکڑی کی الماریوں میں سجی ہزاروں کتب، پرسکون ماحول اور طلبہ کے لیے وسیع اسٹڈی ٹیبلز۔"
@@ -355,8 +355,8 @@
       "category": "صحت و تندرستی",
       "type": "video",
       "videoDuration": "۰۱:۴۵",
-      "videoUrl": "",
-      "imageUrl": "/images/gallery/exercise.jpg",
+      "videoUrl": "http://localhost:5000/uploads/Screen Recording 2026-10-20 155116.mp4",
+      "imageUrl": "http://localhost:5000/uploads/63-1794044645353-320804.jpg",
       "date": "روزانہ فجر کے بعد",
       "location": "مرکزی کورٹ یارڈ و گراؤنڈ",
       "description": "صحت مند دماغ کے لیے تندرست جسم — روزانہ صبح باقاعدہ اسٹریچنگ، جاگنگ اور نظم و ضبط۔"
@@ -366,7 +366,7 @@
       "title": "رسی کشی کا سنسنی خیز اور دوستانہ مقابلہ",
       "category": "اسپورٹس فیسٹیول",
       "type": "image",
-      "imageUrl": "/images/gallery/tug-of-war.jpg",
+      "imageUrl": "http://localhost:5000/uploads/screenshot_2026-11-05_133727-1794044391694-276721.png",
       "date": "سالانہ فیسٹیول",
       "location": "اوپن گراؤنڈ",
       "description": "مختلف کلاسوں کے طلبہ کے درمیان زور آزمائی، اجتماعی ٹیم ورک اور بچوں کی پرلطف ہنسی۔"
@@ -435,10 +435,10 @@
       "id": "event-convocation",
       "title": "سالانہ تقریبِ تقسیمِ اسناد، انعامات اور شیلڈز ۲۰۲۶",
       "category": "تقسیمِ انعامات",
-      "type": "video",
+      "type": "image",
       "videoDuration": "۰۶:۳۰",
       "videoUrl": "",
-      "imageUrl": "/images/gallery/celebration-stage.jpg",
+      "imageUrl": "http://localhost:5000/uploads/0a82b361-bf37-40fc-8dad-151a483903a0-1794044218676-18267.png",
       "date": "شعبان المعظم ۱۴۴۷ھ",
       "location": "مرکزی پنڈال و اسٹیج",
       "description": "ممتاز پوزیشن حاصل کرنے والے ہونہار طلبہ کو علمائے کرام کے دستِ مبارک سے اعزازی شیلڈز، کتب اور سرٹیفکیٹس کی تقسیم۔"
@@ -476,5 +476,5 @@
       "description": "حوزوی نصاب مکمل کرنے والے فاضل طلبہ کو مراجعِ عظام کے نمائندگان کے ہاتھوں تاجِ رسول ﷺ پہنانے کی تقریب۔"
     }
   ],
-  "updatedAt": "2026-11-03T06:54:58.991Z"
+  "updatedAt": "2026-11-07T09:46:48.314Z"
 }

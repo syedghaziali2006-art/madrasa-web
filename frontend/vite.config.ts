@@ -15,6 +15,24 @@ export default defineConfig({
       'next/navigation': path.resolve(import.meta.dirname, './src/shims/next-navigation.tsx'),
     },
   },
+  build: {
+    target: 'es2022',
+    sourcemap: false,
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('framer-motion')) return 'motion-vendor';
+            if (id.includes('lucide-react')) return 'icon-vendor';
+            if (id.includes('react-router-dom') || id.includes('react-dom') || id.includes('react')) return 'react-vendor';
+            if (id.includes('clsx') || id.includes('tailwind-merge')) return 'utility-vendor';
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
   server: {
     port: 3000,
     proxy: {

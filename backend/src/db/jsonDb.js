@@ -164,6 +164,8 @@ export const db = {
   gallery: new Collection("gallery", seed.gallery),
   donationAccounts: new Collection("donationAccounts", seed.donationAccounts),
   donorSubmissions: new Collection("donorSubmissions", seed.donorSubmissions),
+  whatsAppMessages: new Collection("whatsAppMessages", []),
+  whatsappEvents: new Collection("whatsappEvents", []),
   settings: new SingletonDocument("settings", seed.settings),
   homeContent: new SingletonDocument("homeContent", seed.homeContent),
   policyContent: new SingletonDocument("policyContent", seed.policyContent || {}),

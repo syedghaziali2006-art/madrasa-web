@@ -18,11 +18,20 @@
   "testSubjects": "اردو، انگلش، حساب اور قرآن مجید",
   "marqueeNotice": "تعلیمی سال ۲۰۲۶ - ۲۰۲۷ کے لیے نئے داخلے جاری ہیں۔ ٹیسٹ و انٹرویو کے لیے آن لائن فارم پر کریں۔",
   "isAdmissionOpen": true,
+  "whatsappConfig": {
+    "enabled": true,
+    "businessName": "مدرسہ صاحب الزمان (عجل اللہ تعالیٰ فرجہ الشریف)",
+    "businessNumber": "+15551936940",
+    "phoneNumberId": "1421597001038925",
+    "apiVersion": "v20.0",
+    "consentRequired": false,
+    "templateLanguage": "ur"
+  },
   "stats": {
     "studentsCount": "۱۲۰۰+",
     "graduatesCount": "۸۵۰+",
     "facultyCount": "۴۵+",
     "dailyMealsCount": "۲۵۰۰+"
   },
-  "updatedAt": "2026-11-03T06:54:59.085Z"
+  "updatedAt": "2026-11-07T09:46:48.463Z"
 }

@@ -118,7 +118,6 @@ export default function Navbar({ onOpenLogin, onOpenBooking }: NavbarProps) {
                   <span className="text-2xl font-black tracking-tight text-[#FAF4EF] font-cairo">
                     طَوَاف
                   </span>
-                  <span className="text-xs text-[#E5C158] font-bold">✨</span>
                 </div>
                 <span className="text-[10px] text-[#C49774] font-light -mt-1 tracking-wider">
                   منصة خدمات الحج والعمرة

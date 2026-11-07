@@ -1,0 +1,106 @@
+[
+  {
+    "id": "wa-1794041766607",
+    "inquiryId": "MSZ-LIVE-TEST",
+    "recipient": "+923356666880",
+    "businessNumber": "+15551936940",
+    "status": "queued",
+    "provider": "meta",
+    "templateName": "madarsa_status_approved",
+    "message": "السلام علیکم Syed Ghazi Ali Zaidi،\n\nآپ کی درخواست/درخواستِ داخلہ مدرسہ صاحب الزمان (عج) میں منظور کر دی گئی ہے۔\n\nبراہِ کرم ہماری انتظامیہ سے مزید ہدایات کے لیے رابطہ کریں۔\n\nجزاک اللہ خیر۔\n\nدرخواست نمبر: MSZ-LIVE-TEST",
+    "providerMessageId": "wamid.HBgMOTIzMzU2NjY2ODgwFQIAERgSQjI2NzZCRkMwQjQyRUU1NTE5AA==",
+    "metadata": {
+      "requestContext": {
+        "test": true
+      },
+      "statusKey": "approved",
+      "usedType": "text_fallback"
+    },
+    "createdAt": "2026-11-07T08:56:06.607Z"
+  },
+  {
+    "id": "wa-1794041248258",
+    "inquiryId": "MSZ-959897",
+    "recipient": "+923353160301",
+    "businessNumber": "+15551936940",
+    "status": "failed",
+    "provider": "meta",
+    "templateName": "madarsa_status_approved",
+    "message": "السلام علیکم fggdf،\n\nآپ کی درخواست/درخواستِ داخلہ مدرسہ صاحب الزمان (عج) میں منظور کر دی گئی ہے۔\n\nبراہِ کرم ہماری انتظامیہ سے مزید ہدایات کے لیے رابطہ کریں۔\n\nجزاک اللہ خیر۔\n\nدرخواست نمبر: MSZ-959897",
+    "metadata": {
+      "error": "میٹا ایکسس ٹوکن غیر معتبر یا ختم ہو چکا ہے۔ نیا ٹوکن حاصل کریں۔ (Code: 190: Invalid/Expired OAuth Token)",
+      "rawError": {
+        "message": "Authentication Error",
+        "code": 190,
+        "type": "OAuthException",
+        "fbtrace_id": "ARbu8bQz8V2VZWD-2KgYmcr"
+      },
+      "usedType": "template"
+    },
+    "createdAt": "2026-11-07T08:47:28.258Z"
+  },
+  {
+    "id": "wa-1794038055240",
+    "inquiryId": "MSZ-216023",
+    "recipient": "+923353160301",
+    "businessNumber": "+15551936940",
+    "status": "failed",
+    "provider": "meta",
+    "templateName": "madarsa_status_approved",
+    "message": "السلام علیکم fgdfgdfg،\n\nآپ کی درخواست/درخواستِ داخلہ مدرسہ صاحب الزمان (عج) میں منظور کر دی گئی ہے۔\n\nبراہِ کرم ہماری انتظامیہ سے مزید ہدایات کے لیے رابطہ کریں۔\n\nجزاک اللہ خیر۔\n\nدرخواست نمبر: MSZ-216023",
+    "metadata": {
+      "error": "موصول کنندہ کا نمبر میٹا کی الاؤڈ لسٹ میں نہیں ہے۔ ٹیسٹ موڈ میں پہلے یہ نمبر developers.facebook.com پر WhatsApp > API Setup میں شامل کریں۔ (Code: 131030: Recipient phone number not in allowed list)",
+      "rawError": {
+        "message": "(#131030) Recipient phone number not in allowed list",
+        "code": 131030,
+        "type": "OAuthException",
+        "error_data": {
+          "messaging_product": "whatsapp",
+          "details": "Recipient phone number not in allowed list: Add recipient phone number to recipient list and try again."
+        },
+        "fbtrace_id": "AJWHdqHLYOLsd3pT0CbEDsP"
+      },
+      "usedType": "template"
+    },
+    "createdAt": "2026-11-07T07:54:15.240Z"
+  },
+  {
+    "id": "wa-1794038033851",
+    "inquiryId": "MSZ-216023",
+    "recipient": "+923353160301",
+    "businessNumber": "+15551936940",
+    "status": "not_configured",
+    "provider": "meta",
+    "templateName": "madarsa_status_approved",
+    "message": "واٹس ایپ API کی معلومات (Phone Number ID یا Access Token) غائب ہے۔ برائے مہربانی .env چیک کریں۔",
+    "metadata": {
+      "error": "واٹس ایپ API کی معلومات (Phone Number ID یا Access Token) غائب ہے۔ برائے مہربانی .env چیک کریں۔"
+    },
+    "createdAt": "2026-11-07T07:53:53.851Z"
+  },
+  {
+    "id": "wa-1794037520912",
+    "inquiryId": "MSZ-TEST",
+    "recipient": "+923353160301",
+    "businessNumber": "+92 300 1234567",
+    "status": "failed",
+    "provider": "meta",
+    "templateName": "madarsa_status_approved",
+    "message": "السلام علیکم Test Student،\n\nآپ کی درخواست/درخواستِ داخلہ مدرسہ صاحب الزمان (عج) میں منظور کر دی گئی ہے۔\n\nبراہِ کرم ہماری انتظامیہ سے مزید ہدایات کے لیے رابطہ کریں۔\n\nجزاک اللہ خیر۔\n\nدرخواست نمبر: MSZ-TEST",
+    "metadata": {
+      "error": "موصول کنندہ کا نمبر میٹا کی الاؤڈ لسٹ میں نہیں ہے۔ ٹیسٹ موڈ میں پہلے یہ نمبر developers.facebook.com پر WhatsApp > API Setup میں شامل کریں۔ (Code: 131030: Recipient phone number not in allowed list)",
+      "rawError": {
+        "message": "(#131030) Recipient phone number not in allowed list",
+        "code": 131030,
+        "type": "OAuthException",
+        "error_data": {
+          "messaging_product": "whatsapp",
+          "details": "Recipient phone number not in allowed list: Add recipient phone number to recipient list and try again."
+        },
+        "fbtrace_id": "Ace5GpW-2T8qNpCeLjF01_D"
+      },
+      "usedType": "template"
+    },
+    "createdAt": "2026-11-07T07:45:20.912Z"
+  }
+]

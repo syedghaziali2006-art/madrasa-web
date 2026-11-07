@@ -16,18 +16,19 @@ const storage = multer.diskStorage({
     cb(null, UPLOAD_DIR);
   },
   filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
+    const ext = path.extname(file.originalname || "").toLowerCase();
     const sanitizedBase = path
-      .basename(file.originalname, ext)
+      .basename(file.originalname || "upload", ext)
       .replace(/[^a-zA-Z0-9_-]/g, "_")
-      .toLowerCase();
+      .replace(/^_+|_+$/g, "")
+      .toLowerCase() || "upload";
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e6);
     cb(null, `${sanitizedBase}-${uniqueSuffix}${ext}`);
   }
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedMimes = [
+  const allowedMimes = new Set([
     "image/jpeg",
     "image/png",
     "image/webp",
@@ -39,12 +40,20 @@ const fileFilter = (req, file, cb) => {
     "video/ogg",
     "video/quicktime",
     "video/x-matroska"
-  ];
-  if (allowedMimes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("صرف تصاویر (JPG, PNG, WEBP, GIF)، ویڈیوز (MP4, WEBM, MOV) اور پی ڈی ایف کی اجازت ہے"), false);
+  ]);
+
+  const allowedExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".pdf", ".mp4", ".webm", ".ogg", ".mov", ".mkv"]);
+  const ext = path.extname(file.originalname || "").toLowerCase();
+
+  if (!allowedExtensions.has(ext)) {
+    return cb(new Error("فائل کی قسم غیر مجاز ہے۔ صرف تصاویر، ویڈیو اور PDF قبول کیے جاتے ہیں۔"), false);
   }
+
+  if (!allowedMimes.has(file.mimetype)) {
+    return cb(new Error("فائل کی MIME قسم غیر مجاز ہے۔"), false);
+  }
+
+  cb(null, true);
 };
 
 export const upload = multer({

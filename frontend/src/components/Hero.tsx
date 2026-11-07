@@ -16,6 +16,7 @@ import { madarsaInfo } from "@/data/madarsaData";
 
 export interface HeroData {
   bismillah?: string;
+  bismillahImage?: string;
   title?: string;
   titleSuffix?: string;
   calligraphyImage?: string;
@@ -42,6 +43,7 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
   const [isPosterZoomed, setIsPosterZoomed] = useState(false);
 
   const bismillah = data?.bismillah || madarsaInfo.bismillah || "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
+  const bismillahImage = data?.bismillahImage || "/images/bismillah-caligraphy.png";
   const title = data?.title || "مدرسہ صاحب الزمان";
   const titleSuffix = data?.titleSuffix || "(عج)";
   const calligraphyImage = data?.calligraphyImage || "/images/madrasa-calligraphy.png";
@@ -49,12 +51,15 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
     data?.tagline ||
     "دینی و عصری علوم کا بین الاقوامی اسلامی ادارہ | حوزوی تعلیم، تجوید، خطابت، انگلش اور کمپیوٹر کا مثالی سنگم برائے کردار سازی";
   const bgType = data?.bgType || "image";
-  const bgMediaUrl = data?.bgMediaUrl || "/images/hero-banner.png";
+  const bgMediaUrl = data?.bgMediaUrl || "";
+  const shouldRenderBackgroundImage = Boolean(bgMediaUrl);
   const isBgVideo =
-    bgType === "video" ||
-    bgMediaUrl.endsWith(".mp4") ||
-    bgMediaUrl.endsWith(".webm") ||
-    bgMediaUrl.endsWith(".ogg");
+    shouldRenderBackgroundImage && (
+      bgType === "video" ||
+      bgMediaUrl.endsWith(".mp4") ||
+      bgMediaUrl.endsWith(".webm") ||
+      bgMediaUrl.endsWith(".ogg")
+    );
   const badges = data?.badges && data.badges.length > 0
     ? data.badges
     : [
@@ -70,7 +75,7 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
       encodeURIComponent("Madarsa Sahib uz Zaman Ahsanabad 3 Gulzar-e-Hijri Scheme 33 Karachi");
   const admissionBtnText = data?.admissionBtnText || "داخلہ لیں";
   const contactBtnText = data?.contactBtnText || "ہم سے رابطہ کریں";
-  const posterImage = data?.posterImage || "/images/admission-poster.jpeg";
+  const posterImage = data?.posterImage || "/images/admission-poster.webp";
   const posterTitle = data?.posterTitle || "داخلہ پراسپیکٹس و شرائط — مدرسہ صاحب الزمان (عج)";
 
   return (
@@ -84,7 +89,7 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
       {/*    cinematic gradient (bg-cover bg-center)                     */}
       {/* ============================================================== */}
       <div className="absolute inset-0 z-0">
-        {isBgVideo ? (
+        {shouldRenderBackgroundImage && (isBgVideo ? (
           <video
             src={bgMediaUrl}
             autoPlay
@@ -98,9 +103,14 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
             src={bgMediaUrl}
             alt="مدرسہ کی خوبصورت عمارت اور سرسبز درخت"
             fill
-            priority
             className="object-cover object-center scale-100 transform transition-transform duration-1000 ease-out"
+            priority
+            sizes="100vw"
           />
+        ))}
+
+        {!shouldRenderBackgroundImage && (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(201,179,141,0.24),_transparent_38%),linear-gradient(135deg,#0d141b_0%,#120a05_42%,#190f0a_100%)]" />
         )}
 
         {/* Dark Cinematic Warm Brown Gradient Overlay for high text contrast */}
@@ -123,12 +133,18 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
           {/* ---------------------------------------------------------- */}
           <div className="md:col-span-7 flex flex-col items-start text-right order-1 md:order-1">
 
-            {/* A. Bismillah Subheading: Transparent background, blinking golden dot, white text */}
-            <div className="inline-flex items-center gap-3 select-none">
-              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#C9B38D] animate-blink-gold shrink-0" />
-              <p className="font-arabic text-lg sm:text-2xl md:text-3xl font-bold tracking-wider text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
-                {bismillah}
-              </p>
+            {/* A. Bismillah Subheading: custom gold calligraphy image instead of inline Arabic text */}
+            <div className="inline-flex items-center select-none">
+              <div className="relative h-12 sm:h-16 md:h-20 w-[220px] sm:w-[320px] md:w-[420px]">
+                <Image
+                  src={bismillahImage}
+                  alt={bismillah}
+                  fill
+                  className="object-contain object-right drop-shadow-[0_4px_12px_rgba(201,179,141,0.55)]"
+                  priority
+                  sizes="(max-width: 768px) 220px, (max-width: 1024px) 320px, 420px"
+                />
+              </div>
             </div>
 
             {/* B. Main Title: Large, Prominent Golden Calligraphy Artwork */}
@@ -143,8 +159,9 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
                     src={calligraphyImage}
                     alt={title || "مدرسہ صاحب الزمان (عج)"}
                     fill
-                    priority
                     className="object-contain object-right drop-shadow-[0_12px_35px_rgba(201,179,141,0.35)] drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)]"
+                    loading="lazy"
+                    sizes="(max-width: 768px) 80vw, 50vw"
                   />
                 </div>
               </h1>
@@ -160,9 +177,9 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
               {badges.map((b) => (
                 <span
                   key={b.id}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1A0E08]/80 border border-[#C9B38D]/35 text-[#D9C7A7] backdrop-blur-sm"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
                 >
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#C9B38D]" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#00FF33]" />
                   {b.text}
                 </span>
               ))}
@@ -179,10 +196,7 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
               {/* Subtle glass sheen sweep on hover */}
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out pointer-events-none" />
 
-              <span className="relative flex h-4 w-4 shrink-0 items-center justify-center">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                <MapPin className="relative w-4 h-4 text-red-500 fill-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]" />
-              </span>
+              <MapPin className="w-4 h-4 text-[#C9B38D] shrink-0" />
               <span className="font-urdu text-xs sm:text-sm text-stone-200 group-hover:text-white transition-colors">
                 {addressText}
               </span>
@@ -229,8 +243,9 @@ export default function Hero({ data, onOpenAdmission, onOpenContact, onExploreCo
                   alt={posterTitle}
                   width={720}
                   height={994}
-                  priority
                   className="w-full h-auto block select-none group-hover:scale-[1.015] transition-transform duration-300"
+                  priority
+                  sizes="(max-width: 768px) 70vw, 35vw"
                 />
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[1px]">
                   <span className="bg-black/90 text-amber-300 font-urdu text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full border border-amber-400 shadow-xl flex items-center gap-1.5">

@@ -1,41 +1,33 @@
-@font-face {
-  font-family: 'DecoType Thuluth II';
-  src: url('/fonts/decotype-thuluth-ii.woff2') format('woff2'),
-       url('/fonts/decotype-thuluth-ii.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'DecoType Thuluth II Regular';
-  src: url('/fonts/decotype-thuluth-ii.woff2') format('woff2'),
-       url('/fonts/decotype-thuluth-ii.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Thuluth';
-  src: url('/fonts/thuluth-decorated.woff2') format('woff2'),
-       url('/fonts/thuluth-decorated.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --color-primary: #120A05;
-  --color-navy: #1A0E08;
-  --color-card: #22130B;
-  --color-gold: #C9B38D;
-  --color-gold-hover: #D9C7A7;
-  --color-gold-dark: #997C4D;
+  --msz-ink: #120A05;
+  --msz-ink-soft: #1A0E08;
+  --msz-emerald-900: #0D1C18;
+  --msz-emerald-800: #143227;
+  --msz-emerald-700: #1E473B;
+  --msz-ivory: #F5EAD7;
+  --msz-ivory-strong: #FAF7F2;
+  --msz-gold: #C9B38D;
+  --msz-gold-strong: #DDBB7A;
+  --msz-gold-soft: #F1E1BC;
+  --msz-surface: rgba(24, 16, 12, 0.82);
+  --msz-surface-strong: rgba(32, 19, 12, 0.92);
+  --msz-ring: rgba(201, 179, 141, 0.38);
+
+  --msz-page-padding-x: clamp(1rem, 2vw, 2rem);
+  --msz-page-padding-y: clamp(1rem, 2vw, 2rem);
+  --msz-panel-padding: clamp(1rem, 2vw, 1.75rem);
+  --msz-form-spacing: clamp(0.875rem, 1.5vw, 1.25rem);
+  --msz-form-row-gap: clamp(1rem, 1.6vw, 1.5rem);
+  --msz-input-height: clamp(2.75rem, 1.4vw + 2.35rem, 3.25rem);
+  --msz-input-padding-x: clamp(0.875rem, 1.4vw, 1.125rem);
+  --msz-btn-height: clamp(2.75rem, 1.4vw + 2.35rem, 3.125rem);
+  --msz-container-max: min(100%, 1500px);
 }
 
 * {
@@ -45,38 +37,327 @@
 html {
   scroll-behavior: smooth;
   direction: rtl;
-  background-color: #120A05;
+  background:
+    radial-gradient(circle at top, rgba(26, 78, 57, 0.22), transparent 32%),
+    linear-gradient(180deg, #0D1111 0%, #120A05 30%, #120A05 100%);
   color-scheme: dark;
 }
 
 body {
-  background-color: #120A05;
-  color: #FAF7F2;
-  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Cairo', 'Amiri', serif;
+  background: transparent;
+  color: var(--msz-ivory-strong);
+  font-family: 'Noto Nastaliq Urdu', serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   line-height: 2.35;
   word-spacing: 0.05em;
+  text-rendering: optimizeLegibility;
 }
 
-p, .font-urdu {
-  font-family: 'Noto Nastaliq Urdu', 'Noto Sans Arabic', 'Cairo', 'Amiri', serif;
-  line-height: 2.35;
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea,
+a {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: var(--msz-input-height);
+  padding-inline: var(--msz-input-padding-x);
+  padding-block: clamp(0.625rem, 0.8vw, 0.875rem);
+  font-size: clamp(0.9rem, 1vw, 1rem);
+  line-height: 1.8;
+  border-radius: 1rem;
+}
+
+textarea {
+  min-height: clamp(7rem, 10vw, 11rem);
+  resize: vertical;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  body {
+    line-height: 2.1;
+  }
+
+  html {
+    scroll-padding-top: 5rem;
+  }
+}
+
+@layer components {
+  .msz-shell {
+    width: min(100%, 1500px);
+    margin-inline: auto;
+    padding-inline: var(--msz-page-padding-x);
+  }
+
+  .msz-panel {
+    border: 1px solid rgba(201, 179, 141, 0.2);
+    background: rgba(28, 16, 9, 0.82);
+    border-radius: clamp(1.25rem, 2vw, 2rem);
+    padding: var(--msz-panel-padding);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .msz-form-grid {
+    display: grid;
+    gap: var(--msz-form-row-gap);
+  }
+
+  .msz-form-field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .msz-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(250, 247, 242, 0.9);
+  }
+
+  .msz-input,
+  .msz-select,
+  .msz-textarea {
+    background: rgba(36, 21, 13, 0.78);
+    border: 1px solid rgba(201, 179, 141, 0.25);
+    color: #fff;
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  }
+
+  .msz-input:focus,
+  .msz-select:focus,
+  .msz-textarea:focus {
+    border-color: rgba(201, 179, 141, 0.9);
+    background: rgba(34, 19, 11, 0.92);
+    box-shadow: 0 0 0 3px rgba(201, 179, 141, 0.12);
+    outline: none;
+  }
+
+  .msz-btn-primary,
+  .msz-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--msz-btn-height);
+    padding-inline: clamp(1rem, 2vw, 1.75rem);
+    border-radius: 9999px;
+    font-weight: 700;
+    transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+  }
+
+  .msz-btn-primary {
+    background: linear-gradient(135deg, #f1e1bc, #c9b38d);
+    color: #120a05;
+    box-shadow: 0 12px 24px rgba(201, 179, 141, 0.22);
+  }
+
+  .msz-btn-secondary {
+    border: 1px solid rgba(201, 179, 141, 0.35);
+    background: rgba(26, 14, 8, 0.7);
+    color: #faf7f2;
+  }
+
+  .msz-btn-primary:hover,
+  .msz-btn-secondary:hover {
+    transform: translateY(-1px);
+  }
+
+  .msz-btn-primary:active,
+  .msz-btn-secondary:active {
+    transform: translateY(0);
+  }
+}
+
+body *,
+a,
+button,
+input,
+select,
+textarea,
+option,
+label,
+li,
+nav,
+header,
+footer,
+main,
+section,
+article,
+aside,
+div,
+span,
+p,
+.font-urdu,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.urdu-title,
+.font-nastaliq,
+.hero-bismillah,
+.font-decotype,
+.font-thuluth,
+.hero-gold-calligraphy,
+.hero-gold-suffix {
+  font-family: 'Noto Nastaliq Urdu', serif;
+}
+
+/* All Headings Line Spacing & Nastaliq vertical clearance */
+h1, h2, h3, h4, h5, h6,
+.urdu-title,
+.font-heading {
+  line-height: 2.25 !important;
   word-spacing: 0.05em;
+  padding-block: 0.15rem;
 }
 
+h1 {
+  line-height: 2.35 !important;
+  letter-spacing: 0.01em;
+}
+
+h2 {
+  line-height: 2.25 !important;
+}
+
+h3 {
+  line-height: 2.2 !important;
+}
+
+h4, h5, h6 {
+  line-height: 2.15 !important;
+}
+
+/* Bigger, High-Legibility Paragraph Text Across the Entire Website */
 p {
+  font-size: clamp(1.1rem, 0.35vw + 1rem, 1.25rem);
   line-height: 2.6 !important;
+  word-spacing: 0.055em;
 }
 
 p + p {
   margin-top: 0;
 }
 
-h1, h2, h3, h4, h5, h6, .urdu-title {
-  font-family: 'Noto Nastaliq Urdu', 'Amiri', 'Cairo', serif;
-  line-height: 2.15;
-  word-spacing: 0.04em;
+/* Proportional scaling for paragraphs with utility size classes */
+p.text-xs,
+p.text-\[10px\],
+p.text-\[11px\],
+p.text-\[12px\],
+p.text-\[13px\] {
+  font-size: 1.05rem !important;
+  line-height: 2.4 !important;
+}
+
+p.text-sm,
+p.text-\[14px\],
+p.text-\[15px\] {
+  font-size: 1.15rem !important;
+  line-height: 2.5 !important;
+}
+
+p.text-base,
+p.text-\[16px\] {
+  font-size: 1.25rem !important;
+  line-height: 2.6 !important;
+}
+
+p.text-lg,
+p.text-\[18px\] {
+  font-size: 1.35rem !important;
+  line-height: 2.6 !important;
+}
+
+p.text-xl,
+p.text-2xl {
+  font-size: 1.45rem !important;
+  line-height: 2.65 !important;
+}
+
+.font-urdu {
+  line-height: 2.35;
+  word-spacing: 0.05em;
+}
+
+/* Preserve compact admin table cells & form badges */
+.admin-layout-shell p,
+.admin-sidebar-shell p,
+.admin-layout-shell .text-xs,
+.admin-layout-shell .text-sm,
+.admin-layout-shell td,
+.admin-layout-shell th {
+  font-size: inherit;
+  line-height: 1.85;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  transition: all 180ms ease;
+}
+
+.navbar-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  letter-spacing: normal;
+}
+
+.navbar-link-text {
+  display: inline-block;
+  opacity: 0.9;
+  transform: translateY(0) scale(1);
+  transition: opacity 200ms ease, transform 220ms ease, color 200ms ease;
+  white-space: nowrap;
+  font-family: 'Noto Nastaliq Urdu', serif;
+}
+
+.navbar-link:hover .navbar-link-text,
+.navbar-link:focus-visible .navbar-link-text {
+  opacity: 1;
+  color: #f4d79a;
+  transform: translateY(-2px) scale(1.02);
+}
+
+.navbar-link:not(:hover):not(:focus-visible) .navbar-link-text {
+  opacity: 0.9;
+}
+
+button, a, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(201, 179, 141, 0.85);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: rgba(201, 179, 141, 0.35);
+  color: #fffaf0;
 }
 
 /* Nastaliq vertical safety padding to prevent bottom loops (nuqtas/descenders) from clipping */
@@ -90,6 +371,11 @@ h1, h2, h3, h4, h5, h6, .urdu-title {
   font-family: 'Noto Nastaliq Urdu', serif;
 }
 
+.hero-bismillah {
+  letter-spacing: 0.03em;
+  line-height: 1.8;
+}
+
 /* Dull Champagne Gold Gradient Effects */
 .gold-text-gradient {
   background: linear-gradient(135deg, #FFFFFF 0%, #D4BF9A 50%, #9E8152 100%);
@@ -99,12 +385,12 @@ h1, h2, h3, h4, h5, h6, .urdu-title {
 
 .font-decotype,
 .font-thuluth {
-  font-family: 'DecoType Thuluth II', 'DecoType Thuluth II Regular', 'Thuluth', 'Katibeh', 'Amiri Quran', serif;
+  font-family: 'Noto Nastaliq Urdu', serif;
 }
 
 /* Authentic Molten 24k Gold Calligraphy Heading as shown in user reference image */
 .hero-gold-calligraphy {
-  font-family: 'DecoType Thuluth II', 'DecoType Thuluth II Regular', 'Thuluth', 'Katibeh', 'Amiri Quran', serif;
+  font-family: 'Noto Nastaliq Urdu', serif;
   background: linear-gradient(
     180deg,
     #FFFDF0 0%,
@@ -126,7 +412,7 @@ h1, h2, h3, h4, h5, h6, .urdu-title {
 }
 
 .hero-gold-suffix {
-  font-family: 'DecoType Thuluth II', 'DecoType Thuluth II Regular', 'Thuluth', 'Katibeh', 'Amiri Quran', serif;
+  font-family: 'Noto Nastaliq Urdu', serif;
   background: linear-gradient(
     180deg,
     #FFFDF0 0%,
@@ -145,7 +431,7 @@ h1, h2, h3, h4, h5, h6, .urdu-title {
 
 /* Urdu Title with Clean High-Legibility Typography */
 .urdu-title {
-  font-family: 'Noto Nastaliq Urdu', 'Amiri', 'Noto Sans Arabic', serif;
+  font-family: 'Noto Nastaliq Urdu', serif;
   font-weight: 700;
   color: #FFFFFF;
   text-shadow: 
@@ -180,6 +466,105 @@ h1, h2, h3, h4, h5, h6, .urdu-title {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #C9B38D;
+}
+
+.admin-layout-shell {
+  position: relative;
+  color: #FAF7F2;
+  background:
+    radial-gradient(circle at top right, rgba(201, 179, 141, 0.12), transparent 32%),
+    linear-gradient(135deg, rgba(12, 20, 18, 0.96), rgba(18, 10, 5, 0.8)),
+    url('/images/hero-banner.webp') center/cover no-repeat;
+  isolation: isolate;
+}
+
+.admin-layout-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(201, 179, 141, 0.18), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(201, 179, 141, 0.1), transparent 22%);
+  pointer-events: none;
+}
+
+.admin-layout-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-sidebar-shell,
+.admin-header-shell,
+.admin-main-shell {
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+.admin-sidebar-shell {
+  background: rgba(15, 17, 15, 0.76);
+  border-left: 1px solid rgba(201, 179, 141, 0.2);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.admin-header-shell {
+  background: rgba(18, 10, 5, 0.42);
+  border-bottom: 1px solid rgba(201, 179, 141, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.admin-main-shell {
+  background: rgba(18, 10, 5, 0.14);
+}
+
+.admin-main-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-layout-shell [class*="rounded-"] {
+  background: linear-gradient(135deg, rgba(42, 24, 16, 0.72), rgba(18, 10, 5, 0.58));
+  border: 1px solid rgba(201, 179, 141, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 40px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+
+.admin-layout-shell [class*="rounded-"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-layout-shell button,
+.admin-layout-shell select,
+.admin-layout-shell input,
+.admin-layout-shell textarea,
+.admin-layout-shell option,
+.admin-layout-shell a {
+  color: #FAF7F2;
+}
+
+.admin-layout-shell select,
+.admin-layout-shell input,
+.admin-layout-shell textarea {
+  background: rgba(24, 14, 8, 0.7);
+  border: 1px solid rgba(201, 179, 141, 0.22);
+  border-radius: 0.9rem;
+  color-scheme: dark;
+}
+
+.admin-layout-shell select option,
+.admin-layout-shell option {
+  background: rgba(18, 10, 5, 0.96);
+  color: #FAF7F2;
+}
+
+.admin-layout-shell .text-stone-300,
+.admin-layout-shell .text-stone-200,
+.admin-layout-shell .text-stone-400,
+.admin-layout-shell .text-stone-500,
+.admin-layout-shell .text-stone-100,
+.admin-layout-shell .text-stone-50 {
+  color: #f3e7d0 !important;
 }
 
 /* Subtle Geometric Star Pattern in Dark Brown */
@@ -222,16 +607,16 @@ h1, h2, h3, h4, h5, h6, .urdu-title {
   0%, 100% {
     opacity: 1;
     transform: scale(1);
-    box-shadow: 0 0 14px rgba(201, 179, 141, 0.95), 0 0 24px rgba(201, 179, 141, 0.6);
   }
   50% {
-    opacity: 0.2;
+    opacity: 0.3;
     transform: scale(0.8);
-    box-shadow: 0 0 4px rgba(201, 179, 141, 0.2);
   }
 }
 
 .animate-blink-gold {
   animation: blink-glow 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(201, 179, 141, 0.7));
+  will-change: opacity, transform;
 }
 

@@ -87,6 +87,10 @@ export default function Navbar({ onOpenAdmission, onOpenDonation, onOpenContact,
     { name: "کتب خانہ", href: "/library" },
   ];
 
+  const renderNavLabel = (label: string) => (
+    <span className="navbar-link-text">{label}</span>
+  );
+
   // 8 Radial items for circular wheel menu (matching user reference image)
   const wheelItems = [
     { name: "ہوم", icon: Home, href: "/#hero" },
@@ -186,7 +190,7 @@ export default function Navbar({ onOpenAdmission, onOpenDonation, onOpenContact,
         <div
           className={`relative mx-auto transition-all duration-500 ${
             scrolled
-              ? "pointer-events-auto max-w-[1400px] rounded-full backdrop-blur-2xl backdrop-saturate-150 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.25)] px-4 sm:px-7 py-1.5 sm:py-2"
+              ? "pointer-events-auto max-w-[1400px] rounded-full border border-[#C9B38D]/20 bg-[#120A05]/60 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_20px_60px_rgba(0,0,0,0.7)] px-4 sm:px-6 py-1.5 sm:py-2"
               : "max-w-[1500px] bg-transparent backdrop-blur-none border-none shadow-none px-0 py-0"
           }`}
         >
@@ -195,7 +199,7 @@ export default function Navbar({ onOpenAdmission, onOpenDonation, onOpenContact,
             {/* 1. RIGHT SIDE: Madrasa Dynamic Logo & Branding */}
             <div className="flex items-center gap-3">
               <a href="#hero" className="flex items-center gap-3 group" title="مدرسہ صاحب الزمان (عج)">
-                <div className="relative w-11 h-11 sm:w-13 sm:h-13 rounded-full overflow-hidden border border-[#C9B38D]/70 shadow-md group-hover:border-[#C9B38D] transition-colors shrink-0 bg-white p-1">
+                <div className="relative w-11 h-11 sm:w-13 sm:h-13 rounded-full overflow-hidden border border-[#C9B38D]/70 shadow-[0_0_18px_rgba(201,179,141,0.25)] group-hover:border-[#D9C7A7] transition-all duration-300 shrink-0 bg-white p-1">
                   <Image
                     src={logoUrl}
                     alt="مدرسہ صاحب الزمان لوگو"
@@ -205,7 +209,7 @@ export default function Navbar({ onOpenAdmission, onOpenDonation, onOpenContact,
                   />
                 </div>
                 <div className="flex flex-col text-right">
-                  <span className="font-urdu font-bold text-base sm:text-lg text-white group-hover:text-[#D9C7A7] transition-colors leading-tight">
+                  <span className="font-urdu font-bold text-base sm:text-lg text-white group-hover:text-[#F0D9A8] transition-colors leading-tight">
                     مدرسہ صاحب الزمان
                   </span>
                   <span className="font-urdu text-[11px] text-[#C9B38D] leading-tight">
@@ -221,10 +225,13 @@ export default function Navbar({ onOpenAdmission, onOpenDonation, onOpenContact,
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-stone-200 hover:text-[#C9B38D] transition-colors text-sm sm:text-base font-medium py-1 relative group"
+                  className="navbar-link relative text-sm sm:text-base font-medium py-1 text-stone-200 transition-colors duration-200 hover:text-[#F4D79A]"
+                  aria-label={link.name}
                 >
-                  {link.name}
-                  <span className="absolute bottom-0 right-0 w-0 h-0.5 bg-[#C9B38D] transition-all duration-300 group-hover:w-full" />
+                  <span className="inline-flex items-center justify-center whitespace-nowrap tracking-[0.01em]">
+                    {renderNavLabel(link.name)}
+                  </span>
+                  <span className="absolute bottom-[-6px] right-0 h-0.5 w-0 rounded-full bg-[#C9B38D] transition-all duration-300 group-hover:w-full" />
                 </a>
               ))}
             </nav>
@@ -233,15 +240,15 @@ export default function Navbar({ onOpenAdmission, onOpenDonation, onOpenContact,
             <div className="hidden sm:flex items-center gap-3">
               <button
                 onClick={onOpenContact}
-                className="font-urdu text-xs sm:text-sm font-bold px-5 py-2 rounded-full text-white hover:text-[#C9B38D] bg-white/[0.04] hover:bg-white/[0.12] border border-[#f5deb3]/20 hover:border-[#f5deb3]/45 shadow-[inset_0_1px_1px_rgba(255,245,230,0.18)] backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 flex items-center gap-2 group cursor-pointer"
+                className="font-urdu text-xs sm:text-sm font-bold px-5 py-2 rounded-full text-white bg-white/[0.03] border border-[#F0D9A8]/20 hover:border-[#F0D9A8]/50 hover:text-[#F7E7C3] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] backdrop-blur-md transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center gap-2 group cursor-pointer"
               >
-                <PhoneCall className="w-3.5 h-3.5 text-[#C9B38D] group-hover:text-[#D9C7A7] group-hover:scale-110 transition-all duration-300" />
+                <PhoneCall className="w-3.5 h-3.5 text-[#C9B38D] group-hover:text-[#F0D9A8] group-hover:scale-110 transition-all duration-300" />
                 <span>رابطہ کریں</span>
               </button>
 
               <a
                 href="/dastarkhwan"
-                className="font-urdu text-xs sm:text-sm font-bold px-6 py-2 rounded-full bg-white/90 hover:bg-white text-[#120A05] backdrop-blur-md transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.2),inset_0_1px_1px_rgba(255,255,255,1)] border border-white hover:scale-105 active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                className="font-urdu text-xs sm:text-sm font-bold px-6 py-2 rounded-full bg-[#F3E5C8] text-[#120A05] shadow-[0_8px_28px_rgba(209,174,112,0.25)] border border-[#F3E5C8]/60 transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center gap-1.5 cursor-pointer"
               >
                 <HeartHandshake className="w-4 h-4 text-[#8C6D3F]" />
                 <span>تعاون</span>

@@ -22,8 +22,7 @@
       "next/image": ["./src/shims/next-image.tsx"],
       "next/link": ["./src/shims/next-link.tsx"],
       "next/navigation": ["./src/shims/next-navigation.tsx"]
-    },
-    "baseUrl": "."
+    }
   },
   "include": ["src", "vite-env.d.ts"],
   "exclude": ["node_modules", "src/app"]

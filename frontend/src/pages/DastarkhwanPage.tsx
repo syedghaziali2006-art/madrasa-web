@@ -55,12 +55,6 @@ export default function DastarkhwanPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_rgba(255,185,0,0.1)_0%,_transparent_60%)] pointer-events-none" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-6 sm:space-y-8">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#D9C7A7] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg shadow-black/40">
-            <HeartHandshake className="w-4 h-4 text-[#C9B38D]" />
-            <span>فلاحی و تبرکاتی خدمات</span>
-          </div>
-
           {/* Heading */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2] select-none">
             فلاحی و تبرکاتی خدمات اور تعاون
@@ -77,7 +71,7 @@ export default function DastarkhwanPage() {
           {/* Key Stat Badges */}
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2">
             <span className="px-4 py-2 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/35 text-[#D9C7A7] text-xs sm:text-sm font-bold shadow-md">
-              ✨ صدقہ جاریہ و نصرتِ دین
+              صدقہ جاریہ و نصرتِ دین
             </span>
             <span className="px-4 py-2 rounded-2xl bg-[#1A0E08]/80 border border-[#C9B38D]/35 text-[#D9C7A7] text-xs sm:text-sm font-bold shadow-md">
               📚 دینی طلباء کی مکمل کفالت

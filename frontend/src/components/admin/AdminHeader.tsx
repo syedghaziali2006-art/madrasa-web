@@ -37,7 +37,7 @@ export default function AdminHeader({ title, subtitle, children }: AdminHeaderPr
   }, []);
 
   return (
-    <header className="backdrop-blur-xl border-b border-[#C9B38D]/20 px-6 py-4 sticky top-0 z-20" dir="rtl">
+    <header className="admin-header-shell px-6 py-4 sticky top-0 z-20" dir="rtl">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-urdu">
         {/* Title and breadcrumbs */}
         <div>

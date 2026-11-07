@@ -1,6 +1,7 @@
 import express from "express";
 import { db } from "../db/jsonDb.js";
 import { authenticateToken } from "../middleware/auth.js";
+import { isValidPhoneNumber, normalizePhoneNumber, sanitizeText } from "../utils/validators.js";
 
 const router = express.Router();
 
@@ -9,24 +10,34 @@ const router = express.Router();
 // POST /api/book-requests (Public - Request a Book)
 router.post("/requests", (req, res) => {
   try {
-    const { name, phone, bookName, authorName, purpose, notes } = req.body;
+    const name = sanitizeText(req.body?.name, { maxLength: 80 });
+    const phone = sanitizeText(req.body?.phone, { maxLength: 30 });
+    const bookName = sanitizeText(req.body?.bookName, { maxLength: 160 });
+    const authorName = sanitizeText(req.body?.authorName, { maxLength: 120 });
+    const purpose = sanitizeText(req.body?.purpose, { maxLength: 160 });
+    const notes = sanitizeText(req.body?.notes, { maxLength: 500 });
 
-    if (!name || !phone || !bookName) {
-      return res.status(400).json({
-        success: false,
-        message: "نام، فون نمبر اور کتاب کا نام درج کرنا لازمی ہے۔"
-      });
+    if (!name || name.length < 2) {
+      return res.status(400).json({ success: false, message: "نام درج کرنا ضروری ہے۔" });
+    }
+
+    if (!bookName || bookName.length < 2) {
+      return res.status(400).json({ success: false, message: "کتاب کا نام درج کرنا ضروری ہے۔" });
+    }
+
+    if (!phone || !isValidPhoneNumber(phone)) {
+      return res.status(400).json({ success: false, message: "موبائل نمبر درست نہیں ہے۔" });
     }
 
     const newRequest = {
       id: "req-" + Date.now().toString(36),
-      name: name.trim(),
-      phone: phone.trim(),
-      bookName: bookName.trim(),
-      authorName: authorName ? authorName.trim() : "",
+      name,
+      phone: normalizePhoneNumber(phone),
+      bookName,
+      authorName,
       purpose: purpose || "تحقیقی مقالہ",
-      notes: notes || "",
-      status: "pending", // pending, available, unavailable, fulfilled
+      notes,
+      status: "pending",
       createdAt: new Date().toISOString()
     };
 
@@ -86,7 +97,12 @@ router.delete("/requests/:id", authenticateToken, (req, res) => {
 // POST /api/book-donations (Public - Offer to Donate Books)
 router.post("/donations", (req, res) => {
   try {
-    const { name, phone, city, bookCount, topic, message } = req.body;
+    const name = sanitizeText(req.body?.name, { maxLength: 80 });
+    const phone = sanitizeText(req.body?.phone, { maxLength: 30 });
+    const city = sanitizeText(req.body?.city, { maxLength: 120 });
+    const bookCount = sanitizeText(req.body?.bookCount, { maxLength: 80 });
+    const topic = sanitizeText(req.body?.topic, { maxLength: 80 });
+    const message = sanitizeText(req.body?.message, { maxLength: 500 });
 
     if (!name || !phone) {
       return res.status(400).json({
@@ -95,15 +111,19 @@ router.post("/donations", (req, res) => {
       });
     }
 
+    if (!isValidPhoneNumber(phone)) {
+      return res.status(400).json({ success: false, message: "موبائل نمبر درست نہیں ہے۔" });
+    }
+
     const newDonation = {
       id: "don-" + Date.now().toString(36),
-      name: name.trim(),
-      phone: phone.trim(),
+      name,
+      phone: normalizePhoneNumber(phone),
       city: city || "",
       bookCount: bookCount || "10-50 کتب",
       topic: topic || "دینی کتب",
-      message: message || "",
-      status: "pending", // pending, contacted, received
+      message,
+      status: "pending",
       createdAt: new Date().toISOString()
     };
 

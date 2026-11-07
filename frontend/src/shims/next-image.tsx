@@ -25,6 +25,7 @@ export default function Image({
   className,
   style,
   loading,
+  fetchPriority,
   ...props
 }: ImageProps) {
   const imageSrc =
@@ -55,6 +56,7 @@ export default function Image({
       style={combinedStyle}
       loading={priority ? 'eager' : loading || 'lazy'}
       decoding={priority ? 'sync' : 'async'}
+      fetchPriority={priority || fetchPriority === 'high' ? 'high' : undefined}
       sizes={sizes}
       {...props}
     />

@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import BooksSection from "@/components/BooksSection";
-import CampusMediaSection from "@/components/gallery/CampusMediaSection";
-import LibraryGallerySection from "@/components/gallery/LibraryGallerySection";
-import StudentActivitiesSection from "@/components/gallery/StudentActivitiesSection";
-import StudentPicnicSection from "@/components/gallery/StudentPicnicSection";
-import CelebrationsGallerySection from "@/components/gallery/CelebrationsGallerySection";
 import DonationSection from "@/components/DonationSection";
-import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 import AdmissionModal from "@/components/AdmissionModal";
-import WebsiteIntro from "@/components/WebsiteIntro";
+
+const CampusMediaSection = React.lazy(() => import("@/components/gallery/CampusMediaSection"));
+const LibraryGallerySection = React.lazy(() => import("@/components/gallery/LibraryGallerySection"));
+const StudentActivitiesSection = React.lazy(() => import("@/components/gallery/StudentActivitiesSection"));
+const StudentPicnicSection = React.lazy(() => import("@/components/gallery/StudentPicnicSection"));
+const CelebrationsGallerySection = React.lazy(() => import("@/components/gallery/CelebrationsGallerySection"));
+const Testimonials = React.lazy(() => import("@/components/Testimonials"));
+const WebsiteIntro = React.lazy(() => import("@/components/WebsiteIntro"));
 
 import { api } from "@/services/api";
 
@@ -62,33 +63,42 @@ export default function HomePage() {
     }
   };
 
+  const handleOpenWhatsApp = () => {
+    const phoneNumber = "923356666880";
+    const message = encodeURIComponent("السلام علیکم، میں مدرسہ صاحب الزمان سے رابطہ کرنا چاہتا/چاہتی ہوں۔");
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  };
+
   const sections = homeData?.sections;
 
   return (
     <main className="min-h-screen bg-[#120A05] text-[#FAF7F2] selection:bg-[#C9B38D] selection:text-[#120A05]">
       {/* 0. 3D Perspective Tunnel Intro Experience */}
       {showIntro && (
-        <WebsiteIntro
-          onFinish={() => {
-            setShowIntro(false);
-            sessionStorage.setItem("introShown", "1");
-            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-          }}
-        />
+        <Suspense fallback={<div className="fixed inset-0 z-40 bg-[#120A05]" />}>
+          <WebsiteIntro
+            onFinish={() => {
+              setShowIntro(false);
+              sessionStorage.setItem("introShown", "1");
+              window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+            }}
+          />
+        </Suspense>
       )}
 
       {/* 1. Navbar */}
       <Navbar
         onOpenAdmission={() => setIsAdmissionOpen(true)}
         onOpenDonation={() => handleScrollToSection("donation")}
-        onOpenContact={() => handleScrollToSection("contact")}
+        onOpenContact={handleOpenWhatsApp}
       />
 
       {/* 2. Hero Section */}
       <Hero
         data={homeData?.hero}
         onOpenAdmission={() => setIsAdmissionOpen(true)}
-        onOpenContact={() => handleScrollToSection("contact")}
+        onOpenContact={handleOpenWhatsApp}
         onExploreCourses={() => {
           window.location.href = "/policy";
         }}
@@ -96,18 +106,22 @@ export default function HomePage() {
 
       {/* 3. سیکشن ۱: مدرسے کی تصویریں اور ویڈیوز (Campus Bento Grid) */}
       {sections?.campus?.enabled !== false && (
-        <CampusMediaSection
-          header={sections?.campus}
-          items={homeData?.campusMedia}
-        />
+        <Suspense fallback={<div className="h-[420px] w-full bg-[#160C07]" />}>
+          <CampusMediaSection
+            header={sections?.campus}
+            items={homeData?.campusMedia}
+          />
+        </Suspense>
       )}
 
       {/* 5. سیکشن ۲: لائبریری کی تصویریں (Library Carousel Slider) */}
       {sections?.library?.enabled !== false && (
-        <LibraryGallerySection
-          header={sections?.library}
-          items={homeData?.libraryMedia}
-        />
+        <Suspense fallback={<div className="h-[420px] w-full bg-[#160C07]" />}>
+          <LibraryGallerySection
+            header={sections?.library}
+            items={homeData?.libraryMedia}
+          />
+        </Suspense>
       )}
 
       {/* 6. منتخب کتب و مطبوعات (Selected Books Showcase) */}
@@ -117,35 +131,43 @@ export default function HomePage() {
 
       {/* 7. سیکشن ۴: بچوں کی پکنک کی تصاویر و ویڈیوز (Picnic Polaroid Grid) */}
       {sections?.picnic?.enabled !== false && (
-        <StudentPicnicSection
-          header={sections?.picnic}
-          items={homeData?.picnicMedia}
-        />
+        <Suspense fallback={<div className="h-[420px] w-full bg-[#160C07]" />}>
+          <StudentPicnicSection
+            header={sections?.picnic}
+            items={homeData?.picnicMedia}
+          />
+        </Suspense>
       )}
 
       {/* 8. سیکشن ۵: بچوں کے کھیل کود کی تصاویر و ویڈیوز (Sports Masonry Grid) */}
       {sections?.activities?.enabled !== false && (
-        <StudentActivitiesSection
-          header={sections?.activities}
-          items={homeData?.activitiesMedia}
-        />
+        <Suspense fallback={<div className="h-[420px] w-full bg-[#160C07]" />}>
+          <StudentActivitiesSection
+            header={sections?.activities}
+            items={homeData?.activitiesMedia}
+          />
+        </Suspense>
       )}
 
       {/* 9. سیکشن ۵: بچوں کے جشنوں کی تصاویر و ویڈیوز (Celebrations Spotlight Slider) */}
       {sections?.celebrations?.enabled !== false && (
-        <CelebrationsGallerySection
-          header={sections?.celebrations}
-          items={homeData?.celebrationsMedia}
-        />
+        <Suspense fallback={<div className="h-[420px] w-full bg-[#160C07]" />}>
+          <CelebrationsGallerySection
+            header={sections?.celebrations}
+            items={homeData?.celebrationsMedia}
+          />
+        </Suspense>
       )}
 
 
       {/* 11. تاثرات (Scholars & Guardians Testimonials) */}
       {sections?.testimonials?.enabled !== false && (
-        <Testimonials
-          header={sections?.testimonials}
-          items={homeData?.testimonialsList}
-        />
+        <Suspense fallback={<div className="h-[420px] w-full bg-[#120A05]" />}>
+          <Testimonials
+            header={sections?.testimonials}
+            items={homeData?.testimonialsList}
+          />
+        </Suspense>
       )}
 
       {/* 6. فوٹر و رابطہ (Footer & Contact Information) */}

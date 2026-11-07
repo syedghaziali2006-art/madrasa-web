@@ -135,11 +135,6 @@ export default function CampusMediaSection({ header, items }: CampusMediaSection
 
         {/* Section Header with Glass Elements */}
         <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.06] border border-white/20 text-[#E5D7BE] text-xs sm:text-sm font-semibold backdrop-blur-xl mb-4 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.25)]">
-            <Building2 className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">{header?.badge || "بصری و ویڈیو مشاہدہ"}</span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
             {header?.title || "مدرسے کی تصویریں اور ویڈیوز"}
           </h2>

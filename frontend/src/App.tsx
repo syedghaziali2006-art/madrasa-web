@@ -24,6 +24,7 @@ const AdminSettingsPage = lazy(() => import('./pages/admin/AdminSettingsPage'));
 const AdminHomePage = lazy(() => import('./pages/admin/AdminHomePage'));
 const AdminPolicyPage = lazy(() => import('./pages/admin/AdminPolicyPage'));
 const AdminWomensPage = lazy(() => import('./pages/admin/AdminWomensPage'));
+const AdminWhatsAppPage = lazy(() => import('./pages/admin/AdminWhatsAppPage'));
 
 export default function App() {
   return (
@@ -55,6 +56,7 @@ export default function App() {
             <Route path="admissions" element={<AdminAdmissionsPage />} />
             <Route path="gallery" element={<AdminGalleryPage />} />
             <Route path="donations" element={<AdminDonationsPage />} />
+            <Route path="whatsapp" element={<AdminWhatsAppPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
 

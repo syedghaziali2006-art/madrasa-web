@@ -101,6 +101,11 @@ export const api = {
         method: "PUT",
         body: JSON.stringify(updates),
       }),
+    sendWhatsApp: (id: string, status?: string) =>
+      fetchApi(`/admissions/${id}/send-whatsapp`, {
+        method: "POST",
+        body: JSON.stringify({ status }),
+      }),
     delete: (id: string) =>
       fetchApi(`/admissions/${id}`, {
         method: "DELETE",
@@ -318,6 +323,27 @@ export const api = {
         method: "PUT",
         body: JSON.stringify(data),
       }),
+  },
+
+  // WhatsApp notifications
+  whatsapp: {
+    getConfig: () => fetchApi("/whatsapp/config"),
+    updateConfig: (data: any) =>
+      fetchApi("/whatsapp/config", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    preview: (payload: { status: string; name: string; inquiryId?: string }) =>
+      fetchApi("/whatsapp/preview", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+    test: (payload: { phone: string; name?: string; status?: string; inquiryId?: string }) =>
+      fetchApi("/whatsapp/test", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+    history: () => fetchApi("/whatsapp/history"),
   },
 
   // Dashboard Stats

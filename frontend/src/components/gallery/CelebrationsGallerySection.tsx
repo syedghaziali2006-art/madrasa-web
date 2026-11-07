@@ -108,11 +108,6 @@ export default function CelebrationsGallerySection({ header, items }: Celebratio
 
         {/* Section Header with generous vertical spacing */}
         <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
-            <Award className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">{header?.badge || "تقاریب و یادگار ایام"}</span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
             {header?.title || "بچوں کے جشنوں اور تقاریب کی تصویریں و ویڈیوز"}
           </h2>

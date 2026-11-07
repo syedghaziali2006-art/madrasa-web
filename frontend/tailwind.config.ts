@@ -27,16 +27,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        heading: ["'Noto Nastaliq Urdu'", "'Noto Sans Arabic'", "'Cairo'", "'Amiri'", "serif"],
-        arabic: ["'Amiri'", "'Traditional Arabic'", "serif"],
-        cairo: ["'Cairo'", "'Noto Sans Arabic'", "sans-serif"],
-        urdu: [
-          "'Noto Nastaliq Urdu'",
-          "'Noto Sans Arabic'",
-          "'Cairo'",
-          "'Amiri'",
-          "serif"
-        ],
+        heading: ["'Noto Nastaliq Urdu'", "serif"],
+        arabic: ["'Noto Nastaliq Urdu'", "serif"],
+        cairo: ["'Noto Nastaliq Urdu'", "serif"],
+        urdu: ["'Noto Nastaliq Urdu'", "serif"],
         nastaliq: ["'Noto Nastaliq Urdu'", "serif"],
       },
       boxShadow: {

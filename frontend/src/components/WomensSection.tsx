@@ -17,10 +17,6 @@ export default function WomensSection({ onOpenAdmission }: WomensSectionProps) {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#120A05]/80 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
-            
-            <span className="font-urdu">خصوصی شعبہ برائے طالبات و خواتین</span>
-          </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white mb-4 leading-relaxed">
             جامعہ سیدہ فاطمہ الزہراء <span className="text-[#C9B38D]">(سلام اللہ علیہا)</span>
           </h2>

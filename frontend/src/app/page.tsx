@@ -24,19 +24,26 @@ export default function Home() {
     }
   };
 
+  const handleOpenWhatsApp = () => {
+    const phoneNumber = "923356666880";
+    const message = encodeURIComponent("السلام علیکم، میں مدرسہ صاحب الزمان سے رابطہ کرنا چاہتا/چاہتی ہوں۔");
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <main className="min-h-screen bg-[#120A05] text-[#FAF7F2] selection:bg-[#C9B38D] selection:text-[#120A05]">
       {/* 1. Navbar */}
       <Navbar
         onOpenAdmission={() => setIsAdmissionOpen(true)}
         onOpenDonation={() => handleScrollToSection("donation")}
-        onOpenContact={() => handleScrollToSection("contact")}
+        onOpenContact={handleOpenWhatsApp}
       />
 
       {/* 2. Hero Section */}
       <Hero
         onOpenAdmission={() => setIsAdmissionOpen(true)}
-        onOpenContact={() => handleScrollToSection("contact")}
+        onOpenContact={handleOpenWhatsApp}
         onExploreCourses={() => {
           window.location.href = "/policy";
         }}

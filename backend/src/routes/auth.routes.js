@@ -3,19 +3,30 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { db } from "../db/jsonDb.js";
 import { authenticateToken } from "../middleware/auth.js";
+import { isValidEmail, sanitizeText, validatePasswordStrength } from "../utils/validators.js";
 
 const router = express.Router();
 
 // POST /api/auth/login
 router.post("/login", (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = sanitizeText(req.body?.email || "", { maxLength: 150 }).toLowerCase();
+    const password = String(req.body?.password || "").trim();
 
     if (!email || !password) {
       return res.status(400).json({
         success: false,
         message: "ای میل اور پاس ورڈ درج کرنا لازمی ہے (Email and password are required)"
       });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ success: false, message: "براہ کرم درست ای میل لکھیں۔" });
+    }
+
+    const passwordCheck = validatePasswordStrength(password);
+    if (!passwordCheck.valid) {
+      return res.status(400).json({ success: false, message: passwordCheck.message });
     }
 
     const user = db.users.findOne((u) => u.email.toLowerCase() === email.toLowerCase());
@@ -89,12 +100,19 @@ router.get("/me", authenticateToken, (req, res) => {
 // POST /api/auth/change-password
 router.post("/change-password", authenticateToken, (req, res) => {
   try {
-    const { currentPassword, newPassword } = req.body;
+    const currentPassword = String(req.body?.currentPassword || "").trim();
+    const newPassword = String(req.body?.newPassword || "").trim();
+
     if (!currentPassword || !newPassword) {
       return res.status(400).json({
         success: false,
         message: "پرانا اور نیا پاس ورڈ فراہم کریں"
       });
+    }
+
+    const passwordCheck = validatePasswordStrength(newPassword);
+    if (!passwordCheck.valid) {
+      return res.status(400).json({ success: false, message: passwordCheck.message });
     }
 
     const user = db.users.findById(req.user.id);
@@ -107,6 +125,13 @@ router.post("/change-password", authenticateToken, (req, res) => {
       return res.status(400).json({
         success: false,
         message: "موجودہ پاس ورڈ درست نہیں ہے"
+      });
+    }
+
+    if (bcrypt.compareSync(newPassword, user.password)) {
+      return res.status(400).json({
+        success: false,
+        message: "نیا پاس ورڈ موجودہ پاس ورڈ سے مختلف ہونا چاہیے۔"
       });
     }
 

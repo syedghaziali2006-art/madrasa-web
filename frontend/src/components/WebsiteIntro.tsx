@@ -14,62 +14,62 @@ import { ArrowLeft, Compass } from "lucide-react";
 
 const MADARSA_CARDS = [
   {
-    src: "/images/intro/campus-building.jpg",
+    src: "/images/intro/campus-building.webp",
     title: "مرکزی کیمپس و خوبصورت عمارت",
     tag: "جامعہ کی عمارت",
   },
   {
-    src: "/images/intro/namaz-ba-jamat.jpg",
+    src: "/images/intro/namaz-ba-jamat.webp",
     title: "طلبہ کی باجماعت نماز و عبادات",
     tag: "نماز و عبادات",
   },
   {
-    src: "/images/intro/alam-mubarak.png",
+    src: "/images/intro/alam-mubarak.webp",
     title: "شبِ عزا و سالانہ مجلسِ فاطمیہؑ",
     tag: "شعائرِ اہلِ بیتؑ",
   },
   {
-    src: "/images/intro/tarbiyat-session.png",
+    src: "/images/intro/tarbiyat-session.webp",
     title: "اساتذہ و سرپرست کی تربیتی نشست",
     tag: "تربیت و رہنمائی",
   },
   {
-    src: "/images/intro/library-students.jpg",
+    src: "/images/intro/library-students.webp",
     title: "مرکزی لائبریری و مطالعہِ کتب",
     tag: "علمی تحقیق و مطالعہ",
   },
   {
-    src: "/images/intro/founder-shakir-ali.jpg",
+    src: "/images/intro/founder-shakir-ali.webp",
     title: "بانیِ جامعہ علامہ شیخ شاکر علی سرور (رہ)",
     tag: "بانیِ ادارہ",
   },
   {
-    src: "/images/intro/tarbiyat-session.png",
+    src: "/images/intro/tarbiyat-session.webp",
     title: "اساتذہ و سرپرست کی تربیتی نشست",
     tag: "تربیت و رہنمائی",
   },
   {
-    src: "/images/intro/campus-building.jpg",
+    src: "/images/intro/campus-building.webp",
     title: "مرکزی کیمپس و خوبصورت عمارت",
     tag: "جامعہ کی عمارت",
   },
   {
-    src: "/images/intro/founder-shakir-ali.jpg",
+    src: "/images/intro/founder-shakir-ali.webp",
     title: "بانیِ جامعہ علامہ شیخ شاکر علی سرور (رہ)",
     tag: "بانیِ ادارہ",
   },
   {
-    src: "/images/intro/alam-mubarak.png",
+    src: "/images/intro/alam-mubarak.webp",
     title: "شبِ عزا و سالانہ مجلسِ فاطمیہؑ",
     tag: "شعائرِ اہلِ بیتؑ",
   },
   {
-    src: "/images/intro/namaz-ba-jamat.jpg",
+    src: "/images/intro/namaz-ba-jamat.webp",
     title: "طلبہ کی باجماعت نماز و عبادات",
     tag: "نماز و عبادات",
   },
   {
-    src: "/images/intro/library-students.jpg",
+    src: "/images/intro/library-students.webp",
     title: "مرکزی لائبریری و مطالعہِ کتب",
     tag: "علمی تحقیق و مطالعہ",
   },
@@ -331,11 +331,19 @@ export default function WebsiteIntro({ onFinish }: WebsiteIntroProps) {
       transition={{ duration: 0.7, ease: "easeInOut" }}
       className="fixed inset-0 z-[100] w-screen h-screen text-white overflow-hidden select-none"
       style={{
-        background:
-          "radial-gradient(ellipse 70% 55% at 20% 35%, rgba(220, 38, 38, 0.4) 0%, transparent 60%), radial-gradient(ellipse 55% 45% at 80% 20%, rgba(185, 28, 28, 0.3) 0%, transparent 55%), linear-gradient(160deg, #000000 0%, #1a0000 40%, #000000 100%)",
-        opacity: 0.7,
+        backgroundImage: "url('/images/intro/campus-building.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 55% at 20% 35%, rgba(220, 38, 38, 0.32) 0%, transparent 60%), radial-gradient(ellipse 55% 45% at 80% 20%, rgba(185, 28, 28, 0.22) 0%, transparent 55%), linear-gradient(160deg, rgba(0,0,0,0.82) 0%, rgba(26,0,0,0.72) 38%, rgba(0,0,0,0.9) 100%)",
+        }}
+      />
 
       {/* 2. 3D PERSPECTIVE TUNNEL VIEWPORT */}
       <div
@@ -375,9 +383,8 @@ export default function WebsiteIntro({ onFinish }: WebsiteIntroProps) {
           className="pointer-events-none z-10 flex flex-col items-center text-center px-4 max-w-4xl"
           dir="rtl"
         >
-          {/* A. Bismillah in Arabic Calligraphy: Transparent background, blinking golden dot, white text */}
+          {/* A. Bismillah in Arabic Calligraphy: Transparent background, white text */}
           <div className="inline-flex items-center gap-3 mb-3 sm:mb-4 select-none">
-            <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#C9B38D] animate-blink-gold shrink-0" />
             <p className="font-arabic text-xl sm:text-3xl lg:text-4xl font-bold tracking-wider text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
               بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </p>

@@ -54,11 +54,6 @@ export default function FounderSection({ founder }: FounderSectionProps = {}) {
 
       <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
-            <span className="text-[#C9B38D] text-sm">❖</span>
-            <span className="font-urdu">{badgeText}</span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[1.8]">
             {titleText}
           </h2>
@@ -112,7 +107,7 @@ export default function FounderSection({ founder }: FounderSectionProps = {}) {
               <span className="text-xs font-bold uppercase tracking-wider text-[#C9B38D] font-urdu block mb-2">
                 سیرت، اخلاص اور تاریخی کارنامے
               </span>
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-urdu font-bold text-white leading-[1.7]">
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-urdu font-bold text-white leading-[2.2]">
                 ایک درویش صفت عالم کا لازوال مشن
               </h3>
               <div className="w-20 h-1 bg-gradient-to-r from-transparent via-[#C9B38D] to-transparent rounded-full my-3 shadow-[0_0_12px_rgba(201,179,141,0.5)]" />

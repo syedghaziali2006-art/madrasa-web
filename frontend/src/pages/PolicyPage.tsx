@@ -46,7 +46,7 @@ const defaultPolicyData = {
     tag: "کیمپس مدرسہ و جامع مسجد",
     address: "احسن آباد 3، گلزار ہجری، کراچی",
     description: "وسیع و عریض تعلیمی، روحانی و فلاحی کیمپس",
-    image: "/images/hero-banner.png"
+    image: "/images/hero-banner.webp"
   },
   hadith: {
     arabic: "مَنْ تَعَلَّمَ الْعِلْمَ وَعَمِلَ بِهِ وَعَلَّمَ لِلَّهِ دُعِيَ فِي مَلَكُوتِ السَّمَاوَاتِ عَظِيمًا",
@@ -158,17 +158,7 @@ export default function PolicyPage() {
         <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-[#1A0E08] rounded-full blur-[130px] pointer-events-none" />
 
         <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1A0E08]/85 border border-[#C9B38D]/40 text-xs sm:text-sm font-urdu font-semibold text-[#D9C7A7] mb-6 backdrop-blur-md">
-            <Link to="/" className="hover:text-white transition">صفحہ اول</Link>
-            <ChevronLeft className="w-3.5 h-3.5 text-[#C9B38D]" />
-            <span>{policyData.header.badge}</span>
-          </div>
-
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#C9B38D]/15 via-[#C9B38D]/10 to-transparent border border-[#C9B38D]/40 text-[#D9C7A7] text-xs sm:text-sm font-semibold backdrop-blur-md mb-6 shadow-sm">
-            <span className="font-urdu">{policyData.header.badge}</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-urdu font-bold text-white leading-[1.7] mb-6">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-urdu font-bold text-white leading-[2.3] mb-6">
             {policyData.header.title}
           </h1>
 
@@ -201,7 +191,7 @@ export default function PolicyPage() {
                 <div className="bg-[#1A0E08] rounded-[28px] p-3 overflow-hidden">
                   <div className="relative h-96 sm:h-[460px] rounded-[22px] overflow-hidden group">
                     <img
-                      src={policyData.campusCard.image || "/images/hero-banner.png"}
+                      src={policyData.campusCard.image || "/images/hero-banner.webp"}
                       alt={policyData.campusCard.tag}
                       className="object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-90 w-full h-full"
                     />

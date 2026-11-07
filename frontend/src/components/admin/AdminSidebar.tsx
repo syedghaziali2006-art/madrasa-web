@@ -14,6 +14,7 @@ import {
   GraduationCap,
   Image as ImageIcon,
   HeartHandshake,
+  MessageCircle,
   Settings,
   LogOut,
   ExternalLink,
@@ -101,6 +102,11 @@ export default function AdminSidebar() {
       icon: HeartHandshake,
     },
     {
+      title: "واٹس ایپ نوٹیفکیشنز",
+      href: "/admin/whatsapp",
+      icon: MessageCircle,
+    },
+    {
       title: "عمومی ترتیبات",
       href: "/admin/settings",
       icon: Settings,
@@ -122,11 +128,11 @@ export default function AdminSidebar() {
   };
 
   const NavContent = () => (
-    <div className="flex flex-col h-full backdrop-blur-2xl backdrop-saturate-150 border-l border-[#C9B38D]/20 text-[#FAF7F2] font-urdu" dir="rtl">
+    <div className="admin-sidebar-shell flex flex-col h-screen text-[#FAF7F2] font-urdu" dir="rtl">
       {/* Top Header / Logo */}
-      <div className="p-5 border-b border-[#C9B38D]/20 flex items-center justify-between">
-        <Link href="/admin" className="flex items-center gap-3">
-          <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-[#C9B38D] shadow-[0_0_15px_rgba(201,179,141,0.4)] shrink-0 bg-white p-1">
+      <div className="p-3.5 sm:p-4 lg:p-5 border-b border-[#C9B38D]/20 flex items-center justify-between bg-[#110D0A]/40">
+        <Link href="/admin" className="flex items-center gap-3 group min-w-0">
+          <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-[#C9B38D]/80 shadow-[0_0_20px_rgba(201,179,141,0.32)] shrink-0 bg-white p-1 transition-transform duration-200 group-hover:scale-[1.03]">
             <Image
               src={logoUrl}
               alt="مدرسہ صاحب الزمان لوگو"
@@ -135,11 +141,11 @@ export default function AdminSidebar() {
               unoptimized={logoUrl.startsWith("http")}
             />
           </div>
-          <div>
-            <h1 className="text-base font-bold text-white leading-tight">
+          <div className="min-w-0">
+            <h1 className="text-sm sm:text-base font-bold text-white leading-tight truncate">
               ایڈمن پورٹل
             </h1>
-            <p className="text-[11px] text-[#C9B38D] font-medium">
+            <p className="text-[10px] sm:text-[11px] text-[#C9B38D] font-medium truncate">
               مدرسہ صاحب الزمان (عج)
             </p>
           </div>
@@ -155,8 +161,8 @@ export default function AdminSidebar() {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 backdrop-blur-2xl backdrop-saturate-150 px-3 py-4 space-y-1 overflow-y-auto">
-        <div className="px-3 pb-2 text-[11px] font-semibold text-[#C9B38D]/70 uppercase tracking-wider">
+      <nav className="flex-1 backdrop-blur-2xl backdrop-saturate-150 px-2.5 sm:px-3 py-3 sm:py-4 space-y-1 overflow-y-auto">
+        <div className="px-2.5 pb-2 text-[10px] sm:text-[11px] font-semibold text-[#C9B38D]/70 uppercase tracking-wider">
           مرکزی مینو
         </div>
         {navItems.map((item) => {
@@ -167,22 +173,22 @@ export default function AdminSidebar() {
               key={item.href}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group ${
+              className={`flex items-center justify-between px-2.5 sm:px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 group ${
                 active
-                  ? "bg-gradient-to-l from-[#C9B38D]/25 to-[#C9B38D]/10 text-white border-r-4 border-[#C9B38D] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                  ? "bg-gradient-to-l from-[#C9B38D]/25 to-[#1E473B]/40 text-white border-r-4 border-[#C9B38D] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)]"
                   : "text-stone-300 hover:text-white hover:bg-white/5"
               }`}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <Icon
-                  className={`w-5 h-5 transition-colors ${
+                  className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors ${
                     active ? "text-[#C9B38D]" : "text-stone-400 group-hover:text-[#C9B38D]"
                   }`}
                 />
-                <span>{item.title}</span>
+                <span className="truncate">{item.title}</span>
               </div>
               <ChevronLeft
-                className={`w-4 h-4 transition-transform ${
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform ${
                   active ? "text-[#C9B38D] translate-x-1" : "text-stone-500 opacity-0 group-hover:opacity-100"
                 }`}
               />
@@ -192,22 +198,22 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Bottom Footer Actions */}
-      <div className="p-4 border-t border-[#C9B38D]/20 space-y-2">
+      <div className="p-3 sm:p-4 border-t border-[#C9B38D]/20 space-y-2">
         <Link
           href="/"
           target="_blank"
-          className="flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-medium text-stone-300 hover:text-white hover:bg-white/5 transition"
+          className="flex items-center justify-between px-2.5 sm:px-3.5 py-2 rounded-xl text-[11px] sm:text-xs font-medium text-stone-300 hover:text-white hover:bg-white/5 transition"
         >
           <span className="flex items-center gap-2">
             <ExternalLink className="w-4 h-4 text-[#C9B38D]" />
             ویب سائٹ دیکھیں
           </span>
-          <span className="text-[10px] bg-[#C9B38D]/20 text-[#C9B38D] px-2 py-0.5 rounded-md">Live</span>
+          <span className="text-[9px] sm:text-[10px] bg-[#C9B38D]/20 text-[#C9B38D] px-1.5 sm:px-2 py-0.5 rounded-md">Live</span>
         </Link>
 
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 transition duration-200"
+          className="w-full flex items-center justify-center gap-2 px-2.5 sm:px-3.5 py-2.5 rounded-xl text-[11px] sm:text-xs font-semibold text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 transition duration-200"
         >
           <LogOut className="w-4 h-4" />
           <span>لاگ آؤٹ کریں</span>
@@ -247,7 +253,7 @@ export default function AdminSidebar() {
       </div>
 
       {/* Desktop Persistent Sidebar */}
-      <aside className="hidden lg:block w-72 shrink-0 h-screen sticky top-0 shadow-2xl z-30">
+      <aside className="hidden lg:flex lg:w-[clamp(16rem,18vw,18rem)] shrink-0 h-screen sticky top-0 self-start shadow-2xl z-30">
         <NavContent />
       </aside>
     </>

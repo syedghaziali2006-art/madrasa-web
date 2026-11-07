@@ -333,12 +333,6 @@ export default function HistoryStaffPage() {
         <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-[#1A0E08] rounded-full blur-[130px] pointer-events-none" />
 
         <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1A0E08]/85 border border-[#C9B38D]/40 text-xs sm:text-sm font-urdu font-semibold text-[#D9C7A7] mb-6 backdrop-blur-md">
-            <Link href="/" className="hover:text-white transition">صفحہ اول</Link>
-            <ChevronLeft className="w-3.5 h-3.5 text-[#C9B38D]" />
-            <span>{heroBadge}</span>
-          </div>
-
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-urdu font-bold text-white leading-[1.7] mb-6">
             {heroTitle}
           </h1>
@@ -365,11 +359,6 @@ export default function HistoryStaffPage() {
       <section className="py-20 sm:py-28 bg-[#120A05] islamic-dark-pattern relative overflow-hidden">
         <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
-              <History className="w-4 h-4 text-[#C9B38D]" />
-              <span className="font-urdu">سفر اور ارتقاء</span>
-            </div>
-
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[1.8]">
               تاریخ اور <span className="text-[#C9B38D]">پس منظر</span>
             </h2>
@@ -439,11 +428,6 @@ export default function HistoryStaffPage() {
       <section className="py-20 sm:py-28 bg-[#18100A] islamic-navy-pattern relative overflow-hidden border-t border-[#C9B38D]/20">
         <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
-              <Heart className="w-4 h-4 text-[#C9B38D]" />
-              <span className="font-urdu">محسنین و سابق اساتذہ</span>
-            </div>
-
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[1.8]">
               پہلے کے اساتذہ اور <span className="text-[#C9B38D]">اسٹاف ممبران</span>
             </h2>
@@ -507,11 +491,6 @@ export default function HistoryStaffPage() {
       <section className="py-20 sm:py-28 bg-[#120A05] islamic-dark-pattern relative overflow-hidden border-t border-[#C9B38D]/20">
         <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-4 shadow-sm">
-              <Users className="w-4 h-4 text-[#C9B38D]" />
-              <span className="font-urdu">تدریسی و انتظامی فیکلٹی</span>
-            </div>
-
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[1.8]">
               موجودہ اساتذہ اور <span className="text-[#C9B38D]">انتظامیہ</span>
             </h2>

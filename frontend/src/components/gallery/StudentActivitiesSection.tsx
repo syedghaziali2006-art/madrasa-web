@@ -103,11 +103,6 @@ export default function StudentActivitiesSection({ header, items }: StudentActiv
 
       <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-8 relative z-10">
         <div className="text-center max-w-4xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
-            <Trophy className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">{header?.badge || "نشاط و جسمانی صحت"}</span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
             {header?.title || "بچوں کے کھیل کود اور سرگرمیاں"}
           </h2>

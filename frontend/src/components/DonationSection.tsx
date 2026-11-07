@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { HeartHandshake, ShieldCheck, Check, Copy, Landmark, Gift, Send, Loader2 } from "lucide-react";
+import { HeartHandshake, ShieldCheck, Check, Copy, Landmark, Gift, Send, Loader2, AlertCircle } from "lucide-react";
 import { donationAccounts as fallbackAccounts } from "@/data/madarsaData";
 import { api } from "@/services/api";
+import { isValidPhoneNumber, sanitizeText } from "@/lib/validation";
 
 export interface DonationInfo {
   hadithArabic?: string;
@@ -36,6 +37,7 @@ export default function DonationSection({ header, donationInfo, onOpenDonationMo
   const [message, setMessage] = useState("");
   const [showBankInfo, setShowBankInfo] = useState(true);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [validationError, setValidationError] = useState("");
 
   // Dynamic Bank Accounts
   const [accounts, setAccounts] = useState<any[]>(fallbackAccounts);
@@ -82,20 +84,33 @@ export default function DonationSection({ header, donationInfo, onOpenDonationMo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setShowBankInfo(true);
-    if (!name && !contact) return;
+    const cleanName = sanitizeText(name, 80);
+    const cleanContact = sanitizeText(contact, 30);
 
+    if (!cleanName) {
+      setValidationError("عطیہ دہندہ کا نام درج کریں۔");
+      return;
+    }
+
+    if (!cleanContact || !isValidPhoneNumber(cleanContact)) {
+      setValidationError("موبائل نمبر درست نہیں ہے۔");
+      return;
+    }
+
+    setValidationError("");
     setSubmitting(true);
     try {
       await api.donations.submitSlip({
-        donorName: name || "محترم معاون",
-        phone: contact,
+        donorName: cleanName,
+        phone: cleanContact,
         amount: `${customAmount} ${currency}`,
         donationType: frequency,
-        notes: message,
+        notes: sanitizeText(message, 500),
       });
       setSubmittedMessage("عطیہ کی نیت کامیابی سے محفوظ ہو گئی۔ نیچے دیے گئے اکاؤنٹس میں رقم منتقل فرما سکتے ہیں۔");
       setTimeout(() => setSubmittedMessage(""), 6000);
     } catch (err) {
+      setValidationError("عطیہ جمع کرنے میں مسئلہ ہوا۔ براہ کرم دوبارہ کوشش کریں۔");
       console.warn("Donation submission note:", err);
     } finally {
       setSubmitting(false);
@@ -108,10 +123,6 @@ export default function DonationSection({ header, donationInfo, onOpenDonationMo
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1A0E08]/80 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md mb-10 sm:mb-14 shadow-sm">
-            
-            <span className="font-urdu">{header?.badge || "صدقہ جاریہ و خیرات"}</span>
-          </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-urdu font-bold text-white mb-5 leading-[2.1] sm:leading-[2.2] pt-2">
             {header?.title || "اپنا عطیہ اور صدقات پیش کریں"}
           </h2>
@@ -163,6 +174,12 @@ export default function DonationSection({ header, donationInfo, onOpenDonationMo
             <div className="bg-gradient-to-b from-[#EFE5D2] via-[#C9B38D] to-[#876F4B] p-[2px] rounded-[32px] shadow-[0_25px_60px_rgba(0,0,0,0.85)]">
               <div className="bg-gradient-to-b from-[#1E110A] to-[#120A05] rounded-[30px] p-6 sm:p-10">
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {validationError && (
+                    <div className="flex items-start gap-2 rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-xs text-rose-200">
+                      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                      <span>{validationError}</span>
+                    </div>
+                  )}
                   
                   {/* 1. Choose Preset Amount */}
                   <div>

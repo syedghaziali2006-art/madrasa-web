@@ -283,13 +283,6 @@ export default function Testimonials({ header, items }: TestimonialsProps = {}) 
 
         {/* 1. SECTION HEADER */}
         <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-18 space-y-4">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/85 border border-[#C9B38D]/40 text-[#D9C7A7] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg shadow-black/40">
-            
-            <span className="font-urdu">
-              {header?.badge || "اکابرین و سرپرستوں کے تاثرات"}
-            </span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
             {header?.title || (
               <>

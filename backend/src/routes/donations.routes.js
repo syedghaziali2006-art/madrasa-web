@@ -1,6 +1,7 @@
 import express from "express";
 import { db } from "../db/jsonDb.js";
 import { authenticateToken } from "../middleware/auth.js";
+import { isValidPhoneNumber, normalizePhoneNumber, sanitizeText } from "../utils/validators.js";
 
 const router = express.Router();
 
@@ -91,26 +92,38 @@ router.delete("/accounts/:id", authenticateToken, (req, res) => {
 // POST /api/donations/submit (Public - Donor submits payment info)
 router.post("/submit", (req, res) => {
   try {
-    const { donorName, phone, amount, bankName, transactionId, donationType, receiptImage, notes } = req.body;
+    const donorName = sanitizeText(req.body?.donorName, { maxLength: 80 });
+    const phone = sanitizeText(req.body?.phone, { maxLength: 30 });
+    const amount = sanitizeText(req.body?.amount, { maxLength: 40 });
+    const bankName = sanitizeText(req.body?.bankName, { maxLength: 120 });
+    const transactionId = sanitizeText(req.body?.transactionId, { maxLength: 120 });
+    const donationType = sanitizeText(req.body?.donationType, { maxLength: 80 });
+    const receiptImage = sanitizeText(req.body?.receiptImage, { maxLength: 500 });
+    const notes = sanitizeText(req.body?.notes, { maxLength: 500 });
 
-    if (!donorName || !amount) {
-      return res.status(400).json({
-        success: false,
-        message: "نام اور عطیہ کی رقم درج کرنا لازمی ہے۔"
-      });
+    if (!donorName || donorName.length < 2) {
+      return res.status(400).json({ success: false, message: "عطیہ دہندہ کا نام درج کرنا ضروری ہے۔" });
+    }
+
+    if (!amount || Number(amount) <= 0) {
+      return res.status(400).json({ success: false, message: "عطیہ کی رقم درست درج کریں۔" });
+    }
+
+    if (phone && !isValidPhoneNumber(phone)) {
+      return res.status(400).json({ success: false, message: "رابطہ نمبر درست نہیں ہے۔" });
     }
 
     const newSubmission = {
       id: "sub-" + Math.floor(100000 + Math.random() * 900000),
-      donorName: donorName.trim(),
-      phone: phone ? phone.trim() : "",
+      donorName,
+      phone: phone ? normalizePhoneNumber(phone) : "",
       amount: String(amount).trim(),
       bankName: bankName || "",
       transactionId: transactionId || "",
       donationType: donationType || "عمومی عطیات",
       receiptImage: receiptImage || "",
       notes: notes || "",
-      status: "pending", // pending, verified, rejected
+      status: "pending",
       createdAt: new Date().toISOString()
     };
 

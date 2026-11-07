@@ -217,13 +217,6 @@ export default function LibraryGallerySection({
       <div className="container mx-auto flex flex-col items-center text-center px-4 sm:px-8 relative z-10">
         {/* Section Header */}
         <div className="max-w-4xl mx-auto mb-10 sm:mb-14 space-y-3">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#1A0E08]/90 border border-[#C9B38D]/40 text-[#C9B38D] text-xs sm:text-sm font-semibold backdrop-blur-md shadow-sm">
-            <GraduationCap className="w-4 h-4 text-[#C9B38D]" />
-            <span className="font-urdu">
-              {header?.badge || "شعبہ امتحانات و تعلیمی جائزہ"}
-            </span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-urdu font-bold text-white pt-2 leading-[2.1] sm:leading-[2.2]">
             {header?.title || "امتحانات"}
           </h2>
